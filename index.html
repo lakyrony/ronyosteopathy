@@ -194,7 +194,7 @@
     .modal-content { background: #fff; padding: 30px; border-radius: 16px; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; }
     .modal-close { position: absolute; top: 15px; left: 15px; font-size: 24px; cursor: pointer; background: none; border: none; }
 
-    @media (max-width: 950px){
+    /*@media (max-width: 950px){
       .desktopNav { display: none; }
       .menuBtn { display: flex; }
       .heroGrid { grid-template-columns: 1fr; }
@@ -207,6 +207,37 @@
       .logoImg { height: 42px; }
       .brand { max-width: 70%; overflow: hidden; gap: 8px; }
       .divider-vertical { height: 30px; margin: 0 4px; }
+      
+      .contact-split { flex-direction: column; text-align: center; }
+      .contact-map-side { width: 100%; margin-top: 25px; }
+      .social-icons-row { justify-content: center; }
+      .contact-text-side { width: 100%; }
+    }*/
+
+    @media (max-width: 950px){
+      .desktopNav { display: none; }
+      .menuBtn { display: flex; flex-shrink: 0; }
+      .heroGrid { grid-template-columns: 1fr; }
+      .aboutGrid { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 1fr; }
+      .stepImg { width: 100%; } 
+      .cards { grid-template-columns: 1fr; }
+      .faq { grid-template-columns: 1fr; }
+      .navActions span.btn { display: none; }
+      
+      /* --- התיקונים לבעיית החיתוך בהדר --- */
+      .nav { gap: 5px; } /* הקטנת הרווחים הכלליים בשורה */
+      .brand { max-width: 50%; gap: 6px; } /* הלוגו תופס פחות מקום כדי להשאיר מקום לכפתור */
+      .logoImg { height: 38px; } /* הקטנת הלוגו טיפה */
+      .brandText strong { font-size: 15px; } /* הקטנת שם העסק */
+      .brandText span { font-size: 12px; }
+      .divider-vertical { height: 25px; margin: 0 4px; }
+      
+      .navActions .btn.primary { 
+        padding: 6px 10px; /* הקטנת השוליים של הכפתור */
+        font-size: 13px; /* הקטנת הטקסט של הכפתור */
+      }
+      /* ----------------------------------- */
       
       .contact-split { flex-direction: column; text-align: center; }
       .contact-map-side { width: 100%; margin-top: 25px; }
