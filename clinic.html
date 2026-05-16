@@ -159,6 +159,16 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
 /* Settings */
 .set-sec{margin-bottom:16px}
+.set-group{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh)}
+.set-group-hdr{font-size:13px;font-weight:700;color:var(--tp);padding:12px 14px 10px;border-bottom:1px solid var(--bdl);background:var(--sf2)}
+.set-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--bdl)}
+.set-item:last-child{border-bottom:none}
+.set-item-lbl{font-size:13px;color:var(--tp)}
+.set-item-ctrl select{padding:6px 10px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none}
+.set-item-ctrl select:focus{border-color:var(--ac)}
+.set-form-btn{width:100%;display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:none;border:1px solid var(--bdl);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--tp);cursor:pointer;text-align:right}
+.set-form-btn:active{background:var(--sf2)}
+.set-form-arrow{color:var(--ac);font-size:16px;font-weight:700}
 .set-ttl{font-size:13px;font-weight:700;color:var(--tp);margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid var(--bdl)}
 .set-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdl)}
 .set-row:last-child{border-bottom:none}
@@ -306,41 +316,79 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     <!-- הגדרות -->
     <div class="screen" id="screen-settings">
       <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
-      <div class="card">
-        <div class="set-sec">
-          <div class="set-ttl">כללי</div>
-          <div class="set-row"><div class="set-lbl">מחיר ברירת מחדל (₪)</div><input type="number" inputmode="numeric" class="set-inp" id="set-price" value="350"/></div>
-          <div class="set-row"><div class="set-lbl">משך טיפול (דקות)</div>
-            <select class="set-sel" id="set-dur"><option value="45">45</option><option value="60" selected>60</option><option value="90">90</option><option value="120">120</option></select>
+
+      <!-- כללי -->
+      <div class="set-group">
+        <div class="set-group-hdr">⚙️ כללי</div>
+        <div class="set-item">
+          <div class="set-item-lbl">מחיר ברירת מחדל</div>
+          <div class="set-item-ctrl">
+            <select class="set-sel" id="set-price" onchange="autoSave()">
+              <option value="200">₪200</option><option value="250">₪250</option><option value="300">₪300</option>
+              <option value="350" selected>₪350</option><option value="400">₪400</option><option value="450">₪450</option>
+              <option value="500">₪500</option><option value="600">₪600</option><option value="700">₪700</option>
+            </select>
           </div>
         </div>
-        <div class="set-sec">
-          <div class="set-ttl">לוח שעות שבועי</div>
-          <div class="day-sched" id="day-sched"></div>
+        <div class="set-item">
+          <div class="set-item-lbl">משך טיפול</div>
+          <div class="set-item-ctrl">
+            <select class="set-sel" id="set-dur" onchange="autoSave()">
+              <option value="30">30 דק׳</option><option value="45">45 דק׳</option>
+              <option value="60" selected>60 דק׳</option><option value="75">75 דק׳</option>
+              <option value="90">90 דק׳</option><option value="120">120 דק׳</option>
+            </select>
+          </div>
         </div>
-        <div class="set-sec">
-          <div class="set-ttl">סוגי סדרות</div>
-          <div id="ser-types-list"></div>
-          <button class="btn bs" style="margin-top:8px;" onclick="showScreen('add-series-type')">+ הוסף סדרה</button>
-        </div>
-        <div class="set-sec">
-          <div class="set-ttl">ניהול תורים</div>
-          <button class="btn bs" onclick="cleanOrphanAppts()">🧹 הסר תורים ללא מטופל</button>
-        </div>
-        <div class="set-sec">
-          <div class="set-ttl">עריכת טפסי תשאול</div>
-          <button class="btn bs" onclick="editForm('adult','intake')">✏️ טופס ראשוני — מבוגר</button>
-          <button class="btn bs" onclick="editForm('adult','followup')">✏️ טופס המשך — מבוגר</button>
-          <button class="btn bs" onclick="editForm('baby','intake')">✏️ טופס ראשוני — תינוק</button>
-          <button class="btn bs" onclick="editForm('baby','followup')">✏️ טופס המשך — תינוק</button>
-        </div>
-        <div class="set-sec">
-          <div class="set-ttl">התקנה כאפליקציה</div>
-          <button class="btn bs" id="pwa-install-btn" style="display:none;" onclick="installPWA()">📲 הוסף למסך הבית</button>
-          <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ על כפתור השיתוף ↗ בספארי, ואז "הוסף למסך הבית"</div>
-        </div>
-        <button class="btn bp" onclick="saveSettings()">שמור הגדרות</button>
       </div>
+
+      <!-- לוח שעות -->
+      <div class="set-group">
+        <div class="set-group-hdr">📅 לוח שעות שבועי</div>
+        <div style="font-size:11px;color:var(--tm);padding:0 14px 8px;">שינויים נשמרים אוטומטית</div>
+        <div class="day-sched" id="day-sched"></div>
+      </div>
+
+      <!-- סדרות -->
+      <div class="set-group">
+        <div class="set-group-hdr">🔁 סוגי סדרות טיפולים</div>
+        <div id="ser-types-list" style="padding:0 14px;"></div>
+        <div style="padding:8px 14px 14px;">
+          <button class="btn bs" style="margin-top:0;" onclick="showScreen('add-series-type')">+ הוסף סדרה</button>
+        </div>
+      </div>
+
+      <!-- טפסים -->
+      <div class="set-group">
+        <div class="set-group-hdr">📋 טפסי תשאול</div>
+        <div style="padding:8px 14px 14px;display:flex;flex-direction:column;gap:7px;">
+          <button class="set-form-btn" onclick="editForm('adult','intake')">
+            <span>👤 טופס ראשוני — מבוגר</span><span class="set-form-arrow">›</span>
+          </button>
+          <button class="set-form-btn" onclick="editForm('adult','followup')">
+            <span>👤 טופס המשך — מבוגר</span><span class="set-form-arrow">›</span>
+          </button>
+          <button class="set-form-btn" onclick="editForm('baby','intake')">
+            <span>👶 טופס ראשוני — תינוק</span><span class="set-form-arrow">›</span>
+          </button>
+          <button class="set-form-btn" onclick="editForm('baby','followup')">
+            <span>👶 טופס המשך — תינוק</span><span class="set-form-arrow">›</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- כלים -->
+      <div class="set-group">
+        <div class="set-group-hdr">🛠 כלים</div>
+        <div style="padding:8px 14px 14px;display:flex;flex-direction:column;gap:7px;">
+          <button class="btn bs" style="margin-top:0;" onclick="cleanOrphanAppts()">🧹 הסר תורים ללא מטופל</button>
+          <button class="btn bs" id="pwa-install-btn" style="display:none;" onclick="installPWA()">📲 הוסף למסך הבית (אנדרואיד)</button>
+          <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ על שיתוף ↗ ← "הוסף למסך הבית"</div>
+        </div>
+      </div>
+
+      <!-- שמירה אוטומטית indicator -->
+      <div id="autosave-msg" style="text-align:center;font-size:12px;color:var(--ac);padding:8px;opacity:0;transition:opacity 0.3s;">✓ נשמר</div>
     </div>
 
     <!-- הוספת סדרה -->
@@ -501,6 +549,16 @@ onAuthStateChanged(auth,async user=>{
     uid=user.uid;
     document.getElementById('lview').classList.add('hidden');
     const mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
+    // בדיקת הרשאה — רק מייל מאושר
+    const ALLOWED_EMAIL='laky.rony@gmail.com';
+    if(user.email!==ALLOWED_EMAIL){
+      await fbOut(auth);
+      document.getElementById('lview').classList.remove('hidden');
+      document.getElementById('mview').classList.add('hidden');
+      document.getElementById('lerr').textContent='אין הרשאה לחשבון זה. האפליקציה מיועדת למשתמש מורשה בלבד.';
+      document.getElementById('lerr').style.display='block';
+      return;
+    }
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
     try{const s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?{...defCfg(),...s.data()}:defCfg();}catch(e){window.appCfg=defCfg();}
@@ -654,7 +712,7 @@ async function maybeLoadSample(){
 // ---- SETTINGS ----
 function applySettings(){
   const c=window.appCfg||defCfg();
-  const sp=document.getElementById('set-price');if(sp)sp.value=c.price||350;
+  const sp=document.getElementById('set-price');if(sp){sp.value=c.price||350;if(![200,250,300,350,400,450,500,600,700].includes(c.price||350))sp.value=350;}
   const sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
   renderDaySchedule();renderSerTypes();
 }
@@ -664,11 +722,16 @@ function renderDaySchedule(){
   const el=document.getElementById('day-sched');if(!el)return;
   el.innerHTML=DS.map((d,i)=>{
     const day=sched[i]||{active:false,ranges:[{s:'10:00',e:'18:00'}]};
+    const hourOpts=`<option value="06:00">06:00</option><option value="07:00">07:00</option><option value="08:00">08:00</option><option value="09:00">09:00</option><option value="10:00">10:00</option><option value="11:00">11:00</option><option value="12:00">12:00</option><option value="13:00">13:00</option><option value="14:00">14:00</option><option value="15:00">15:00</option><option value="16:00">16:00</option><option value="17:00">17:00</option><option value="18:00">18:00</option><option value="19:00">19:00</option><option value="20:00">20:00</option><option value="21:00">21:00</option><option value="22:00">22:00</option>`;
     const ranges=(day.ranges||[{s:'10:00',e:'18:00'}]).map((r,ri)=>`
-      <span style="display:inline-flex;align-items:center;gap:3px;margin-bottom:3px;">
-        <input class="time-inp" value="${r.s}" onchange="updateRange(${i},${ri},'s',this.value)" placeholder="09:00"/>
+      <span style="display:inline-flex;align-items:center;gap:4px;margin-bottom:4px;">
+        <select class="time-inp" style="width:70px;" onchange="updateRange(${i},${ri},'s',this.value)">
+          ${hourOpts.replace(`value="${r.s}"`,`value="${r.s}" selected`)}
+        </select>
         <span style="font-size:10px;color:var(--tm)">עד</span>
-        <input class="time-inp" value="${r.e}" onchange="updateRange(${i},${ri},'e',this.value)" placeholder="18:00"/>
+        <select class="time-inp" style="width:70px;" onchange="updateRange(${i},${ri},'e',this.value)">
+          ${hourOpts.replace(`value="${r.e}"`,`value="${r.e}" selected`)}
+        </select>
         ${ri>0?`<button class="del-range" onclick="delRange(${i},${ri})">✕</button>`:''}
       </span>`).join('');
     return `<div class="day-sched-row">
@@ -686,31 +749,38 @@ function toggleDay(i){
   const c=window.appCfg||defCfg();
   if(!c.schedule[i])c.schedule[i]={active:false,ranges:[{s:'10:00',e:'18:00'}]};
   c.schedule[i].active=!c.schedule[i].active;
-  window.appCfg=c;renderDaySchedule();
+  window.appCfg=c;renderDaySchedule();autoSave();
 }
 function updateRange(di,ri,key,val){
   const c=window.appCfg||defCfg();
   if(!c.schedule[di]||!c.schedule[di].ranges[ri])return;
-  c.schedule[di].ranges[ri][key]=val;window.appCfg=c;
+  c.schedule[di].ranges[ri][key]=val;window.appCfg=c;autoSave();
 }
 function addRange(di){
   const c=window.appCfg||defCfg();
   if(!c.schedule[di])c.schedule[di]={active:true,ranges:[]};
-  c.schedule[di].ranges.push({s:'15:00',e:'18:00'});window.appCfg=c;renderDaySchedule();
+  c.schedule[di].ranges.push({s:'15:00',e:'18:00'});window.appCfg=c;renderDaySchedule();autoSave();
 }
 function delRange(di,ri){
   const c=window.appCfg||defCfg();
-  c.schedule[di].ranges.splice(ri,1);window.appCfg=c;renderDaySchedule();
+  c.schedule[di].ranges.splice(ri,1);window.appCfg=c;renderDaySchedule();autoSave();
 }
 
 async function saveSettings(){
   const c=window.appCfg||defCfg();
-  c.price=parseInt(document.getElementById('set-price').value)||350;
-  c.duration=parseInt(document.getElementById('set-dur').value)||60;
+  const priceEl=document.getElementById('set-price');
+  const durEl=document.getElementById('set-dur');
+  if(priceEl)c.price=parseInt(priceEl.value)||350;
+  if(durEl)c.duration=parseInt(durEl.value)||60;
   window.appCfg=c;
   await window.fbSaveCfg(c);
   rebuildTimeSelect();
-  alert('ההגדרות נשמרו ✓');
+}
+
+async function autoSave(){
+  await saveSettings();
+  const msg=document.getElementById('autosave-msg');
+  if(msg){msg.style.opacity='1';setTimeout(()=>msg.style.opacity='0',1500);}
 }
 
 function renderSerTypes(){
@@ -1316,7 +1386,7 @@ window.openNewApptAt=openNewApptAt;window.openNewAppt=openNewAppt;window.addAppo
 window.openGcal=openGcal;window.renderPatients=renderPatients;window.addPatient=addPatient;
 window.openEdit=openEdit;window.saveEdit=saveEdit;window.confirmDel=confirmDel;window.doDelete=doDelete;
 window.closeDelOv=closeDelOv;window.setPatType=setPatType;window.setNpTreat=setNpTreat;
-window.saveSettings=saveSettings;window.addSeriesType=addSeriesType;window.delSerType=delSerType;
+window.saveSettings=saveSettings;window.autoSave=autoSave;window.addSeriesType=addSeriesType;window.delSerType=delSerType;
 window.cleanOrphanAppts=cleanOrphanAppts;window.editForm=editForm;window.addFormField=addFormField;
 window.delFormField=delFormField;window.saveFormFields=saveFormFields;window.openNewApptForDay=openNewApptForDay;
 window.toggleDay=toggleDay;window.updateRange=updateRange;window.addRange=addRange;window.delRange=delRange;
