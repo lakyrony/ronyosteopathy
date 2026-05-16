@@ -546,19 +546,23 @@ window.fbDelA=async id=>{if(!uid)return;await deleteDoc(doc(db,'users',uid,'appo
 window.fbSaveCfg=async c=>{if(!uid)return;await setDoc(doc(db,'users',uid,'config','main'),c);};
 onAuthStateChanged(auth,async user=>{
   if(user){
-    uid=user.uid;
-    document.getElementById('lview').classList.add('hidden');
-    const mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
-    // בדיקת הרשאה — רק מייל מאושר
+    // בדיקת הרשאה תחילה — לפני כל הצגת ממשק
     const ALLOWED_EMAIL='laky.rony@gmail.com';
     if(user.email!==ALLOWED_EMAIL){
       await fbOut(auth);
+      uid=null;
+      // נשאר בדף ההתחברות — לא מציגים ממשק בכלל
       document.getElementById('lview').classList.remove('hidden');
       document.getElementById('mview').classList.add('hidden');
-      document.getElementById('lerr').textContent='אין הרשאה לחשבון זה. האפליקציה מיועדת למשתמש מורשה בלבד.';
+      document.getElementById('mview').style.display='none';
+      document.getElementById('lerr').textContent='חשבון זה אינו מורשה להשתמש באפליקציה.';
       document.getElementById('lerr').style.display='block';
       return;
     }
+    uid=user.uid;
+    document.getElementById('lview').classList.add('hidden');
+    document.getElementById('lerr').style.display='none';
+    const mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
     try{const s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?{...defCfg(),...s.data()}:defCfg();}catch(e){window.appCfg=defCfg();}
