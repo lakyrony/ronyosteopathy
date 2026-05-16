@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="קליניקה">
+<meta name="theme-color" content="#1e7a4a">
+<link rel="manifest" href="manifest.json">
+<!-- PWA iOS icons -->
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>קליניקה — ניהול מטופלים</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -14,7 +19,7 @@
   --t100:#c5f0e6;--t400:#26b08a;--t500:#1a9070;
   --a50:#fef9ec;--a100:#fdedc5;--a500:#e6a817;--a700:#9a6e00;
   --r50:#fef2f2;--r100:#fdd5d5;--r500:#e53e3e;--r700:#9b1c1c;
-  --gr100:#eef1ee;--gr400:#8a9a8a;--gr600:#4a5a4a;
+  --gr100:#eef1ee;--gr400:#8a9a8a;
   --bg:#f4f8f5;--sf:#fff;--sf2:#f0f6f2;
   --bd:#d4e6d8;--bdl:#e8f2ea;
   --tp:#1a2e1a;--ts:#4a6a4a;--tm:#7a9a7a;
@@ -41,7 +46,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .qb{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 6px;border-radius:var(--rmd);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600}
 .qbp{background:var(--ac);color:#fff}.qbs{background:var(--b50);color:var(--b600);border:1px solid var(--b100)}
 .qb svg{width:15px;height:15px}
-/* alerts bar */
 .alerts-bar{flex-shrink:0}
 .alert-row{padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:13px;border-bottom:1px solid}
 .alert-row.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
@@ -78,22 +82,16 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .dphead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .dptitle{font-size:13px;font-weight:700;color:var(--tp)}
 .dpadd{background:var(--ac);color:#fff;border:none;border-radius:20px;padding:4px 12px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
-.dpslot{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
-.dpslot:last-child{border-bottom:none}
-.dptime{font-size:12px;color:var(--tm);min-width:38px;font-weight:600}
-.dpevt{flex:1;border-radius:6px;padding:7px 10px}
-.dpevt-n{font-size:13px;font-weight:600}
-.dpevt-s{font-size:11px;margin-top:1px;opacity:0.8}
-.dpempty{flex:1;background:var(--sf2);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--tm)}
-/* week */
-.wgrid{display:grid;grid-template-columns:40px repeat(7,1fr)}
+.aitem{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
+.aitem:last-child{border-bottom:none}
+.atb{background:var(--sf2);border-radius:var(--rsm);padding:5px 8px;text-align:center;min-width:48px;flex-shrink:0}
+.ath{font-size:14px;font-weight:700;color:var(--ac)}
 .wtl{height:50px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
 .wcell{height:50px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer}
 .wappt{height:100%;border-radius:4px;padding:2px 4px;font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .wbl{background:var(--b50);color:var(--b600);border-right:3px solid var(--b400)}
 .wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
 .wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
-/* patients */
 .swrap{position:relative;margin-bottom:10px}
 .swrap svg{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--tm)}
 .si{width:100%;padding:10px 38px 10px 12px;border:1px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:14px;background:var(--sf);color:var(--tp);outline:none}
@@ -109,7 +107,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px}
 .br{background:var(--r50);color:var(--r700)}.bg{background:var(--g100);color:var(--g700)}
 .bb{background:var(--b50);color:var(--b600)}.ba{background:var(--a50);color:var(--a700)}
-/* patient file */
 .pfh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .pfav{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
 .pfn{font-size:19px;font-weight:700}.pfs{font-size:13px;color:var(--tm);margin-top:1px}
@@ -124,17 +121,14 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .tnum{font-size:13px;font-weight:700;color:var(--ac)}
 .tnotes{font-size:13px;color:var(--ts);line-height:1.6}
 .tnotes b{font-weight:600;color:var(--tp)}
-/* series card */
 .series-card{background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:11px 13px;margin-bottom:8px}
 .series-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .series-name{font-size:13px;font-weight:700;color:var(--g700)}
 .series-status{font-size:12px;color:var(--tm)}
-/* forms */
 .fm{margin-bottom:12px}
 .fl{font-size:12px;font-weight:600;color:var(--tm);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.4px}
 .fi,.fsl,.ftx{width:100%;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:14px;background:var(--sf);color:var(--tp);outline:none;direction:rtl}
 .fi:focus,.fsl:focus,.ftx:focus{border-color:var(--ac)}
-.fi.err{border-color:var(--r500)}
 .ftx{min-height:75px;resize:vertical}
 .chips{display:flex;gap:5px;flex-wrap:wrap}
 .chip{padding:6px 13px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
@@ -152,13 +146,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .slbl{font-size:11px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
 .sval{font-size:24px;font-weight:700;color:var(--tp);margin-top:3px}
 .sval.red{color:var(--r500)}
-/* settings */
 .set-section{margin-bottom:18px}
 .set-title{font-size:13px;font-weight:700;color:var(--tp);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bdl)}
 .set-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdl)}
 .set-row:last-child{border-bottom:none}
 .set-lbl{font-size:13px;color:var(--tp)}
-.set-sub{font-size:11px;color:var(--tm);margin-top:1px}
 .set-input{width:90px;padding:6px 10px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none;text-align:center}
 .set-input:focus{border-color:var(--ac)}
 .set-select{padding:6px 10px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none}
@@ -172,13 +164,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .sheet{background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px 18px 38px;width:100%;max-width:480px}
 .sht{font-size:16px;font-weight:700;text-align:center;margin-bottom:7px}
 .shs{font-size:14px;color:var(--tm);text-align:center;margin-bottom:18px;white-space:pre-line}
-.aitem{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
-.aitem:last-child{border-bottom:none}
-.atb{background:var(--sf2);border-radius:var(--rsm);padding:5px 8px;text-align:center;min-width:48px;flex-shrink:0}
-.ath{font-size:14px;font-weight:700;color:var(--ac)}
+/* PWA install banner */
+.pwa-banner{background:var(--g700);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;flex-shrink:0;cursor:pointer}
+.pwa-banner-close{margin-right:auto;background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 4px}
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:0}
-input[type=number]::-webkit-inner-spin-button{opacity:1}
 </style>
 </head>
 <body>
@@ -196,6 +186,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
 </div>
 
 <div id="mview" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+
+  <!-- PWA install banner -->
+  <div class="pwa-banner hidden" id="pwa-banner" onclick="installPWA()">
+    <span>📲 הוסף למסך הבית כאפליקציה</span>
+    <button class="pwa-banner-close" onclick="event.stopPropagation();document.getElementById('pwa-banner').classList.add('hidden')">✕</button>
+  </div>
+
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
@@ -217,7 +214,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
 
   <div class="screens">
 
-    <!-- יומן -->
     <div class="screen active" id="screen-calendar">
       <div class="card">
         <div class="vtabs">
@@ -240,7 +236,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       </div>
     </div>
 
-    <!-- מטופלים -->
     <div class="screen" id="screen-patients">
       <div class="swrap">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -249,7 +244,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       <div class="card" style="padding:4px 14px;"><div id="plist"></div></div>
     </div>
 
-    <!-- חובות -->
     <div class="screen" id="screen-debts">
       <div class="srow">
         <div class="sbox"><div class="slbl">סה"כ חובות</div><div class="sval red" id="stat-d">₪0</div></div>
@@ -258,98 +252,71 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       <div class="card" style="padding:4px 14px;"><div id="dlist"></div></div>
     </div>
 
-    <!-- הגדרות -->
     <div class="screen" id="screen-settings">
       <div class="card">
         <div class="set-section">
           <div class="set-title">הגדרות כלליות</div>
-          <div class="set-row">
-            <div><div class="set-lbl">מחיר ברירת מחדל</div></div>
-            <input type="number" class="set-input" id="set-price" value="350" min="0"/>
-          </div>
-          <div class="set-row">
-            <div><div class="set-lbl">משך טיפול (דקות)</div></div>
-            <select class="set-select" id="set-duration">
-              <option value="45">45</option>
-              <option value="60" selected>60</option>
-              <option value="90">90</option>
-            </select>
-          </div>
-          <div class="set-row">
-            <div><div class="set-lbl">שעת התחלה</div></div>
-            <select class="set-select" id="set-start">
-              <option>08:00</option><option>09:00</option><option selected>10:00</option><option>11:00</option>
-            </select>
-          </div>
-          <div class="set-row">
-            <div><div class="set-lbl">שעת סיום</div></div>
-            <select class="set-select" id="set-end">
-              <option>16:00</option><option>17:00</option><option selected>18:00</option><option>19:00</option><option>20:00</option>
-            </select>
-          </div>
+          <div class="set-row"><div class="set-lbl">מחיר ברירת מחדל (₪)</div><input type="number" inputmode="numeric" class="set-input" id="set-price" value="350" min="0"/></div>
+          <div class="set-row"><div class="set-lbl">משך טיפול (דקות)</div><select class="set-select" id="set-duration"><option value="45">45</option><option value="60" selected>60</option><option value="90">90</option></select></div>
+          <div class="set-row"><div class="set-lbl">שעת התחלה</div><select class="set-select" id="set-start"><option>07:00</option><option>08:00</option><option>09:00</option><option selected>10:00</option><option>11:00</option></select></div>
+          <div class="set-row"><div class="set-lbl">שעת סיום</div><select class="set-select" id="set-end"><option>15:00</option><option>16:00</option><option>17:00</option><option selected>18:00</option><option>19:00</option><option>20:00</option></select></div>
           <div style="padding:8px 0;">
-            <div class="set-lbl" style="display:block;margin-bottom:6px;">ימי עבודה (משתנה בכל שבוע — לסימון כברירת מחדל)</div>
+            <div style="font-size:12px;font-weight:600;color:var(--tm);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">ימי עבודה (ברירת מחדל)</div>
             <div class="day-chips" id="day-chips">
-              <button class="day-chip active" data-day="0" onclick="toggleDay(this)">א</button>
-              <button class="day-chip active" data-day="1" onclick="toggleDay(this)">ב</button>
-              <button class="day-chip active" data-day="2" onclick="toggleDay(this)">ג</button>
-              <button class="day-chip active" data-day="3" onclick="toggleDay(this)">ד</button>
-              <button class="day-chip active" data-day="4" onclick="toggleDay(this)">ה</button>
-              <button class="day-chip" data-day="5" onclick="toggleDay(this)">ו</button>
-              <button class="day-chip" data-day="6" onclick="toggleDay(this)">ש</button>
+              <button class="day-chip active" data-day="0" onclick="this.classList.toggle('active')">א</button>
+              <button class="day-chip active" data-day="1" onclick="this.classList.toggle('active')">ב</button>
+              <button class="day-chip active" data-day="2" onclick="this.classList.toggle('active')">ג</button>
+              <button class="day-chip active" data-day="3" onclick="this.classList.toggle('active')">ד</button>
+              <button class="day-chip active" data-day="4" onclick="this.classList.toggle('active')">ה</button>
+              <button class="day-chip" data-day="5" onclick="this.classList.toggle('active')">ו</button>
+              <button class="day-chip" data-day="6" onclick="this.classList.toggle('active')">ש</button>
             </div>
           </div>
         </div>
-
         <div class="set-section">
           <div class="set-title">סוגי סדרות טיפולים</div>
           <div id="series-types-list"></div>
-          <button class="btn bs" style="margin-top:10px;" onclick="showAddSeriesType()">+ הוסף סוג סדרה</button>
+          <button class="btn bs" style="margin-top:10px;" onclick="showScreen('add-series-type')">+ הוסף סוג סדרה</button>
         </div>
-
         <button class="btn bp" onclick="saveSettings()">שמור הגדרות</button>
       </div>
     </div>
 
-    <!-- הוספת סוג סדרה -->
     <div class="screen" id="screen-add-series-type">
-      <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה להגדרות</button>
+      <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">סוג סדרה חדש</div>
-        <div class="fm"><label class="fl">שם הסדרה *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב, סדרת צוואר"/></div>
-        <div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="st-count" type="number" value="5" min="2" max="20"/></div>
-        <div class="fm"><label class="fl">מחיר לסדרה (₪)</label><input class="fi" id="st-price" type="number" placeholder="1500"/></div>
-        <button class="btn bp" onclick="addSeriesType()">הוסף סדרה</button>
+        <div class="fm"><label class="fl">שם הסדרה *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב"/></div>
+        <div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="st-count" type="number" inputmode="numeric" value="5" min="2" max="20"/></div>
+        <div class="fm"><label class="fl">מחיר לסדרה (₪)</label><input class="fi" id="st-price" type="number" inputmode="numeric" placeholder="1500"/></div>
+        <button class="btn bp" onclick="addSeriesType()">הוסף</button>
       </div>
     </div>
 
-    <!-- תיק מטופל -->
     <div class="screen" id="screen-patient-file">
       <button class="bbtn" id="fb-back" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div id="pfile"></div>
     </div>
 
-    <!-- מטופל חדש -->
     <div class="screen" id="screen-new-patient">
       <button class="bbtn" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">מטופל חדש</div>
-        <div class="fm"><label class="fl">שם מלא *</label><input class="fi" id="np-nm" type="text" placeholder="שם פרטי ושם משפחה" oninput="validateName(this)"/></div>
+        <div class="fm"><label class="fl">שם מלא *</label><input class="fi" id="np-nm" type="text" placeholder="שם פרטי ושם משפחה" oninput="this.value=this.value.replace(/[0-9]/g,'')"/></div>
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="np-ph" type="tel" inputmode="numeric" placeholder="0501234567" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="np-ag" type="number" inputmode="numeric" placeholder="גיל" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="np-pr" type="text" placeholder="לדוגמה: כאב גב תחתון"/></div>
-        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" id="np-px"/></div>
+        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="מחיר (ברירת מחדל לפי הגדרות)"/></div>
         <button class="btn bp" onclick="addPatient()">הוסף מטופל</button>
       </div>
     </div>
 
-    <!-- עריכת מטופל -->
     <div class="screen" id="screen-edit-patient">
       <button class="bbtn" id="ep-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
       <div class="card">
         <div class="ct">עריכת מטופל</div>
         <input type="hidden" id="ep-id"/>
-        <div class="fm"><label class="fl">שם מלא</label><input class="fi" id="ep-nm" type="text" oninput="validateName(this)"/></div>
+        <div class="fm"><label class="fl">שם מלא</label><input class="fi" id="ep-nm" type="text" oninput="this.value=this.value.replace(/[0-9]/g,'')"/></div>
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="ep-ph" type="tel" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
@@ -359,7 +326,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       </div>
     </div>
 
-    <!-- תור חדש -->
     <div class="screen" id="screen-new-appointment">
       <button class="bbtn" onclick="showScreen('calendar')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -374,19 +340,17 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
       </div>
     </div>
 
-    <!-- פתיחת סדרה -->
     <div class="screen" id="screen-open-series">
       <button class="bbtn" id="os-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
       <div class="card">
         <div class="ct">פתיחת סדרת טיפולים</div>
-        <div class="fm"><label class="fl">סוג הסדרה *</label><select class="fsl" id="os-type"></select></div>
+        <div class="fm"><label class="fl">סוג הסדרה *</label><select class="fsl" id="os-type" onchange="updateSeriesPreview()"></select></div>
         <div class="fm"><label class="fl">הערות</label><input class="fi" id="os-notes" type="text" placeholder="הערה אופציונלית..."/></div>
         <div id="os-preview" style="background:var(--g50);border-radius:var(--rmd);padding:11px;margin-top:8px;font-size:13px;color:var(--g700);display:none;"></div>
         <button class="btn bp" onclick="openSeries()">פתח סדרה</button>
       </div>
     </div>
 
-    <!-- רישום טיפול -->
     <div class="screen" id="screen-add-treatment">
       <button class="bbtn" id="tr-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
       <div class="card">
@@ -419,47 +383,98 @@ input[type=number]::-webkit-inner-spin-button{opacity:1}
   <button class="btn bs" onclick="document.getElementById('del-ov').classList.add('hidden')">ביטול</button></div>
 </div>
 
+<!-- PWA Service Worker registration -->
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+// PWA install prompt
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('pwa-banner').classList.remove('hidden');
+});
+window.installPWA=async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const{outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  document.getElementById('pwa-banner').classList.add('hidden');
+};
+</script>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const cfg={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
 const fb=initializeApp(cfg);
 const auth=getAuth(fb);const db=getFirestore(fb);const prov=new GoogleAuthProvider();
-let uid=null,unsubP=null,unsubA=null,unsubS=null;
+let uid=null,unsubP=null,unsubA=null;
 
 function setSt(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
 
 window.doSignIn=async()=>{try{await signInWithPopup(auth,prov);}catch(e){const el=document.getElementById('lerr');el.textContent='שגיאה: '+e.message;el.style.display='block';}};
-window.doSignOut=async()=>{if(unsubP)unsubP();if(unsubA)unsubA();if(unsubS)unsubS();await fbOut(auth);window.pts=[];window.apts=[];window.cfg={};document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');};
+window.doSignOut=async()=>{
+  if(unsubP)unsubP();if(unsubA)unsubA();
+  await fbOut(auth);
+  window.pts=[];window.apts=[];window.appCfg=getDefaultCfg();
+  document.getElementById('lview').classList.remove('hidden');
+  document.getElementById('mview').classList.add('hidden');
+};
 window.fbSaveP=async p=>{if(!uid)return;await setDoc(doc(db,'users',uid,'patients',String(p.id)),p);};
 window.fbDelP=async id=>{if(!uid)return;await deleteDoc(doc(db,'users',uid,'patients',String(id)));};
 window.fbSaveA=async a=>{if(!uid)return;await setDoc(doc(db,'users',uid,'appointments',String(a.id)),a);};
 window.fbDelA=async id=>{if(!uid)return;await deleteDoc(doc(db,'users',uid,'appointments',String(id)));};
 window.fbSaveCfg=async c=>{if(!uid)return;await setDoc(doc(db,'users',uid,'config','main'),c);};
 
-onAuthStateChanged(auth,user=>{
+onAuthStateChanged(auth,async user=>{
   if(user){
     uid=user.uid;
     document.getElementById('lview').classList.add('hidden');
     const mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
-    if(unsubP)unsubP();if(unsubA)unsubA();if(unsubS)unsubS();
-    unsubP=onSnapshot(collection(db,'users',uid,'patients'),s=>{window.pts=s.docs.map(d=>d.data());window.render();setSt('gr','מסונכרן ✓');});
-    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),s=>{window.apts=s.docs.map(d=>d.data());window.render();setSt('gr','מסונכרן ✓');});
-    unsubS=onSnapshot(doc(db,'users',uid,'config','main'),s=>{if(s.exists()){window.cfg=s.data();applySettings();}window.render();setSt('gr','מסונכרן ✓');});
-  } else {uid=null;document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');}
+
+    // Load config first (one-time, not realtime — avoids freeze)
+    try{
+      const cfgSnap=await getDoc(doc(db,'users',uid,'config','main'));
+      if(cfgSnap.exists()) window.appCfg={...getDefaultCfg(),...cfgSnap.data()};
+      else window.appCfg=getDefaultCfg();
+    }catch(e){window.appCfg=getDefaultCfg();}
+    applySettings();
+
+    if(unsubP)unsubP();if(unsubA)unsubA();
+    let pReady=false,aReady=false;
+    const tryRender=()=>{if(pReady&&aReady){window.render();setSt('gr','מסונכרן ✓');}};
+
+    unsubP=onSnapshot(collection(db,'users',uid,'patients'),s=>{
+      window.pts=s.docs.map(d=>d.data());pReady=true;tryRender();setSt('gr','מסונכרן ✓');
+    },()=>{pReady=true;tryRender();setSt('rd','שגיאת חיבור');});
+
+    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),s=>{
+      window.apts=s.docs.map(d=>d.data());aReady=true;tryRender();setSt('gr','מסונכרן ✓');
+    },()=>{aReady=true;tryRender();setSt('rd','שגיאת חיבור');});
+
+  } else {
+    uid=null;
+    document.getElementById('lview').classList.remove('hidden');
+    document.getElementById('mview').classList.add('hidden');
+  }
 });
 </script>
 
 <script>
 window.pts=[];window.apts=[];
-window.cfg={price:350,duration:60,start:'10:00',end:'18:00',workDays:[0,1,2,3,4],seriesTypes:[
-  {id:'st1',name:'סדרת בסיס',count:5,price:1500},
-  {id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}
-]};
+
+function getDefaultCfg(){
+  return {price:350,duration:60,start:'10:00',end:'18:00',workDays:[0,1,2,3,4],seriesTypes:[
+    {id:'st1',name:'סדרת בסיס',count:5,price:1500},
+    {id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}
+  ]};
+}
+window.appCfg=getDefaultCfg();
 
 const AVC=['avg','avb','avt','ava'];
 const HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
@@ -479,88 +494,80 @@ function adMap(){const m={};(window.apts||[]).forEach(a=>{if(!m[a.date])m[a.date
 function findP(id){return (window.pts||[]).find(x=>String(x.id)===String(id));}
 
 function getHours(){
-  const cfg=window.cfg||{};
-  const start=parseInt((cfg.start||'10:00').split(':')[0]);
-  const end=parseInt((cfg.end||'18:00').split(':')[0]);
-  const hrs=[];for(let h=start;h<end;h++)hrs.push(S2(h));
-  return hrs;
+  const c=window.appCfg||getDefaultCfg();
+  const s=parseInt((c.start||'10:00'));const e=parseInt((c.end||'18:00'));
+  const h=[];for(let i=s;i<e;i++)h.push(S2(i));return h;
 }
 
-// ---- SAMPLE DATA ----
 async function maybeLoadSample(){
   if(sampleLoaded)return;sampleLoaded=true;
   if((window.pts||[]).length>0)return;
   const td=ltoday();
-  const fmtD=off=>{const d=new Date(td.getFullYear(),td.getMonth(),td.getDate()+off);return dstr(d);};
+  const fD=o=>{const d=new Date(td.getFullYear(),td.getMonth(),td.getDate()+o);return dstr(d);};
   const SP=[
     {id:'s1',name:'שרה כהן',phone:'0521234567',age:'45',problem:'כאב גב תחתון כרוני',price:350,color:0,treatments:[
-      {num:1,date:fmtD(-20),found:'מתח בשרירי הגב התחתון, הגבלה בL4-L5',done:'שחרור מיופשיאלי, מניפולציה עדינה',recommend:'תרגילי מתיחה יומיים',paid:true,amount:350,method:'מזומן'},
-      {num:2,date:fmtD(-7),found:'שיפור קל, עדיין רגישות בצד שמאל',done:'עבודה על האגן והסקרום',recommend:'להמשיך תרגילים, כרית לומברית',paid:false,amount:350,method:''}
+      {num:1,date:fD(-20),found:'מתח בשרירי הגב התחתון, הגבלה בL4-L5',done:'שחרור מיופשיאלי, מניפולציה עדינה',recommend:'תרגילי מתיחה יומיים',paid:true,amount:350,method:'מזומן'},
+      {num:2,date:fD(-7),found:'שיפור קל, עדיין רגישות',done:'עבודה על האגן והסקרום',recommend:'להמשיך תרגילים',paid:false,amount:350,method:''}
     ],series:[]},
-    {id:'s2',name:'דוד לוי',phone:'0549876543',age:'38',problem:'כאב צוואר לאחר תאונת דרכים',price:300,color:1,treatments:[
-      {num:1,date:fmtD(-30),found:'נוקשות קשה בC3-C5, הגבלת תנועה',done:'מניפולציה עדינה, שחרור שרירי עורף',recommend:'הפחתת שימוש במסך',paid:true,amount:300,method:'העברה'},
-      {num:2,date:fmtD(-16),found:'שיפור משמעותי בטווח תנועה',done:'עבודה רקמות רכות, קרניו-סקרל',recommend:'כרית ארגונומית',paid:true,amount:300,method:'העברה'},
-      {num:3,date:fmtD(-9),found:'כמעט תקין, מעט רגישות',done:'שחזור תנועה מלאה',recommend:'תרגול יומי בבית',paid:true,amount:300,method:'ביט'}
-    ],series:[{id:'ser1',typeId:'st1',name:'סדרת בסיס',count:5,price:1500,used:3,open:true,openDate:fmtD(-30)}]},
+    {id:'s2',name:'דוד לוי',phone:'0549876543',age:'38',problem:'כאב צוואר לאחר תאונה',price:300,color:1,treatments:[
+      {num:1,date:fD(-30),found:'נוקשות קשה בC3-C5',done:'מניפולציה עדינה, שחרור עורף',recommend:'הפחתת שימוש במסך',paid:true,amount:300,method:'העברה'},
+      {num:2,date:fD(-16),found:'שיפור בטווח תנועה',done:'עבודה רקמות רכות',recommend:'כרית ארגונומית',paid:true,amount:300,method:'העברה'},
+      {num:3,date:fD(-9),found:'כמעט תקין',done:'שחזור תנועה מלאה',recommend:'תרגול יומי',paid:true,amount:300,method:'ביט'}
+    ],series:[{id:'ser1',typeId:'st1',name:'סדרת בסיס',count:5,price:1500,used:3,open:true,openDate:fD(-30)}]},
     {id:'s3',name:'מירי אברהם',phone:'0505555555',age:'52',problem:'כאב ברך שמאל לאחר ניתוח',price:350,color:2,treatments:[],series:[]},
-    {id:'s4',name:'יוסי גולן',phone:'0537777777',age:'29',problem:'כאב ראש כרוני ומיגרנות',price:300,color:3,treatments:[
-      {num:1,date:fmtD(-5),found:'מתח בעורף ובסיס הגולגולת',done:'שחרור עורף, קרניו-סקרל עדין',recommend:'שתיית מים, שינה סדירה',paid:false,amount:300,method:''}
-    ],series:[{id:'ser2',typeId:'st2',name:'סדרה אינטנסיבית',count:10,price:2800,used:1,open:true,openDate:fmtD(-5)}]},
-    {id:'s5',name:'רחל ברק',phone:'0583334444',age:'67',problem:'כאב כתף ימין ושכמה',price:350,color:0,treatments:[
-      {num:1,date:fmtD(-3),found:'הגבלה בתנועת הכתף, חסימה בT3-T4',done:'עבודה על מפרק הכתף',recommend:'חימום לפני פעילות',paid:true,amount:350,method:'אשראי'}
+    {id:'s4',name:'יוסי גולן',phone:'0537777777',age:'29',problem:'כאב ראש כרוני',price:300,color:3,treatments:[
+      {num:1,date:fD(-5),found:'מתח בעורף ובסיס הגולגולת',done:'שחרור עורף, קרניו-סקרל',recommend:'שתיית מים, שינה סדירה',paid:false,amount:300,method:''}
+    ],series:[{id:'ser2',typeId:'st2',name:'סדרה אינטנסיבית',count:10,price:2800,used:1,open:true,openDate:fD(-5)}]},
+    {id:'s5',name:'רחל ברק',phone:'0583334444',age:'67',problem:'כאב כתף ימין',price:350,color:0,treatments:[
+      {num:1,date:fD(-3),found:'הגבלה בתנועת הכתף',done:'עבודה על מפרק הכתף',recommend:'חימום לפני פעילות',paid:true,amount:350,method:'אשראי'}
     ],series:[]},
-    {id:'s6',name:'אלי שמעון',phone:'0528889999',age:'44',problem:'כאב גב עליון ועצבי',price:300,color:1,treatments:[],series:[]}
+    {id:'s6',name:'אלי שמעון',phone:'0528889999',age:'44',problem:'כאב גב עליון',price:300,color:1,treatments:[],series:[]}
   ];
   const SA=[
-    {id:'a1',patientId:'s1',date:fmtD(0),time:'10:00',notes:''},
-    {id:'a2',patientId:'s2',date:fmtD(0),time:'11:00',notes:'טיפול 4 בסדרה'},
-    {id:'a3',patientId:'s4',date:fmtD(0),time:'14:00',notes:''},
-    {id:'a4',patientId:'s3',date:fmtD(1),time:'09:00',notes:'ביקור ראשון'},
-    {id:'a5',patientId:'s5',date:fmtD(2),time:'11:00',notes:''},
-    {id:'a6',patientId:'s6',date:fmtD(3),time:'10:00',notes:'הערכה ראשונית'},
-    {id:'a7',patientId:'s1',date:fmtD(7),time:'10:00',notes:''},
-    {id:'a8',patientId:'s2',date:fmtD(5),time:'15:00',notes:''},
+    {id:'a1',patientId:'s1',date:fD(0),time:'10:00',notes:''},
+    {id:'a2',patientId:'s2',date:fD(0),time:'11:00',notes:'טיפול 4 בסדרה'},
+    {id:'a3',patientId:'s4',date:fD(0),time:'14:00',notes:''},
+    {id:'a4',patientId:'s3',date:fD(1),time:'09:00',notes:'ביקור ראשון'},
+    {id:'a5',patientId:'s5',date:fD(2),time:'11:00',notes:''},
+    {id:'a6',patientId:'s6',date:fD(3),time:'10:00',notes:''},
+    {id:'a7',patientId:'s1',date:fD(7),time:'10:00',notes:''},
+    {id:'a8',patientId:'s2',date:fD(5),time:'15:00',notes:''},
   ];
-  for(const p of SP) await window.fbSaveP(p);
-  for(const a of SA) await window.fbSaveA(a);
+  for(const p of SP)await window.fbSaveP(p);
+  for(const a of SA)await window.fbSaveA(a);
 }
 
 // ---- SETTINGS ----
 function applySettings(){
-  const c=window.cfg||{};
-  if(c.price) document.getElementById('set-price').value=c.price;
-  if(c.duration) document.getElementById('set-duration').value=c.duration;
-  if(c.start) document.getElementById('set-start').value=c.start;
-  if(c.end) document.getElementById('set-end').value=c.end;
-  if(c.workDays){
-    document.querySelectorAll('.day-chip').forEach(el=>{
-      el.classList.toggle('active',(c.workDays||[]).includes(parseInt(el.dataset.day)));
-    });
-  }
-  renderSeriesTypes();
-  rebuildTimeSelect();
+  const c=window.appCfg||getDefaultCfg();
+  const sp=document.getElementById('set-price');if(sp)sp.value=c.price||350;
+  const sd=document.getElementById('set-duration');if(sd)sd.value=c.duration||60;
+  const ss=document.getElementById('set-start');if(ss)ss.value=c.start||'10:00';
+  const se=document.getElementById('set-end');if(se)se.value=c.end||'18:00';
+  document.querySelectorAll('.day-chip').forEach(el=>{
+    el.classList.toggle('active',(c.workDays||[0,1,2,3,4]).includes(parseInt(el.dataset.day)));
+  });
+  renderSeriesTypes();rebuildTimeSelect();
 }
-
-function toggleDay(el){el.classList.toggle('active');}
 
 async function saveSettings(){
   const workDays=[];
   document.querySelectorAll('.day-chip.active').forEach(el=>workDays.push(parseInt(el.dataset.day)));
-  window.cfg={...window.cfg,
+  window.appCfg={...window.appCfg,
     price:parseInt(document.getElementById('set-price').value)||350,
     duration:parseInt(document.getElementById('set-duration').value)||60,
     start:document.getElementById('set-start').value,
     end:document.getElementById('set-end').value,
     workDays
   };
-  await window.fbSaveCfg(window.cfg);
+  await window.fbSaveCfg(window.appCfg);
   rebuildTimeSelect();
-  alert('ההגדרות נשמרו');
+  alert('ההגדרות נשמרו ✓');
 }
 
 function renderSeriesTypes(){
-  const types=(window.cfg.seriesTypes||[]);
-  const el=document.getElementById('series-types-list');
+  const types=(window.appCfg.seriesTypes||[]);
+  const el=document.getElementById('series-types-list');if(!el)return;
   if(!types.length){el.innerHTML='<div style="color:var(--tm);font-size:13px;padding:8px 0;">אין סדרות מוגדרות</div>';return;}
   el.innerHTML=types.map(t=>`<div class="series-type-item">
     <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.name}</div><div style="font-size:12px;color:var(--tm);">${t.count} טיפולים · ₪${(t.price||0).toLocaleString()}</div></div>
@@ -568,33 +575,25 @@ function renderSeriesTypes(){
   </div>`).join('');
 }
 
-function showAddSeriesType(){
-  document.getElementById('st-name').value='';
-  document.getElementById('st-count').value='5';
-  document.getElementById('st-price').value='';
-  showScreen('add-series-type');
-}
-
 async function addSeriesType(){
   const name=document.getElementById('st-name').value.trim();
   if(!name){alert('נא להזין שם');return;}
   const t={id:'st'+Date.now(),name,count:parseInt(document.getElementById('st-count').value)||5,price:parseInt(document.getElementById('st-price').value)||0};
-  window.cfg.seriesTypes=[...(window.cfg.seriesTypes||[]),t];
-  await window.fbSaveCfg(window.cfg);
-  showScreen('settings');renderSeriesTypes();
+  window.appCfg.seriesTypes=[...(window.appCfg.seriesTypes||[]),t];
+  await window.fbSaveCfg(window.appCfg);
+  showScreen('settings');
 }
 
 async function delSeriesType(id){
-  if(!confirm('למחוק סוג סדרה זה?'))return;
-  window.cfg.seriesTypes=(window.cfg.seriesTypes||[]).filter(t=>t.id!==id);
-  await window.fbSaveCfg(window.cfg);
+  if(!confirm('למחוק?'))return;
+  window.appCfg.seriesTypes=(window.appCfg.seriesTypes||[]).filter(t=>t.id!==id);
+  await window.fbSaveCfg(window.appCfg);
   renderSeriesTypes();
 }
 
 function rebuildTimeSelect(){
   const hrs=getHours();
-  const sel=document.getElementById('na-tm');
-  if(!sel)return;
+  const sel=document.getElementById('na-tm');if(!sel)return;
   sel.innerHTML=hrs.map(h=>`<option>${h}:00</option>`).join('');
 }
 
@@ -605,9 +604,8 @@ window.render=function(){
 };
 
 function renderAlerts(){
-  const bar=document.getElementById('alerts-bar');
+  const bar=document.getElementById('alerts-bar');if(!bar)return;
   const rows=[];
-  // debt alert
   const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
   if(drs.length>0){
     const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
@@ -617,31 +615,24 @@ function renderAlerts(){
       <span class="alert-link" onclick="showScreen('debts')">לצפייה ←</span>
     </div>`);
   }
-  // treatment reminder: past appointments without treatment record
-  const now=new Date();
-  const nowStr=todayStr();
-  const nowH=now.getHours()*60+now.getMinutes();
-  const dur=parseInt((window.cfg||{}).duration||60);
+  const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();
+  const ts=todayStr();const dur=parseInt((window.appCfg||{}).duration||60);
   const reminders=[];
   (window.apts||[]).forEach(a=>{
-    if(a.date>nowStr)return;
+    if(a.date>ts)return;
     const p=findP(a.patientId);if(!p)return;
     const[ah,am]=a.time.split(':').map(Number);
-    const apptEnd=ah*60+am+dur;
-    // if appt date is today and appt ended at least 30min ago, or if appt date is past
-    const isPastDay=a.date<nowStr;
-    const isTodayEnded=(a.date===nowStr&&nowH>=apptEnd+30);
+    const isPastDay=a.date<ts;
+    const isTodayEnded=a.date===ts&&nowMins>=(ah*60+am+dur+30);
     if(!isPastDay&&!isTodayEnded)return;
-    // check if treatment recorded for this date
-    const hasRecord=(p.treatments||[]).some(t=>t.date===a.date);
-    if(!hasRecord) reminders.push({p,a});
+    if(!(p.treatments||[]).some(t=>t.date===a.date)) reminders.push({p,a});
   });
   if(reminders.length>0){
-    const first=reminders[0];
+    const f=reminders[0];
     rows.push(`<div class="alert-row red">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-      <span>טיפול ב${first.p.name} ${first.a.date===nowStr?'היום':'ב-'+first.a.date} לא תועד${reminders.length>1?' (+'+( reminders.length-1)+')'':''}</span>
-      <span class="alert-link" onclick="openAddTreat('${first.p.id}')">לרישום ←</span>
+      <span>טיפול ב${f.p.name} ${f.a.date===ts?'היום':'ב-'+f.a.date} לא תועד${reminders.length>1?' (+'+(reminders.length-1)+')':''}</span>
+      <span class="alert-link" onclick="openAddTreat('${f.p.id}')">לרישום ←</span>
     </div>`);
   }
   bar.innerHTML=rows.join('');
@@ -655,23 +646,21 @@ function setView(v){
   document.getElementById('daypanel').style.display=v==='month'?'block':'none';
   renderCal();
 }
-
 function navCal(dir){
   if(calView==='month') navDate=new Date(navDate.getFullYear(),navDate.getMonth()+dir,1);
   else navDate=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()+dir*7);
   renderCal();
 }
-
 function renderCal(){
   if(calView==='month'){renderMonth();renderDayPanel();}
   else renderWeek();
 }
-
 function renderMonth(){
   const y=navDate.getFullYear(),m=navDate.getMonth();
   document.getElementById('calt').textContent=`${HM[m]} ${y}`;
-  const first=new Date(y,m,1);const sdow=first.getDay();
-  const dim=new Date(y,m+1,0).getDate();const prevD=new Date(y,m,0).getDate();
+  const sdow=new Date(y,m,1).getDay();
+  const dim=new Date(y,m+1,0).getDate();
+  const prevD=new Date(y,m,0).getDate();
   const ts=todayStr();const ss=dstr(selDate);const ad=adMap();
   let h='<div class="mgrid">';
   DS.forEach(d=>h+=`<div class="mdn">${d}</div>`);
@@ -684,12 +673,9 @@ function renderMonth(){
     if(aps.length){const hd=aps.some(a=>{const p=findP(a.patientId);return p&&p.treatments&&p.treatments.some(t=>!t.paid);});dots=`<div class="ddots"><div class="dd ${hd?'r':'g'}"></div></div>`;}
     h+=`<div class="mday${isT?' today':''}${isSel?' sel':''}" onclick="selDay('${ds}')"><div class="dn">${d}</div>${dots}</div>`;
   }
-  const tot=sdow+dim;const rem=tot%7===0?0:7-(tot%7);
-  for(let i=1;i<=rem;i++) h+=`<div class="mday other"><div class="dn">${i}</div></div>`;
-  h+='</div>';
-  document.getElementById('calbody').innerHTML=h;
+  const rem=(sdow+dim)%7;if(rem>0)for(let i=1;i<=7-rem;i++) h+=`<div class="mday other"><div class="dn">${i}</div></div>`;
+  document.getElementById('calbody').innerHTML=h+'</div>';
 }
-
 function renderWeek(){
   const dow=navDate.getDay();
   const sun=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()-dow);
@@ -699,29 +685,23 @@ function renderWeek(){
   const ts=todayStr();const ad=adMap();
   const days=[];for(let i=0;i<7;i++){const d=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i);days.push(d);}
   const hrs=getHours();
-  let h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:40px repeat(7,1fr);margin-bottom:2px;">';
-  h+='<div></div>';
+  let h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:40px repeat(7,1fr);margin-bottom:2px;"><div></div>';
   days.forEach(d=>{
     const ds=dstr(d);const isT=ds===ts;
-    h+=`<div style="text-align:center;padding:3px 1px;">
-      <div style="font-size:10px;font-weight:600;color:${isT?'var(--ac)':'var(--tm)'};">${DS[d.getDay()]}</div>
-      <div style="font-size:12px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;${isT?'background:var(--ac);color:#fff;':''}">${d.getDate()}</div>
-    </div>`;
+    h+=`<div style="text-align:center;padding:3px 1px;"><div style="font-size:10px;font-weight:600;color:${isT?'var(--ac)':'var(--tm)'};">${DS[d.getDay()]}</div><div style="font-size:12px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;${isT?'background:var(--ac);color:#fff;':''}">${d.getDate()}</div></div>`;
   });
   h+='</div><div style="display:grid;grid-template-columns:40px repeat(7,1fr);">';
   hrs.forEach(hr=>{
     h+=`<div class="wtl">${hr}</div>`;
     days.forEach(d=>{
-      const ds=dstr(d);
+      const ds=dstr(d);const isPast=ds<ts;
       const appt=(ad[ds]||[]).find(a=>a.time===`${hr}:00`);
-      const isPast=ds<ts;
       if(appt){
         const p=findP(appt.patientId);
         const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
         const isSer=p&&(p.series||[]).some(s=>s.open);
         const cls=hd?'wrd':isSer?'wgr':'wbl';
-        const nm=p?p.name.split(' ')[0]:'';
-        h+=`<div class="wcell" onclick="openPatient('${appt.patientId}')"><div class="wappt ${cls}">${nm}</div></div>`;
+        h+=`<div class="wcell" onclick="openPatient('${appt.patientId}')"><div class="wappt ${cls}">${p?p.name.split(' ')[0]:''}</div></div>`;
       } else if(isPast){
         h+=`<div class="wcell" style="background:var(--sf2);opacity:0.4;cursor:default;"></div>`;
       } else {
@@ -729,17 +709,15 @@ function renderWeek(){
       }
     });
   });
-  h+='</div></div>';
-  document.getElementById('calbody').innerHTML=h;
+  document.getElementById('calbody').innerHTML=h+'</div></div>';
 }
-
 function renderDayPanel(){
   const ds=dstr(selDate);const ad=adMap();
   const dayApts=(ad[ds]||[]).sort((a,b)=>a.time.localeCompare(b.time));
   const isPast=ds<todayStr();
   document.getElementById('dptitle').textContent=`${DFL[selDate.getDay()]}, ${selDate.getDate()} ${HM[selDate.getMonth()]}`;
   document.getElementById('dpadd-btn').style.display=isPast?'none':'block';
-  if(!dayApts.length){document.getElementById('dplist').innerHTML=`<div style="color:var(--tm);font-size:13px;padding:8px 0;text-align:center;">${isPast?'לא היו תורים ביום זה':'אין תורים ביום זה'}</div>`;return;}
+  if(!dayApts.length){document.getElementById('dplist').innerHTML=`<div style="color:var(--tm);font-size:13px;padding:8px 0;text-align:center;">${isPast?'לא היו תורים':'אין תורים ביום זה'}</div>`;return;}
   document.getElementById('dplist').innerHTML=dayApts.map(a=>{
     const p=findP(a.patientId);const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
     return `<div class="aitem" onclick="openPatient('${a.patientId}')">
@@ -751,9 +729,8 @@ function renderDayPanel(){
     </div>`;
   }).join('');
 }
-
 function selDay(ds){selDate=sToD(ds);navDate=new Date(selDate);renderCal();}
-function openNewApptForDay(){openNewApptAt(dstr(selDate),'10:00');}
+function openNewApptForDay(){openNewApptAt(dstr(selDate),getHours()[0]+':00');}
 function openNewApptAt(ds,time){openNewAppt();document.getElementById('na-dt').value=ds;document.getElementById('na-tm').value=time;}
 
 // ---- PATIENTS ----
@@ -765,15 +742,11 @@ function renderPatients(filter=''){
   list.innerHTML=filtered.map(p=>{
     const hd=p.treatments&&p.treatments.some(t=>!t.paid);
     const last=p.treatments&&p.treatments.length?p.treatments[p.treatments.length-1].date:null;
-    const openSeries=(p.series||[]).filter(s=>s.open);
+    const os=(p.series||[]).filter(s=>s.open);
     return `<div class="pi" onclick="openPatient('${p.id}')">
       <div class="pav ${AVC[(p.color||0)%4]}">${p.name.charAt(0)}</div>
       <div class="pb"><div class="pn">${p.name}</div><div class="ps">${p.problem||''}${p.phone?' · '+p.phone:''}</div></div>
-      <div class="pr">
-        ${hd?'<span class="badge br">חוב</span>':''}
-        ${openSeries.map(s=>`<span class="badge bg">${s.name} ${s.used}/${s.count}</span>`).join('')}
-        ${last?`<span style="font-size:11px;color:var(--tm);">${last}</span>`:''}
-      </div>
+      <div class="pr">${hd?'<span class="badge br">חוב</span>':''}${os.map(s=>`<span class="badge bg">${s.name} ${s.used}/${s.count}</span>`).join('')}${last?`<span style="font-size:11px;color:var(--tm);">${last}</span>`:''}</div>
     </div>`;
   }).join('');
 }
@@ -788,42 +761,27 @@ window.openPatient=function(id){
   const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdl);">
     <span style="font-size:12px;color:var(--tm);min-width:80px;">${a.date}</span>
     <span style="font-size:13px;font-weight:600;color:var(--ac);">${a.time}</span>
-    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:3px 9px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול תור</button>
+    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:3px 9px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>
   </div>`).join(''):'<div style="color:var(--tm);font-size:13px;padding:7px 0;">אין תורים קרובים</div>';
-
-  // treatment reminder for this patient
-  const pendingTreat=(window.apts||[]).filter(a=>{
+  const now=new Date();const nowM=now.getHours()*60+now.getMinutes();
+  const dur=parseInt((window.appCfg||{}).duration||60);
+  const pendingTr=(window.apts||[]).filter(a=>{
     if(String(a.patientId)!==id||a.date>ts)return false;
-    const now=new Date();const nowH=now.getHours()*60+now.getMinutes();
     const[ah,am]=a.time.split(':').map(Number);
-    const dur=parseInt((window.cfg||{}).duration||60);
-    const isPastDay=a.date<ts;
-    const isTodayEnded=(a.date===ts&&nowH>=(ah*60+am+dur+30));
+    const isPastDay=a.date<ts;const isTodayEnded=a.date===ts&&nowM>=(ah*60+am+dur+30);
     if(!isPastDay&&!isTodayEnded)return false;
     return !(p.treatments||[]).some(t=>t.date===a.date);
   });
-  const treatReminderH=pendingTreat.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:9px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
-    <span style="font-size:13px;color:var(--r700);flex:1;">טיפול ב-${pendingTreat[0].date} לא תועד</span>
-    <button onclick="openAddTreat('${id}')" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;flex-shrink:0;">לרישום</button>
-  </div>`:''
-
-  // series
-  const openSeries=(p.series||[]).filter(s=>s.open);
-  const serH=openSeries.map(s=>{
-    const pct=Math.round((s.used/s.count)*100);
-    return `<div class="series-card">
-      <div class="series-card-head">
-        <div class="series-name">${s.name}</div>
-        <div class="series-status">${s.used} מתוך ${s.count} · ₪${(s.price||0).toLocaleString()}</div>
-      </div>
-      <div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tm);margin-top:4px;">
-        <span>נפתחה: ${s.openDate||''}</span>
-        <span>${pct}%</span>
-      </div>
-    </div>`;
-  }).join('');
-
+  const trRem=pendingTr.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:9px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:13px;color:var(--r700);flex:1;">טיפול ב-${pendingTr[0].date} לא תועד</span>
+    <button onclick="openAddTreat('${id}')" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button>
+  </div>`:'';
+  const os=(p.series||[]).filter(s=>s.open);
+  const serH=os.map(s=>{const pct=Math.round((s.used/s.count)*100);return `<div class="series-card">
+    <div class="series-card-head"><div class="series-name">${s.name}</div><div class="series-status">${s.used}/${s.count} · ₪${(s.price||0).toLocaleString()}</div></div>
+    <div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tm);margin-top:4px;"><span>נפתחה: ${s.openDate||''}</span><span>${pct}%</span></div>
+  </div>`;}).join('');
   const trH=(p.treatments&&p.treatments.length)?[...p.treatments].reverse().map(t=>`<div class="tent">
     <div class="ttop">
       <span class="tnum">טיפול ${t.num}</span>
@@ -843,7 +801,7 @@ window.openPatient=function(id){
   </div>`).join(''):'<div style="color:var(--tm);font-size:13px;padding:7px 0;">אין טיפולים עדיין</div>';
 
   document.getElementById('pfile').innerHTML=`
-    ${treatReminderH}
+    ${trRem}
     <div class="card">
       <div class="pfh">
         <div class="pfav ${AVC[(p.color||0)%4]}">${p.name.charAt(0)}</div>
@@ -855,7 +813,7 @@ window.openPatient=function(id){
       <div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">${p.problem||'—'}</span></div>
       <div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪${(p.price||350).toLocaleString()}</span></div>
     </div>
-    ${openSeries.length?`<div class="card"><div class="ct">סדרות פעילות</div>${serH}</div>`:''}
+    ${os.length?`<div class="card"><div class="ct">סדרות פעילות</div>${serH}</div>`:''}
     <div class="card">
       <div class="ct">תורים קרובים</div>${upH}
       <button onclick="openNewApptFor('${id}')" style="margin-top:9px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:7px 12px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--g700);width:100%;">+ קבע תור חדש</button>
@@ -878,50 +836,33 @@ window.openPatient=function(id){
 // ---- SERIES ----
 function openSeriesScreen(pid){
   osPid=String(pid);
-  const p=findP(pid);
+  const types=window.appCfg.seriesTypes||[];
+  if(!types.length){alert('אין סוגי סדרות. פתח הגדרות והוסף סדרה.');showScreen('settings');return;}
   document.getElementById('os-bk').onclick=()=>openPatient(pid);
-  const types=window.cfg.seriesTypes||[];
-  if(!types.length){alert('אין סוגי סדרות מוגדרים. פתח הגדרות והוסף סדרה.');showScreen('settings');return;}
-  const sel=document.getElementById('os-type');
-  sel.innerHTML=types.map(t=>`<option value="${t.id}">${t.name} (${t.count} טיפולים · ₪${t.price})</option>`).join('');
+  document.getElementById('os-type').innerHTML=types.map(t=>`<option value="${t.id}">${t.name} (${t.count} טיפולים · ₪${t.price})</option>`).join('');
   document.getElementById('os-notes').value='';
   updateSeriesPreview();
-  sel.onchange=updateSeriesPreview;
   showScreen('open-series');
 }
-
 function updateSeriesPreview(){
-  const types=window.cfg.seriesTypes||[];
-  const selId=document.getElementById('os-type').value;
-  const t=types.find(x=>x.id===selId);
+  const types=window.appCfg.seriesTypes||[];
+  const t=types.find(x=>x.id===document.getElementById('os-type').value);
   const prev=document.getElementById('os-preview');
-  if(t){prev.style.display='block';prev.textContent=`${t.name}: ${t.count} טיפולים במחיר ₪${t.price.toLocaleString()} (₪${Math.round(t.price/t.count)} לטיפול)`;}
+  if(t){prev.style.display='block';prev.textContent=`${t.name}: ${t.count} טיפולים · ₪${t.price.toLocaleString()} (₪${Math.round(t.price/t.count)} לטיפול)`;}
   else prev.style.display='none';
 }
-
 async function openSeries(){
   const p=findP(osPid);if(!p)return;
-  const types=window.cfg.seriesTypes||[];
-  const selId=document.getElementById('os-type').value;
-  const t=types.find(x=>x.id===selId);if(!t)return;
-  const newSer={id:'ser'+Date.now(),typeId:t.id,name:t.name,count:t.count,price:t.price,used:0,open:true,openDate:todayStr(),notes:document.getElementById('os-notes').value};
-  p.series=[...(p.series||[]),newSer];
-  await window.fbSaveP(p);
-  openPatient(osPid);
+  const types=window.appCfg.seriesTypes||[];
+  const t=types.find(x=>x.id===document.getElementById('os-type').value);if(!t)return;
+  const ns={id:'ser'+Date.now(),typeId:t.id,name:t.name,count:t.count,price:t.price,used:0,open:true,openDate:todayStr(),notes:document.getElementById('os-notes').value};
+  p.series=[...(p.series||[]),ns];
+  await window.fbSaveP(p);openPatient(osPid);
 }
 
 // ---- APPOINTMENTS ----
-window.delAppt=async(aid,pid)=>{
-  if(!confirm('לבטל את התור?'))return;
-  window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));
-  await window.fbDelA(aid);openPatient(pid);render();
-};
-
-window.mkPaid=async(pid,num)=>{
-  const p=findP(pid);if(!p)return;
-  const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}
-  await window.fbSaveP(p);openPatient(pid);renderAlerts();
-};
+window.delAppt=async(aid,pid)=>{if(!confirm('לבטל את התור?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);openPatient(pid);render();};
+window.mkPaid=async(pid,num)=>{const p=findP(pid);if(!p)return;const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();};
 
 function openEdit(id){
   const p=findP(id);if(!p)return;
@@ -934,7 +875,6 @@ function openEdit(id){
   document.getElementById('ep-bk').onclick=()=>openPatient(id);
   showScreen('edit-patient');
 }
-
 async function saveEdit(){
   const id=String(document.getElementById('ep-id').value);
   const p=findP(id);if(!p)return;
@@ -945,14 +885,12 @@ async function saveEdit(){
   p.price=parseInt(document.getElementById('ep-px').value)||350;
   await window.fbSaveP(p);openPatient(id);
 }
-
 function confirmDel(){
   const id=String(document.getElementById('ep-id').value);
   const p=findP(id);delPid=id;
   document.getElementById('del-sub').textContent=`האם למחוק את ${p?p.name:'המטופל'}?\nפעולה זו אינה ניתנת לביטול.`;
   document.getElementById('del-ov').classList.remove('hidden');
 }
-
 async function doDelete(){
   window.pts=(window.pts||[]).filter(x=>String(x.id)!==delPid);
   window.apts=(window.apts||[]).filter(a=>String(a.patientId)!==delPid);
@@ -960,10 +898,8 @@ async function doDelete(){
   document.getElementById('del-ov').classList.add('hidden');
   render();showScreen('patients');
 }
-
 function closeDelOv(e){if(e.target===document.getElementById('del-ov'))document.getElementById('del-ov').classList.add('hidden');}
 
-// ---- DEBTS ----
 function renderDebts(){
   const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
   const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
@@ -980,24 +916,18 @@ function renderDebts(){
   }).join('');
 }
 
-// ---- ADD PATIENT ----
-function validateName(el){el.value=el.value.replace(/[0-9]/g,'');}
-
 async function addPatient(){
   const name=document.getElementById('np-nm').value.trim();if(!name){alert('נא להזין שם');return;}
-  const defaultPrice=parseInt((window.cfg||{}).price||350);
   const px=document.getElementById('np-px').value;
-  const p={id:String(Date.now()),name,phone:document.getElementById('np-ph').value.trim(),age:document.getElementById('np-ag').value,problem:document.getElementById('np-pr').value.trim(),price:px?parseInt(px):defaultPrice,color:(window.pts||[]).length%4,treatments:[],series:[]};
+  const p={id:String(Date.now()),name,phone:document.getElementById('np-ph').value.trim(),age:document.getElementById('np-ag').value,problem:document.getElementById('np-pr').value.trim(),price:px?parseInt(px):(window.appCfg.price||350),color:(window.pts||[]).length%4,treatments:[],series:[]};
   window.pts=[...(window.pts||[]),p];
   await window.fbSaveP(p);
   ['np-nm','np-ph','np-ag','np-pr','np-px'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
   showScreen('patients');
 }
 
-// ---- APPOINTMENTS ----
 function openNewAppt(){
-  showScreen('new-appointment');
-  rebuildTimeSelect();
+  showScreen('new-appointment');rebuildTimeSelect();
   const sel=document.getElementById('na-pt');
   sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort((a,b)=>a.name.localeCompare(b.name,'he')).map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   document.getElementById('na-dt').value=todayStr();
@@ -1005,7 +935,6 @@ function openNewAppt(){
   document.getElementById('na-err').style.display='none';
   document.getElementById('na-nt').value='';
 }
-
 function openNewApptFor(id){openNewAppt();document.getElementById('na-pt').value=String(id);}
 
 async function addAppointment(){
@@ -1017,7 +946,7 @@ async function addAppointment(){
   if(!date){err.textContent='נא לבחור תאריך';err.style.display='block';return;}
   if(date<todayStr()){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
   const ad=adMap();
-  if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time} בתאריך זה`;err.style.display='block';return;}
+  if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time}`;err.style.display='block';return;}
   err.style.display='none';
   const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;
@@ -1034,12 +963,11 @@ function openGcal(){
   const d=sToD(lastAppt.date);
   const pad=n=>String(n).padStart(2,'0');
   const fmt=(d,h,m)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(h)}${pad(m)}00`;
-  const dur=parseInt((window.cfg||{}).duration||60);
-  const endH=Math.floor((h*60+m+dur)/60);const endM=(h*60+m+dur)%60;
-  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('טיפול — '+(p?p.name:''))}&dates=${fmt(d,h,m)}/${fmt(d,endH,endM)}&details=${encodeURIComponent(p?p.problem:'')}`,'_blank');
+  const dur=parseInt((window.appCfg||{}).duration||60);
+  const em=h*60+m+dur;
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('טיפול — '+(p?p.name:''))}&dates=${fmt(d,h,m)}/${fmt(d,Math.floor(em/60),em%60)}&details=${encodeURIComponent(p?p.problem:'')}`,'_blank');
 }
 
-// ---- TREATMENT ----
 function openAddTreat(id){
   trPid=String(id);editTrNum=null;
   const p=findP(id);
@@ -1054,7 +982,6 @@ function openAddTreat(id){
   document.querySelectorAll('#tr-mw .chip').forEach((c,i)=>c.classList.toggle('active',i===0));
   showScreen('add-treatment');
 }
-
 function openEditTreat(pid,num){
   trPid=String(pid);editTrNum=num;
   const p=findP(pid);if(!p)return;
@@ -1070,37 +997,31 @@ function openEditTreat(pid,num){
   document.getElementById('tr-pd').classList.toggle('active',t.paid);
   document.getElementById('tr-up').classList.toggle('active',!t.paid);
   document.getElementById('tr-mw').style.display=t.paid?'block':'none';
-  const methods=['מזומן','העברה','אשראי','ביט'];
-  document.querySelectorAll('#tr-mw .chip').forEach((c,i)=>c.classList.toggle('active',methods[i]===(t.method||'מזומן')));
+  const ms=['מזומן','העברה','אשראי','ביט'];
+  document.querySelectorAll('#tr-mw .chip').forEach((c,i)=>c.classList.toggle('active',ms[i]===(t.method||'מזומן')));
   showScreen('add-treatment');
 }
-
 function setTrPay(v){trPay=v;document.getElementById('tr-pd').classList.toggle('active',v==='paid');document.getElementById('tr-up').classList.toggle('active',v==='unpaid');document.getElementById('tr-mw').style.display=v==='paid'?'block':'none';}
 function selPM(el){document.querySelectorAll('#tr-mw .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
-
 async function saveTreatment(){
   const p=findP(trPid);if(!p)return;
   p.treatments=p.treatments||[];
   const tdate=document.getElementById('tr-dt').value;
   if(tdate>todayStr()){alert('לא ניתן לרשום טיפול לתאריך עתידי');return;}
   const am=document.querySelector('#tr-mw .chip.active');
-  const tdata={date:tdate,found:document.getElementById('tr-fd').value,done:document.getElementById('tr-dn').value,recommend:document.getElementById('tr-rc').value,paid:trPay==='paid',amount:p.price||350,method:trPay==='paid'?(am?am.textContent:'מזומן'):''};
+  const td={date:tdate,found:document.getElementById('tr-fd').value,done:document.getElementById('tr-dn').value,recommend:document.getElementById('tr-rc').value,paid:trPay==='paid',amount:p.price||350,method:trPay==='paid'?(am?am.textContent:'מזומן'):''};
   if(editTrNum!==null){
     const idx=p.treatments.findIndex(x=>x.num===editTrNum);
-    if(idx>=0)p.treatments[idx]={...p.treatments[idx],...tdata};
+    if(idx>=0)p.treatments[idx]={...p.treatments[idx],...td};
   } else {
-    const num=p.treatments.length+1;
-    p.treatments.push({num,...tdata});
-    // update open series used count
-    const openSer=(p.series||[]).find(s=>s.open);
-    if(openSer){openSer.used++;if(openSer.used>=openSer.count)openSer.open=false;}
+    p.treatments.push({num:p.treatments.length+1,...td});
+    const os=(p.series||[]).find(s=>s.open);
+    if(os){os.used++;if(os.used>=os.count)os.open=false;}
   }
   await window.fbSaveP(p);openPatient(trPid);renderAlerts();
 }
-
 function openPaperless(name){alert(`פתח את אפליקציית Paperless וצור קבלה עבור:\n${name}`);}
 
-// ---- SCREEN NAV ----
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'));
@@ -1112,16 +1033,16 @@ function showScreen(name){
   if(name==='settings'){renderSeriesTypes();applySettings();}
 }
 
-// expose all
+// expose
 window.showScreen=showScreen;window.setView=setView;window.navCal=navCal;window.selDay=selDay;
 window.openNewApptAt=openNewApptAt;window.openNewAppt=openNewAppt;window.addAppointment=addAppointment;
 window.openGcal=openGcal;window.renderPatients=renderPatients;window.addPatient=addPatient;
 window.openEdit=openEdit;window.saveEdit=saveEdit;window.confirmDel=confirmDel;window.doDelete=doDelete;
 window.closeDelOv=closeDelOv;window.openAddTreat=openAddTreat;window.openEditTreat=openEditTreat;
 window.setTrPay=setTrPay;window.selPM=selPM;window.saveTreatment=saveTreatment;
-window.validateName=validateName;window.openPaperless=openPaperless;window.openNewApptFor=openNewApptFor;
-window.openNewApptForDay=openNewApptForDay;window.toggleDay=toggleDay;window.saveSettings=saveSettings;
-window.addSeriesType=addSeriesType;window.delSeriesType=delSeriesType;window.showAddSeriesType=showAddSeriesType;
+window.openPaperless=openPaperless;window.openNewApptFor=openNewApptFor;
+window.openNewApptForDay=openNewApptForDay;window.saveSettings=saveSettings;
+window.addSeriesType=addSeriesType;window.delSeriesType=delSeriesType;
 window.openSeriesScreen=openSeriesScreen;window.openSeries=openSeries;window.updateSeriesPreview=updateSeriesPreview;
 window.delAppt=delAppt;window.mkPaid=mkPaid;window.rebuildTimeSelect=rebuildTimeSelect;
 </script>
