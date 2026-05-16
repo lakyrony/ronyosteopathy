@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="קליניקה">
+<title>קליניקה — ניהול מטופלים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-50:#f0faf4;--green-100:#d6f0e0;--green-200:#a8dcbe;--green-400:#4caf7d;
+  --green-500:#2e9460;--green-600:#1e7a4a;--green-700:#145c37;
+  --blue-50:#eef6fb;--blue-100:#cde5f5;--blue-400:#4a9fd4;--blue-600:#1a6fa3;
+  --teal-100:#c5f0e6;--teal-400:#26b08a;--teal-500:#1a9070;
+  --amber-50:#fef9ec;--amber-100:#fdedc5;--amber-500:#e6a817;--amber-700:#9a6e00;
+  --red-50:#fef2f2;--red-100:#fdd5d5;--red-500:#e53e3e;--red-700:#9b1c1c;
+  --gray-100:#eef1ee;--gray-400:#8a9a8a;
+  --bg:#f4f8f5;--surface:#ffffff;--surface2:#f0f6f2;
+  --border:#d4e6d8;--border-light:#e8f2ea;
+  --text-primary:#1a2e1a;--text-secondary:#4a6a4a;--text-muted:#7a9a7a;
+  --accent:#2e9460;--accent-dark:#1e7a4a;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:18px;--radius-xl:24px;
+  --shadow-sm:0 1px 3px rgba(30,80,30,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text-primary);font-size:15px;direction:rtl}
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--bg)}
+
+.header{background:linear-gradient(135deg,var(--green-600) 0%,var(--green-500) 60%,var(--teal-500) 100%);padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-icon{width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.header-title{color:white;font-size:18px;font-weight:700}
+.header-sub{color:rgba(255,255,255,0.75);font-size:11px}
+.header-actions{display:flex;gap:6px}
+.hbtn{background:rgba(255,255,255,0.18);border:none;border-radius:var(--radius-sm);padding:7px 11px;color:white;font-size:12px;font-family:'Heebo',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500}
+.hbtn svg{width:14px;height:14px}
+
+.status-bar{background:var(--surface);border-bottom:1px solid var(--border-light);padding:7px 16px;display:flex;align-items:center;gap:8px;font-size:12px;flex-shrink:0}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot.green{background:#22c55e}.sdot.yellow{background:#f59e0b}.sdot.red{background:#ef4444}
+
+.quick-bar{background:var(--surface);border-bottom:1px solid var(--border-light);padding:10px 16px;display:flex;gap:8px;flex-shrink:0}
+.qbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:var(--radius-md);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600}
+.qbtn-p{background:var(--accent);color:white}
+.qbtn-s{background:var(--blue-50);color:var(--blue-600);border:1px solid var(--blue-100)}
+.qbtn svg{width:16px;height:16px}
+
+.debt-alert{background:var(--amber-50);border-bottom:1px solid var(--amber-100);padding:9px 16px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amber-700);flex-shrink:0}
+.debt-alert svg{width:16px;height:16px;flex-shrink:0}
+.dal{margin-right:auto;font-weight:600;text-decoration:underline;cursor:pointer;color:var(--amber-700)}
+
+.screens{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;display:none;padding:14px}
+.screen.active{display:block}
+
+.bottom-nav{background:var(--surface);border-top:1px solid var(--border);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:10px;color:var(--text-muted)}
+.nav-item.active{color:var(--accent)}
+.nav-item svg{width:22px;height:22px}
+
+.card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border-light);padding:16px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+.ctitle{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+
+.view-tabs{display:flex;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;margin-bottom:14px;gap:2px}
+.vtab{flex:1;padding:7px 4px;border:none;border-radius:7px;background:none;font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer}
+.vtab.active{background:white;color:var(--accent);font-weight:600;box-shadow:var(--shadow-sm)}
+
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-title{font-size:18px;font-weight:700;color:var(--text-primary);flex:1;text-align:center}
+.cal-nav{background:var(--green-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 16px;cursor:pointer;font-size:20px;color:var(--accent);font-family:'Heebo',sans-serif;line-height:1}
+
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mdn{text-align:center;font-size:11px;font-weight:600;color:var(--text-muted);padding:4px 0 8px}
+.mday{min-height:46px;border-radius:var(--radius-sm);padding:4px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.mday.other .dnum{color:var(--gray-400)}
+.mday.today .dnum{background:var(--accent);color:white;border-radius:50%}
+.mday.sel{background:var(--green-50)}
+.dnum{font-size:14px;font-weight:500;color:var(--text-primary);width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.ddots{display:flex;gap:2px;justify-content:center}
+.ddot{width:5px;height:5px;border-radius:50%}
+.ddot.g{background:var(--accent)}.ddot.r{background:var(--red-500)}
+
+.week-grid{display:grid;grid-template-columns:44px repeat(7,1fr)}
+.wtl{height:52px;display:flex;align-items:flex-start;padding-top:2px;font-size:11px;color:var(--text-muted);justify-content:center}
+.wcell{height:52px;border-bottom:1px solid var(--border-light);border-right:1px solid var(--border-light);padding:2px;cursor:pointer}
+.wappt{height:100%;border-radius:5px;padding:2px 4px;font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wblue{background:var(--blue-50);color:var(--blue-600);border-right:3px solid var(--blue-400)}
+.wred{background:var(--red-50);color:var(--red-700);border-right:3px solid var(--red-500)}
+.wgreen{background:var(--green-50);color:var(--green-700);border-right:3px solid var(--green-400)}
+
+.dslot{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light);align-items:center;cursor:pointer}
+.dslot:last-child{border-bottom:none}
+.dtime{font-size:13px;color:var(--text-muted);min-width:44px;font-weight:500}
+.devt{flex:1;border-radius:var(--radius-sm);padding:10px 12px}
+.devt-name{font-size:14px;font-weight:600}
+.devt-meta{font-size:12px;margin-top:2px;opacity:0.8}
+.dempty{flex:1;background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--text-muted)}
+
+.swrap{position:relative;margin-bottom:12px}
+.swrap svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-muted)}
+.sinput{width:100%;padding:11px 40px 11px 12px;border:1px solid var(--border);border-radius:var(--radius-md);font-family:'Heebo',sans-serif;font-size:14px;background:var(--surface);color:var(--text-primary);outline:none}
+.sinput:focus{border-color:var(--accent)}
+
+.pitem{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light);cursor:pointer}
+.pitem:last-child{border-bottom:none}
+.pav{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.avg{background:var(--green-100);color:var(--green-700)}
+.avb{background:var(--blue-100);color:var(--blue-600)}
+.avt{background:var(--teal-100);color:var(--teal-500)}
+.ava{background:var(--amber-100);color:var(--amber-700)}
+.pbody{flex:1;min-width:0}
+.pname{font-size:15px;font-weight:600}
+.psub{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pright{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.br{background:var(--red-50);color:var(--red-700)}
+.bg{background:var(--green-100);color:var(--green-700)}
+.bb{background:var(--blue-50);color:var(--blue-600)}
+.ba{background:var(--amber-50);color:var(--amber-700)}
+
+.pfhdr{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.pfav{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;flex-shrink:0}
+.pfname{font-size:20px;font-weight:700}
+.pfsub{font-size:13px;color:var(--text-muted);margin-top:2px}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light)}
+.irow:last-child{border-bottom:none}
+.ilbl{font-size:13px;color:var(--text-muted)}
+.ival{font-size:13px;font-weight:600}
+.pttrack{height:6px;background:var(--gray-100);border-radius:3px;overflow:hidden;margin-top:6px}
+.ptfill{height:100%;background:linear-gradient(90deg,var(--green-400),var(--teal-400));border-radius:3px}
+
+.tent{padding:12px 0;border-bottom:1px solid var(--border-light)}
+.tent:last-child{border-bottom:none}
+.ttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.tnum{font-size:13px;font-weight:700;color:var(--accent)}
+.tnotes{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.tnotes b{font-weight:600;color:var(--text-primary)}
+
+.flbl{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.4px}
+.finput,.fsel,.ftxt{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-md);font-family:'Heebo',sans-serif;font-size:14px;background:var(--surface);color:var(--text-primary);outline:none;direction:rtl}
+.finput:focus,.fsel:focus,.ftxt:focus{border-color:var(--accent)}
+.ftxt{min-height:80px;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--border);cursor:pointer;background:var(--surface);color:var(--text-primary);font-family:'Heebo',sans-serif}
+.chip.active{background:var(--accent);color:white;border-color:var(--accent)}
+
+.btn{width:100%;padding:13px;border-radius:var(--radius-md);border:none;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px}
+.bp{background:linear-gradient(135deg,var(--green-500),var(--green-600));color:white}
+.bs{background:var(--surface2);color:var(--text-primary);border:1px solid var(--border);margin-top:4px}
+.bd{background:var(--red-50);color:var(--red-700);border:1px solid var(--red-100);margin-top:4px}
+.bgcal{background:var(--blue-50);color:var(--blue-600);border:1px solid var(--blue-100);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.bgoogle{background:white;color:#444;border:1px solid #ddd;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px}
+
+.bbtn{display:flex;align-items:center;gap:6px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:14px;color:var(--accent);cursor:pointer;padding:0 0 14px;font-weight:600}
+.bbtn svg{width:18px;height:18px}
+
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sbox{background:var(--surface);border-radius:var(--radius-md);padding:14px;border:1px solid var(--border-light)}
+.slbl{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+.sval{font-size:26px;font-weight:700;color:var(--text-primary);margin-top:4px}
+.sval.red{color:var(--red-500)}
+
+.login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 24px;text-align:center}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:24px 20px 40px;width:100%;max-width:480px}
+.sht{font-size:17px;font-weight:700;text-align:center;margin-bottom:8px}
+.shs{font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:20px;white-space:pre-line}
+
+.aitem{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light);cursor:pointer}
+.aitem:last-child{border-bottom:none}
+.atbox{background:var(--surface2);border-radius:var(--radius-sm);padding:6px 10px;text-align:center;min-width:52px;flex-shrink:0}
+.ath{font-size:15px;font-weight:700;color:var(--accent)}
+.atd{font-size:10px;color:var(--text-muted)}
+
+.fmb{margin-bottom:14px}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="login-view" class="login-screen">
+    <div style="font-size:64px;margin-bottom:24px">🌿</div>
+    <div style="font-size:26px;font-weight:700;margin-bottom:8px">קליניקה</div>
+    <div style="font-size:15px;color:var(--text-muted);margin-bottom:40px;line-height:1.6">ניהול מטופלים ותורים<br>הנתונים מסונכרנים בין הטלפון למחשב</div>
+    <button class="btn bgoogle" onclick="doSignIn()" style="width:100%;max-width:300px;">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      כניסה עם חשבון גוגל
+    </button>
+    <div id="lerr" style="color:var(--red-500);font-size:13px;margin-top:16px;display:none;"></div>
+  </div>
+
+  <div id="main-view" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+    <div class="header">
+      <div class="header-logo">
+        <div class="header-icon">🌿</div>
+        <div><div class="header-title">קליניקה</div><div class="header-sub" id="uname">...</div></div>
+      </div>
+      <div class="header-actions">
+        <button class="hbtn" onclick="showScreen('new-patient')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
+        <button class="hbtn" onclick="openNewAppt()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>תור</button>
+        <button class="hbtn" onclick="doSignOut()" style="background:rgba(255,255,255,0.1);padding:7px 9px;"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg></button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="sdot" id="sdot"></div>
+      <span id="stxt" style="color:var(--text-muted)">מתחבר...</span>
+    </div>
+
+    <div class="quick-bar">
+      <button class="qbtn qbtn-p" onclick="openNewAppt()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>קביעת תור חדש</button>
+      <button class="qbtn qbtn-s" onclick="showScreen('new-patient')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל חדש</button>
+    </div>
+
+    <div class="debt-alert hidden" id="debt-alert">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <span id="datxt"></span>
+      <span class="dal" onclick="showScreen('debts')">לצפייה ←</span>
+    </div>
+
+    <div class="screens">
+
+      <div class="screen active" id="screen-calendar">
+        <div class="card">
+          <div class="view-tabs">
+            <button class="vtab active" onclick="setView('month')">חודשי</button>
+            <button class="vtab" onclick="setView('week')">שבועי</button>
+            <button class="vtab" onclick="setView('day')">יומי</button>
+          </div>
+          <div class="cal-header">
+            <button class="cal-nav" onclick="navCal(-1)">›</button>
+            <div class="cal-title" id="cal-title"></div>
+            <button class="cal-nav" onclick="navCal(1)">‹</button>
+          </div>
+          <div id="cal-body"></div>
+        </div>
+        <div class="card">
+          <div class="ctitle" id="sel-day-title"></div>
+          <div id="sel-day-list"></div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-patients">
+        <div class="swrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input class="sinput" type="text" placeholder="חיפוש לפי שם או טלפון..." oninput="renderPatients(this.value)"/>
+        </div>
+        <div class="card" style="padding:4px 16px;"><div id="patients-list"></div></div>
+      </div>
+
+      <div class="screen" id="screen-debts">
+        <div class="srow">
+          <div class="sbox"><div class="slbl">סה"כ חובות</div><div class="sval red" id="stat-debt">₪0</div></div>
+          <div class="sbox"><div class="slbl">מטופלים חייבים</div><div class="sval" id="stat-dbtrs">0</div></div>
+        </div>
+        <div class="card" style="padding:4px 16px;"><div id="debts-list"></div></div>
+      </div>
+
+      <div class="screen" id="screen-patient-file">
+        <button class="bbtn" id="file-back" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+        <div id="pfile"></div>
+      </div>
+
+      <div class="screen" id="screen-new-patient">
+        <button class="bbtn" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+        <div class="card">
+          <div class="ctitle">מטופל חדש</div>
+          <div class="fmb"><label class="flbl">שם מלא *</label><input class="finput" id="np-name" type="text" placeholder="שם פרטי ושם משפחה"/></div>
+          <div class="fmb"><label class="flbl">טלפון</label><input class="finput" id="np-phone" type="tel" placeholder="050-0000000"/></div>
+          <div class="fmb"><label class="flbl">גיל</label><input class="finput" id="np-age" type="number" placeholder="גיל"/></div>
+          <div class="fmb"><label class="flbl">בעיה עיקרית</label><input class="finput" id="np-prob" type="text" placeholder="לדוגמה: כאב גב תחתון"/></div>
+          <div class="fmb"><label class="flbl">סוג טיפול</label><div class="chips"><button class="chip active" id="np-single" onclick="setNpType('single')">טיפול יחיד</button><button class="chip" id="np-series" onclick="setNpType('series')">סדרה (5 טיפולים)</button></div></div>
+          <div class="fmb"><label class="flbl">מחיר לטיפול (₪)</label><input class="finput" id="np-price" type="number" value="350"/></div>
+          <button class="btn bp" onclick="addPatient()">הוסף מטופל</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-edit-patient">
+        <button class="bbtn" id="ep-back"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
+        <div class="card">
+          <div class="ctitle">עריכת מטופל</div>
+          <input type="hidden" id="ep-id"/>
+          <div class="fmb"><label class="flbl">שם מלא</label><input class="finput" id="ep-name" type="text"/></div>
+          <div class="fmb"><label class="flbl">טלפון</label><input class="finput" id="ep-phone" type="tel"/></div>
+          <div class="fmb"><label class="flbl">גיל</label><input class="finput" id="ep-age" type="number"/></div>
+          <div class="fmb"><label class="flbl">בעיה עיקרית</label><input class="finput" id="ep-prob" type="text"/></div>
+          <div class="fmb"><label class="flbl">מחיר לטיפול (₪)</label><input class="finput" id="ep-price" type="number"/></div>
+          <button class="btn bp" onclick="saveEdit()">שמור שינויים</button>
+          <button class="btn bd" onclick="confirmDel()">מחק מטופל</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-new-appointment">
+        <button class="bbtn" onclick="showScreen('calendar')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+        <div class="card">
+          <div class="ctitle">קביעת תור חדש</div>
+          <div class="fmb"><label class="flbl">מטופל *</label><select class="fsel" id="na-pt"></select></div>
+          <div class="fmb"><label class="flbl">תאריך *</label><input class="finput" id="na-date" type="date"/></div>
+          <div class="fmb"><label class="flbl">שעה *</label><select class="fsel" id="na-time"><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option></select></div>
+          <div class="fmb"><label class="flbl">הערות</label><input class="finput" id="na-notes" type="text" placeholder="הערה אופציונלית..."/></div>
+          <div id="na-err" style="color:var(--red-500);font-size:13px;margin-top:4px;display:none;"></div>
+          <button class="btn bp" onclick="addAppointment()">קבע תור</button>
+          <button class="btn bgcal hidden" id="gcal-btn" onclick="openGcal()">📅 הוסף לגוגל קלנדר</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-add-treatment">
+        <button class="bbtn" id="tr-back"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
+        <div class="card">
+          <div class="ctitle" id="tr-title">רישום טיפול</div>
+          <div class="fmb"><label class="flbl">תאריך</label><input class="finput" id="tr-date" type="date"/></div>
+          <div class="fmb"><label class="flbl">מה נמצא</label><textarea class="ftxt" id="tr-found" placeholder="ממצאים קליניים..."></textarea></div>
+          <div class="fmb"><label class="flbl">מה נעשה</label><textarea class="ftxt" id="tr-done" placeholder="פעולות שבוצעו..."></textarea></div>
+          <div class="fmb"><label class="flbl">המלצות להמשך</label><textarea class="ftxt" id="tr-rec" placeholder="המלצות למטופל..."></textarea></div>
+          <div class="fmb"><label class="flbl">סטטוס תשלום</label><div class="chips"><button class="chip active" id="tr-paid" onclick="setTrPay('paid')">שולם</button><button class="chip" id="tr-unpaid" onclick="setTrPay('unpaid')">לא שולם</button></div></div>
+          <div class="fmb" id="tr-mwrap"><label class="flbl">אמצעי תשלום</label><div class="chips"><button class="chip active" onclick="selPM(this)">מזומן</button><button class="chip" onclick="selPM(this)">העברה</button><button class="chip" onclick="selPM(this)">אשראי</button><button class="chip" onclick="selPM(this)">ביט</button></div></div>
+          <button class="btn bp" onclick="saveTreatment()">שמור טיפול</button>
+        </div>
+      </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="showScreen('calendar')" id="nav-calendar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>יומן</button>
+      <button class="nav-item" onclick="showScreen('patients')" id="nav-patients"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>מטופלים</button>
+      <button class="nav-item" onclick="showScreen('debts')" id="nav-debts"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>חובות</button>
+    </nav>
+  </div>
+</div>
+
+<div class="overlay hidden" id="del-overlay" onclick="closeDelOverlay(event)">
+  <div class="sheet">
+    <div class="sht">מחיקת מטופל</div>
+    <div class="shs" id="del-sub"></div>
+    <button class="btn bd" onclick="doDelete()">כן, מחק</button>
+    <button class="btn bs" onclick="document.getElementById('del-overlay').classList.add('hidden')">ביטול</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as fbOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = {apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
+const fbApp = initializeApp(cfg);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const prov = new GoogleAuthProvider();
+let uid=null, unsubP=null, unsubA=null;
+
+function setSync(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
+
+window.doSignIn = async()=>{
+  try{await signInWithPopup(auth,prov);}
+  catch(e){const el=document.getElementById('lerr');el.textContent='שגיאה: '+e.message;el.style.display='block';}
+};
+window.doSignOut = async()=>{
+  if(unsubP)unsubP();if(unsubA)unsubA();
+  await fbOut(auth);
+  window.pts=[];window.apts=[];
+  document.getElementById('login-view').classList.remove('hidden');
+  document.getElementById('main-view').classList.add('hidden');
+};
+window.fbSaveP = async(p)=>{ if(!uid)return; await setDoc(doc(db,'users',uid,'patients',String(p.id)),p); };
+window.fbDelP  = async(id)=>{ if(!uid)return; await deleteDoc(doc(db,'users',uid,'patients',String(id))); };
+window.fbSaveA = async(a)=>{ if(!uid)return; await setDoc(doc(db,'users',uid,'appointments',String(a.id)),a); };
+window.fbDelA  = async(id)=>{ if(!uid)return; await deleteDoc(doc(db,'users',uid,'appointments',String(id))); };
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    uid=user.uid;
+    document.getElementById('login-view').classList.add('hidden');
+    const mv=document.getElementById('main-view');
+    mv.classList.remove('hidden');mv.style.display='flex';
+    document.getElementById('uname').textContent=user.displayName||user.email;
+    setSync('yellow','מסתנכרן...');
+    if(unsubP)unsubP();if(unsubA)unsubA();
+    unsubP=onSnapshot(collection(db,'users',uid,'patients'),s=>{window.pts=s.docs.map(d=>d.data());window.render();setSync('green','מסונכרן ✓');});
+    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),s=>{window.apts=s.docs.map(d=>d.data());window.render();setSync('green','מסונכרן ✓');});
+  } else {
+    uid=null;
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('main-view').classList.add('hidden');
+  }
+});
+</script>
+
+<script>
+window.pts=[];window.apts=[];
+const AVCS=['avg','avb','avt','ava'];
+const HMS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const DS=['א','ב','ג','ד','ה','ו','ש'];
+const DSFULL=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const HRS=['08','09','10','11','12','13','14','15','16','17','18','19'];
+
+let calView='month';
+let navDate=ltoday();
+let selDate=ltoday();
+let curPid=null, trPid=null, trPay='paid', npType='single', delPid=null, lastAppt=null;
+
+function ltoday(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function dstr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function sToD(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function adMap(){const m={};(window.apts||[]).forEach(a=>{if(!m[a.date])m[a.date]=[];m[a.date].push(a);});return m;}
+
+window.render=function(){renderCal();renderPatients();renderDebts();renderDebtAlert();};
+
+function renderDebtAlert(){
+  const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
+  const el=document.getElementById('debt-alert');
+  if(drs.length>0){
+    const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
+    document.getElementById('datxt').textContent=`${drs.length} מטופלים עם חוב — ₪${tot.toLocaleString()}`;
+    el.classList.remove('hidden');
+  } else el.classList.add('hidden');
+}
+
+// ---- CALENDAR ----
+function setView(v){
+  calView=v;
+  document.querySelectorAll('.vtab').forEach((b,i)=>b.classList.toggle('active',['month','week','day'][i]===v));
+  renderCal();
+}
+function navCal(dir){
+  if(calView==='month') navDate=new Date(navDate.getFullYear(),navDate.getMonth()+dir,1);
+  else if(calView==='week') navDate=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()+dir*7);
+  else{navDate=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()+dir);selDate=new Date(navDate);}
+  renderCal();
+}
+function renderCal(){
+  if(calView==='month') renderMonth();
+  else if(calView==='week') renderWeek();
+  else renderDay();
+  renderSelDay();
+}
+function renderMonth(){
+  const y=navDate.getFullYear(),m=navDate.getMonth();
+  document.getElementById('cal-title').textContent=`${HMS[m]} ${y}`;
+  const first=new Date(y,m,1);
+  const sdow=first.getDay();
+  const dim=new Date(y,m+1,0).getDate();
+  const prevD=new Date(y,m,0).getDate();
+  const todayS=dstr(ltoday());
+  const selS=dstr(selDate);
+  const ad=adMap();
+  let h='<div class="month-grid">';
+  DS.forEach(d=>h+=`<div class="mdn">${d}</div>`);
+  for(let i=0;i<sdow;i++) h+=`<div class="mday other"><div class="dnum">${prevD-sdow+i+1}</div></div>`;
+  for(let d=1;d<=dim;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=ds===todayS, isSel=ds===selS&&!isT;
+    const aps=ad[ds]||[];
+    let dots='';
+    if(aps.length){
+      const hasDbt=aps.some(a=>{const p=(window.pts||[]).find(x=>String(x.id)===String(a.patientId));return p&&p.treatments&&p.treatments.some(t=>!t.paid);});
+      dots=`<div class="ddots"><div class="ddot ${hasDbt?'r':'g'}"></div></div>`;
+    }
+    h+=`<div class="mday${isT?' today':''}${isSel?' sel':''}" onclick="selDay('${ds}')"><div class="dnum">${d}</div>${dots}</div>`;
+  }
+  const total=sdow+dim;const rem=total%7===0?0:7-(total%7);
+  for(let i=1;i<=rem;i++) h+=`<div class="mday other"><div class="dnum">${i}</div></div>`;
+  h+='</div>';
+  document.getElementById('cal-body').innerHTML=h;
+}
+
+function renderWeek(){
+  const dow=navDate.getDay();
+  const sun=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()-dow);
+  const sat=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+6);
+  document.getElementById('cal-title').textContent=`${sun.getDate()} ${HMS[sun.getMonth()]} – ${sat.getDate()} ${HMS[sat.getMonth()]}`;
+  const todayS=dstr(ltoday());
+  const ad=adMap();
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i);days.push(d);}
+
+  // Header
+  let h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:44px repeat(7,1fr);margin-bottom:2px;">';
+  h+='<div></div>';
+  days.forEach(d=>{
+    const ds=dstr(d);const isT=ds===todayS;
+    h+=`<div style="text-align:center;padding:4px 2px;cursor:pointer;" onclick="selDay('${ds}')">
+      <div style="font-size:10px;font-weight:600;color:${isT?'var(--accent)':'var(--text-muted)'};">${DS[d.getDay()]}</div>
+      <div style="font-size:12px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;${isT?'background:var(--accent);color:white;':''}">${d.getDate()}</div>
+    </div>`;
+  });
+  h+='</div><div style="display:grid;grid-template-columns:44px repeat(7,1fr);">';
+  HRS.forEach(hr=>{
+    h+=`<div class="wtl">${hr}</div>`;
+    days.forEach(d=>{
+      const ds=dstr(d);
+      const appt=(ad[ds]||[]).find(a=>a.time===`${hr}:00`);
+      if(appt){
+        const p=(window.pts||[]).find(x=>String(x.id)===String(appt.patientId));
+        const hasDbt=p&&p.treatments&&p.treatments.some(t=>!t.paid);
+        const isSer=p&&p.type==='series';
+        const cls=hasDbt?'wred':isSer?'wgreen':'wblue';
+        const nm=p?p.name.split(' ')[0]:'';
+        h+=`<div class="wcell" onclick="openPatient('${appt.patientId}')"><div class="wappt ${cls}">${nm}</div></div>`;
+      } else {
+        h+=`<div class="wcell" onclick="openNewApptAt('${ds}','${hr}:00')"></div>`;
+      }
+    });
+  });
+  h+='</div></div>';
+  document.getElementById('cal-body').innerHTML=h;
+}
+
+function renderDay(){
+  const ds=dstr(selDate);
+  document.getElementById('cal-title').textContent=`${DSFULL[selDate.getDay()]}, ${selDate.getDate()} ${HMS[selDate.getMonth()]}`;
+  const ad=adMap();
+  const dayApts=(ad[ds]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  let h='';
+  HRS.forEach(hr=>{
+    const ts=`${hr}:00`;
+    const appt=dayApts.find(a=>a.time===ts);
+    if(appt){
+      const p=(window.pts||[]).find(x=>String(x.id)===String(appt.patientId));
+      const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
+      const isSer=p&&p.type==='series';
+      const st=hd?'background:var(--red-50);border-right:3px solid var(--red-500);color:var(--red-700)':isSer?'background:var(--green-50);border-right:3px solid var(--green-400);color:var(--green-700)':'background:var(--blue-50);border-right:3px solid var(--blue-400);color:var(--blue-600)';
+      h+=`<div class="dslot" onclick="openPatient('${appt.patientId}')"><div class="dtime">${ts}</div><div class="devt" style="${st}"><div class="devt-name">${p?p.name:''}</div><div class="devt-meta">${p?p.problem:''}${hd?' · ⚠ חוב':''}</div></div></div>`;
+    } else {
+      h+=`<div class="dslot" onclick="openNewApptAt('${ds}','${ts}')"><div class="dtime">${ts}</div><div class="dempty">+ פנוי</div></div>`;
+    }
+  });
+  document.getElementById('cal-body').innerHTML=h;
+}
+
+function renderSelDay(){
+  const ds=dstr(selDate);
+  const ad=adMap();
+  const dayApts=(ad[ds]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('sel-day-title').textContent=`תורים — ${selDate.getDate()} ${HMS[selDate.getMonth()]}`;
+  if(!dayApts.length){document.getElementById('sel-day-list').innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px 0;text-align:center;">אין תורים ביום זה</div>';return;}
+  document.getElementById('sel-day-list').innerHTML=dayApts.map(a=>{
+    const p=(window.pts||[]).find(x=>String(x.id)===String(a.patientId));
+    const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
+    return `<div class="aitem" onclick="openPatient('${a.patientId}')">
+      <div class="atbox"><div class="ath">${a.time}</div></div>
+      <div class="pav ${AVCS[(p?(p.color||0):0)%4]}" style="width:38px;height:38px;font-size:14px;">${p?p.name.charAt(0):'?'}</div>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:600;">${p?p.name:''}</div><div style="font-size:12px;color:var(--text-muted);">${p?p.problem:''}</div></div>
+      ${hd?'<span class="badge br">חוב</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function selDay(ds){selDate=sToD(ds);navDate=new Date(selDate);renderCal();}
+
+// ---- PATIENTS ----
+function renderPatients(filter=''){
+  const list=document.getElementById('patients-list');
+  const filtered=(window.pts||[]).filter(p=>p.name.includes(filter)||(p.phone&&p.phone.includes(filter)));
+  if(!filtered.length){list.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;">לא נמצאו מטופלים</div>';return;}
+  filtered.sort((a,b)=>a.name.localeCompare(b.name,'he'));
+  list.innerHTML=filtered.map(p=>{
+    const hd=p.treatments&&p.treatments.some(t=>!t.paid);
+    const lastT=p.treatments&&p.treatments.length?p.treatments[p.treatments.length-1].date:null;
+    const si=p.type==='series'?`${p.seriesUsed||0}/5`:'';
+    return `<div class="pitem" onclick="openPatient('${p.id}')">
+      <div class="pav ${AVCS[(p.color||0)%4]}">${p.name.charAt(0)}</div>
+      <div class="pbody"><div class="pname">${p.name}</div><div class="psub">${p.problem||''}${p.phone?' · '+p.phone:''}</div></div>
+      <div class="pright">${hd?'<span class="badge br">חוב</span>':''}${si?`<span class="badge bg">סדרה ${si}</span>`:''}${lastT?`<span style="font-size:11px;color:var(--text-muted);">${lastT}</span>`:''}</div>
+    </div>`;
+  }).join('');
+}
+
+window.openPatient=function(id){
+  id=String(id);curPid=id;
+  const p=(window.pts||[]).find(x=>String(x.id)===id);if(!p)return;
+  const hd=p.treatments&&p.treatments.some(t=>!t.paid);
+  const td=p.treatments?p.treatments.filter(t=>!t.paid).reduce((s,t)=>s+(t.amount||0),0):0;
+  const todayS=dstr(ltoday());
+  const upcoming=(window.apts||[]).filter(a=>String(a.patientId)===id&&a.date>=todayS).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).slice(0,3);
+  const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-light);">
+    <span style="font-size:12px;color:var(--text-muted);min-width:84px;">${a.date}</span>
+    <span style="font-size:13px;font-weight:600;color:var(--accent);">${a.time}</span>
+    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--red-50);border:none;border-radius:6px;padding:3px 10px;font-size:11px;color:var(--red-700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול תור</button>
+  </div>`).join(''):'<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">אין תורים קרובים</div>';
+  let serH='';
+  if(p.type==='series'){const u=p.seriesUsed||0,pct=Math.round((u/5)*100);serH=`<div class="irow"><span class="ilbl">סדרה</span><span class="ival">${u} מתוך 5</span></div><div style="margin-top:6px;"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px;"><span>התקדמות</span><span>${pct}%</span></div><div class="pttrack"><div class="ptfill" style="width:${pct}%"></div></div></div>`;}
+  const trH=(p.treatments&&p.treatments.length)?[...p.treatments].reverse().map(t=>`<div class="tent">
+    <div class="ttop"><span class="tnum">טיפול ${t.num}</span><div style="display:flex;align-items:center;gap:6px;">${t.paid?'<span class="badge bg">שולם</span>':'<span class="badge br">לא שולם</span>'}<span style="font-size:12px;color:var(--text-muted);">${t.date}</span></div></div>
+    <div class="tnotes">${t.found?`<div><b>ממצא:</b> ${t.found}</div>`:''} ${t.done?`<div><b>טיפול:</b> ${t.done}</div>`:''} ${t.recommend?`<div><b>המלצה:</b> ${t.recommend}</div>`:''} ${t.method?`<div><b>תשלום:</b> ${t.method}</div>`:''}</div>
+    ${!t.paid?`<button onclick="mkPaid('${id}',${t.num})" style="margin-top:8px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--accent);background:none;color:var(--accent);font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✓ סמן כשולם</button>`:''}
+  </div>`).join(''):'<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">אין טיפולים עדיין</div>';
+  document.getElementById('pfile').innerHTML=`
+    <div class="card">
+      <div class="pfhdr">
+        <div class="pfav ${AVCS[(p.color||0)%4]}">${p.name.charAt(0)}</div>
+        <div style="flex:1;"><div class="pfname">${p.name}</div><div class="pfsub">${p.phone||''}</div></div>
+        <button onclick="openEdit('${id}')" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;color:var(--text-primary);font-weight:600;">עריכה</button>
+      </div>
+      ${hd?`<div style="background:var(--red-50);border:1px solid var(--red-100);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;font-size:13px;color:var(--red-700);">⚠ חוב פתוח: ₪${td.toLocaleString()}</div>`:''}
+      <div class="irow"><span class="ilbl">גיל</span><span class="ival">${p.age||'—'}</span></div>
+      <div class="irow"><span class="ilbl">בעיה עיקרית</span><span class="ival">${p.problem||'—'}</span></div>
+      <div class="irow"><span class="ilbl">סוג טיפול</span><span class="ival">${p.type==='series'?'סדרה':'יחיד'}</span></div>
+      <div class="irow"><span class="ilbl">מחיר לטיפול</span><span class="ival">₪${(p.price||350).toLocaleString()}</span></div>
+      ${serH}
+    </div>
+    <div class="card">
+      <div class="ctitle">תורים קרובים</div>${upH}
+      <button onclick="openNewApptFor('${id}')" style="margin-top:10px;background:var(--green-50);border:1px solid var(--green-200);border-radius:var(--radius-sm);padding:8px 14px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--green-700);width:100%;">+ קבע תור חדש למטופל זה</button>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="ctitle" style="margin-bottom:0;">היסטוריית טיפולים</div>
+        <button onclick="openAddTreat('${id}')" style="background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);padding:7px 14px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">+ רישום</button>
+      </div>
+      ${trH}
+    </div>
+    <button class="btn bgcal" onclick="openPaperless('${p.name}')">🧾 פתח קבלה ב-Paperless</button>
+  `;
+  showScreen('patient-file');
+};
+
+window.delAppt=async(aid,pid)=>{
+  if(!confirm('לבטל את התור?'))return;
+  window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));
+  await window.fbDelA(aid);
+  openPatient(pid);render();
+};
+
+window.mkPaid=async(pid,num)=>{
+  const p=(window.pts||[]).find(x=>String(x.id)===String(pid));if(!p)return;
+  const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}
+  await window.fbSaveP(p);openPatient(pid);
+};
+
+function openEdit(id){
+  const p=(window.pts||[]).find(x=>String(x.id)===String(id));if(!p)return;
+  document.getElementById('ep-id').value=id;
+  document.getElementById('ep-name').value=p.name;
+  document.getElementById('ep-phone').value=p.phone||'';
+  document.getElementById('ep-age').value=p.age||'';
+  document.getElementById('ep-prob').value=p.problem||'';
+  document.getElementById('ep-price').value=p.price||350;
+  document.getElementById('ep-back').onclick=()=>openPatient(id);
+  showScreen('edit-patient');
+}
+
+async function saveEdit(){
+  const id=String(document.getElementById('ep-id').value);
+  const p=(window.pts||[]).find(x=>String(x.id)===id);if(!p)return;
+  p.name=document.getElementById('ep-name').value.trim()||p.name;
+  p.phone=document.getElementById('ep-phone').value.trim();
+  p.age=document.getElementById('ep-age').value;
+  p.problem=document.getElementById('ep-prob').value.trim();
+  p.price=parseInt(document.getElementById('ep-price').value)||350;
+  await window.fbSaveP(p);openPatient(id);
+}
+
+function confirmDel(){
+  const id=String(document.getElementById('ep-id').value);
+  const p=(window.pts||[]).find(x=>String(x.id)===id);
+  delPid=id;
+  document.getElementById('del-sub').textContent=`האם למחוק את ${p?p.name:'המטופל'}?\nפעולה זו אינה ניתנת לביטול.`;
+  document.getElementById('del-overlay').classList.remove('hidden');
+}
+
+async function doDelete(){
+  window.pts=(window.pts||[]).filter(x=>String(x.id)!==delPid);
+  window.apts=(window.apts||[]).filter(a=>String(a.patientId)!==delPid);
+  await window.fbDelP(delPid);
+  document.getElementById('del-overlay').classList.add('hidden');
+  render();showScreen('patients');
+}
+
+function closeDelOverlay(e){if(e.target===document.getElementById('del-overlay'))document.getElementById('del-overlay').classList.add('hidden');}
+
+// ---- DEBTS ----
+function renderDebts(){
+  const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
+  const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
+  document.getElementById('stat-debt').textContent='₪'+tot.toLocaleString();
+  document.getElementById('stat-dbtrs').textContent=drs.length;
+  const list=document.getElementById('debts-list');
+  if(!drs.length){list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:14px;">✓ אין חובות פתוחים</div>';return;}
+  list.innerHTML=drs.map(p=>{
+    const u=p.treatments.filter(t=>!t.paid);const a=u.reduce((s,t)=>s+(t.amount||0),0);
+    return `<div class="pitem" onclick="openPatient('${p.id}')">
+      <div class="pav ${AVCS[(p.color||0)%4]}">${p.name.charAt(0)}</div>
+      <div class="pbody"><div class="pname">${p.name}</div><div class="psub">${u.length} טיפולים לא שולמו</div></div>
+      <div style="font-size:16px;font-weight:700;color:var(--red-500);">₪${a.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- ADD PATIENT ----
+function setNpType(t){npType=t;document.getElementById('np-single').classList.toggle('active',t==='single');document.getElementById('np-series').classList.toggle('active',t==='series');}
+async function addPatient(){
+  const name=document.getElementById('np-name').value.trim();if(!name){alert('נא להזין שם');return;}
+  const p={id:String(Date.now()),name,phone:document.getElementById('np-phone').value.trim(),age:document.getElementById('np-age').value,problem:document.getElementById('np-prob').value.trim(),type:npType,price:parseInt(document.getElementById('np-price').value)||350,seriesUsed:0,color:(window.pts||[]).length%4,treatments:[]};
+  window.pts=[...(window.pts||[]),p];
+  await window.fbSaveP(p);
+  ['np-name','np-phone','np-age','np-prob'].forEach(i=>document.getElementById(i).value='');
+  showScreen('patients');
+}
+
+// ---- APPOINTMENTS ----
+function openNewAppt(){
+  showScreen('new-appointment');
+  const sel=document.getElementById('na-pt');
+  sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort((a,b)=>a.name.localeCompare(b.name,'he')).map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('na-date').value=dstr(ltoday());
+  document.getElementById('gcal-btn').classList.add('hidden');
+  document.getElementById('na-err').style.display='none';
+}
+
+function openNewApptAt(ds,time){
+  openNewAppt();
+  document.getElementById('na-date').value=ds;
+  document.getElementById('na-time').value=time;
+}
+
+function openNewApptFor(id){
+  openNewAppt();
+  document.getElementById('na-pt').value=String(id);
+}
+
+async function addAppointment(){
+  const pid=String(document.getElementById('na-pt').value);
+  const date=document.getElementById('na-date').value;
+  const time=document.getElementById('na-time').value;
+  const err=document.getElementById('na-err');
+  if(!pid){err.textContent='נא לבחור מטופל';err.style.display='block';return;}
+  if(!date){err.textContent='נא לבחור תאריך';err.style.display='block';return;}
+  if(date<dstr(ltoday())){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
+  err.style.display='none';
+  const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-notes').value};
+  window.apts=[...(window.apts||[]),a];lastAppt=a;
+  await window.fbSaveA(a);
+  selDate=sToD(date);navDate=new Date(selDate);
+  document.getElementById('gcal-btn').classList.remove('hidden');
+  document.getElementById('na-notes').value='';
+  renderCal();
+}
+
+function openGcal(){
+  if(!lastAppt)return;
+  const p=(window.pts||[]).find(x=>String(x.id)===String(lastAppt.patientId));
+  const[h,m]=lastAppt.time.split(':').map(Number);
+  const d=sToD(lastAppt.date);
+  const pad=n=>String(n).padStart(2,'0');
+  const fmt=(d,h,m)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(h)}${pad(m)}00`;
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('טיפול — '+(p?p.name:''))}&dates=${fmt(d,h,m)}/${fmt(d,h+1,m)}&details=${encodeURIComponent(p?p.problem:'')}`,'_blank');
+}
+
+// ---- TREATMENT ----
+function openAddTreat(id){
+  trPid=String(id);const p=(window.pts||[]).find(x=>String(x.id)===String(id));
+  document.getElementById('tr-title').textContent=`רישום טיפול — ${p?p.name:''}`;
+  document.getElementById('tr-back').onclick=()=>openPatient(id);
+  document.getElementById('tr-date').value=dstr(ltoday());
+  ['tr-found','tr-done','tr-rec'].forEach(i=>document.getElementById(i).value='');
+  trPay='paid';
+  document.getElementById('tr-paid').classList.add('active');document.getElementById('tr-unpaid').classList.remove('active');
+  document.getElementById('tr-mwrap').style.display='block';
+  document.querySelectorAll('#tr-mwrap .chip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  showScreen('add-treatment');
+}
+
+function setTrPay(v){trPay=v;document.getElementById('tr-paid').classList.toggle('active',v==='paid');document.getElementById('tr-unpaid').classList.toggle('active',v==='unpaid');document.getElementById('tr-mwrap').style.display=v==='paid'?'block':'none';}
+function selPM(el){document.querySelectorAll('#tr-mwrap .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+
+async function saveTreatment(){
+  const p=(window.pts||[]).find(x=>String(x.id)===trPid);if(!p)return;
+  p.treatments=p.treatments||[];
+  const num=p.treatments.length+1;
+  const am=document.querySelector('#tr-mwrap .chip.active');
+  p.treatments.push({num,date:document.getElementById('tr-date').value,found:document.getElementById('tr-found').value,done:document.getElementById('tr-done').value,recommend:document.getElementById('tr-rec').value,paid:trPay==='paid',amount:p.price||350,method:trPay==='paid'?(am?am.textContent:'מזומן'):''});
+  if(p.type==='series')p.seriesUsed=(p.seriesUsed||0)+1;
+  await window.fbSaveP(p);openPatient(trPid);
+}
+
+function openPaperless(name){alert(`פתח את אפליקציית Paperless וצור קבלה עבור:\n${name}`);}
+
+// ---- SCREEN NAV ----
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const s=document.getElementById('screen-'+name);if(s)s.classList.add('active');
+  const nm={calendar:'nav-calendar',patients:'nav-patients',debts:'nav-debts'};
+  if(nm[name])document.getElementById(nm[name]).classList.add('active');
+  if(name==='calendar')renderCal();
+  if(name==='patients')renderPatients();
+}
+
+// expose to HTML onclick
+window.showScreen=showScreen;window.setView=setView;window.navCal=navCal;window.selDay=selDay;
+window.openNewApptAt=openNewApptAt;window.openNewAppt=openNewAppt;window.addAppointment=addAppointment;
+window.openGcal=openGcal;window.renderPatients=renderPatients;window.addPatient=addPatient;
+window.openEdit=openEdit;window.saveEdit=saveEdit;window.confirmDel=confirmDel;window.doDelete=doDelete;
+window.closeDelOverlay=closeDelOverlay;window.openAddTreat=openAddTreat;window.setTrPay=setTrPay;
+window.selPM=selPM;window.saveTreatment=saveTreatment;window.setNpType=setNpType;
+window.openPaperless=openPaperless;window.openNewApptFor=openNewApptFor;
+</script>
+</body>
+</html>
