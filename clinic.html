@@ -2,15 +2,12 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<!-- PWA iOS icons -->
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה — ניהול מטופלים</title>
+<title>קליניקה</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -20,153 +17,206 @@
   --a50:#fef9ec;--a100:#fdedc5;--a500:#e6a817;--a700:#9a6e00;
   --r50:#fef2f2;--r100:#fdd5d5;--r500:#e53e3e;--r700:#9b1c1c;
   --gr100:#eef1ee;--gr400:#8a9a8a;
-  --bg:#f4f8f5;--sf:#fff;--sf2:#f0f6f2;
-  --bd:#d4e6d8;--bdl:#e8f2ea;
-  --tp:#1a2e1a;--ts:#4a6a4a;--tm:#7a9a7a;
-  --ac:#2e9460;--acd:#1e7a4a;
+  --bg:#f4f8f5;--sf:#fff;--sf2:#f0f6f2;--bd:#d4e6d8;--bdl:#e8f2ea;
+  --tp:#1a2e1a;--ts:#4a6a4a;--tm:#7a9a7a;--ac:#2e9460;--acd:#1e7a4a;
   --rsm:8px;--rmd:12px;--rlg:18px;--rxl:24px;
-  --sh:0 1px 3px rgba(30,80,30,0.08);
+  --sh:0 1px 3px rgba(30,80,30,0.08);--shm:0 4px 16px rgba(30,80,30,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-size:15px;direction:rtl}
 #app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--bg)}
-.hdr{background:linear-gradient(135deg,var(--g600),var(--g500) 60%,var(--t500));padding:13px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.hlogo{display:flex;align-items:center;gap:10px}
-.hicon{width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
-.htitle{color:#fff;font-size:17px;font-weight:700}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,var(--g600),var(--g500) 60%,var(--t500));padding:12px 15px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.hlogo{display:flex;align-items:center;gap:9px}
+.hicon{width:33px;height:33px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.htitle{color:#fff;font-size:16px;font-weight:700}
 .hsub{color:rgba(255,255,255,0.75);font-size:11px}
 .hacts{display:flex;gap:5px}
-.hb{background:rgba(255,255,255,0.18);border:none;border-radius:var(--rsm);padding:6px 10px;color:#fff;font-size:12px;font-family:'Heebo',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500}
+.hb{background:rgba(255,255,255,0.18);border:none;border-radius:var(--rsm);padding:6px 9px;color:#fff;font-size:12px;font-family:'Heebo',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500}
 .hb svg{width:13px;height:13px}
-.stbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:6px 16px;display:flex;align-items:center;gap:8px;font-size:12px;flex-shrink:0}
-.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:5px 15px;display:flex;align-items:center;gap:8px;font-size:12px;flex-shrink:0}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sdot.gr{background:#22c55e}.sdot.ye{background:#f59e0b}.sdot.rd{background:#ef4444}
-.qbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:9px 14px;display:flex;gap:8px;flex-shrink:0}
-.qb{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 6px;border-radius:var(--rmd);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600}
+.qbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:8px 13px;display:flex;gap:7px;flex-shrink:0}
+.qb{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 5px;border-radius:var(--rmd);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600}
 .qbp{background:var(--ac);color:#fff}.qbs{background:var(--b50);color:var(--b600);border:1px solid var(--b100)}
-.qb svg{width:15px;height:15px}
+.qb svg{width:14px;height:14px}
 .alerts-bar{flex-shrink:0}
-.alert-row{padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:13px;border-bottom:1px solid}
-.alert-row.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
-.alert-row.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
-.alert-row svg{width:15px;height:15px;flex-shrink:0}
-.alert-link{margin-right:auto;font-weight:600;text-decoration:underline;cursor:pointer}
+.arow{padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:12px;border-bottom:1px solid}
+.arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
+.arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
+.arow svg{width:14px;height:14px;flex-shrink:0}
+.alink{margin-right:auto;font-weight:600;text-decoration:underline;cursor:pointer}
 .screens{flex:1;overflow:hidden;position:relative}
-.screen{position:absolute;inset:0;overflow-y:auto;display:none;padding:12px}
+.screen{position:absolute;inset:0;overflow-y:auto;display:none;padding:11px}
 .screen.active{display:block}
 .bnav{background:var(--sf);border-top:1px solid var(--bd);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px;background:none;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:10px;color:var(--tm)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 3px;background:none;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:10px;color:var(--tm)}
 .ni.active{color:var(--ac)}
-.ni svg{width:21px;height:21px}
-.card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);padding:14px;margin-bottom:10px;box-shadow:var(--sh)}
-.ct{font-size:12px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-.vtabs{display:flex;background:var(--sf2);border-radius:var(--rsm);padding:3px;margin-bottom:12px;gap:2px}
-.vt{flex:1;padding:6px 4px;border:none;border-radius:6px;background:none;font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--tm);cursor:pointer}
-.vt.active{background:#fff;color:var(--ac);font-weight:600;box-shadow:var(--sh)}
-.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.calt{font-size:17px;font-weight:700;color:var(--tp);flex:1;text-align:center}
-.caln{background:var(--g50);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 14px;cursor:pointer;font-size:19px;color:var(--ac);font-family:'Heebo',sans-serif;line-height:1}
+.ni svg{width:20px;height:20px}
+
+/* Cards */
+.card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);padding:13px;margin-bottom:9px;box-shadow:var(--sh)}
+.ct{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:9px}
+
+/* Calendar */
+.vtabs{display:flex;background:var(--sf2);border-radius:var(--rsm);padding:3px;margin-bottom:11px;gap:2px}
+.vt{flex:1;padding:6px 4px;border:none;border-radius:6px;background:none;font-family:'Heebo',sans-serif;font-size:12px;font-weight:500;color:var(--tm);cursor:pointer}
+.vt.active{background:#fff;color:var(--ac);font-weight:700;box-shadow:var(--sh)}
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calt{font-size:16px;font-weight:700;color:var(--tp);flex:1;text-align:center}
+.caln{background:var(--g50);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 13px;cursor:pointer;font-size:18px;color:var(--ac);line-height:1}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
-.mdn{text-align:center;font-size:11px;font-weight:600;color:var(--tm);padding:3px 0 7px}
-.mday{min-height:44px;border-radius:var(--rsm);padding:3px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:background 0.1s}
-.mday:active{background:var(--g50)}
+.mdn{text-align:center;font-size:10px;font-weight:700;color:var(--tm);padding:2px 0 6px}
+.mday{min-height:42px;border-radius:var(--rsm);padding:2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
 .mday.other .dn{color:var(--gr400)}
 .mday.today .dn{background:var(--ac);color:#fff;border-radius:50%}
 .mday.sel{background:var(--g50)}
-.dn{font-size:13px;font-weight:500;color:var(--tp);width:28px;height:28px;display:flex;align-items:center;justify-content:center}
-.ddots{display:flex;gap:2px;justify-content:center}
-.dd{width:5px;height:5px;border-radius:50%}
+.dn{font-size:12px;font-weight:500;color:var(--tp);width:27px;height:27px;display:flex;align-items:center;justify-content:center}
+.ddots{display:flex;gap:2px}
+.dd{width:4px;height:4px;border-radius:50%}
 .dd.g{background:var(--ac)}.dd.r{background:var(--r500)}
-.daypanel{border-top:1px solid var(--bdl);margin-top:10px;padding-top:10px}
-.dphead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.dptitle{font-size:13px;font-weight:700;color:var(--tp)}
-.dpadd{background:var(--ac);color:#fff;border:none;border-radius:20px;padding:4px 12px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
-.aitem{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
+.daypanel{border-top:1px solid var(--bdl);margin-top:9px;padding-top:9px}
+.dph{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.dpt{font-size:13px;font-weight:700;color:var(--tp)}
+.dpadd{background:var(--ac);color:#fff;border:none;border-radius:20px;padding:4px 11px;font-family:'Heebo',sans-serif;font-size:11px;font-weight:600;cursor:pointer}
+.aitem{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
 .aitem:last-child{border-bottom:none}
-.atb{background:var(--sf2);border-radius:var(--rsm);padding:5px 8px;text-align:center;min-width:48px;flex-shrink:0}
-.ath{font-size:14px;font-weight:700;color:var(--ac)}
-.wtl{height:50px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
-.wcell{height:50px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer}
-.wappt{height:100%;border-radius:4px;padding:2px 4px;font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.atb{background:var(--sf2);border-radius:var(--rsm);padding:4px 7px;text-align:center;min-width:44px;flex-shrink:0}
+.ath{font-size:13px;font-weight:700;color:var(--ac)}
+/* Week view */
+.wtl{height:48px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
+.wcell{height:48px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer}
+.wappt{height:100%;border-radius:4px;padding:2px 3px;font-size:9px;font-weight:600;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .wbl{background:var(--b50);color:var(--b600);border-right:3px solid var(--b400)}
 .wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
 .wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
-.swrap{position:relative;margin-bottom:10px}
-.swrap svg{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--tm)}
-.si{width:100%;padding:10px 38px 10px 12px;border:1px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:14px;background:var(--sf);color:var(--tp);outline:none}
+.wpu{background:#f3e8ff;color:#6b21a8;border-right:3px solid #a855f7}
+
+/* Patients */
+.swrap{position:relative;margin-bottom:9px}
+.swrap svg{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--tm)}
+.si{width:100%;padding:9px 36px 9px 11px;border:1px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none}
 .si:focus{border-color:var(--ac)}
-.pi{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
+.pi{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
 .pi:last-child{border-bottom:none}
-.pav{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.pav{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
 .avg{background:var(--g100);color:var(--g700)}.avb{background:var(--b100);color:var(--b600)}
 .avt{background:var(--t100);color:var(--t500)}.ava{background:var(--a100);color:var(--a700)}
+.avp{background:#f3e8ff;color:#6b21a8}
 .pb{flex:1;min-width:0}.pn{font-size:14px;font-weight:600}
-.ps{font-size:12px;color:var(--tm);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps{font-size:11px;color:var(--tm);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px}
 .br{background:var(--r50);color:var(--r700)}.bg{background:var(--g100);color:var(--g700)}
 .bb{background:var(--b50);color:var(--b600)}.ba{background:var(--a50);color:var(--a700)}
-.pfh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.pfav{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
-.pfn{font-size:19px;font-weight:700}.pfs{font-size:13px;color:var(--tm);margin-top:1px}
-.ir{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdl)}
+.bpu{background:#f3e8ff;color:#6b21a8}
+
+/* Patient file */
+.pfh{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.pfav{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.pfn{font-size:18px;font-weight:700}.pfs{font-size:12px;color:var(--tm);margin-top:1px}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdl)}
 .ir:last-child{border-bottom:none}
-.il{font-size:13px;color:var(--tm)}.iv{font-size:13px;font-weight:600}
-.ptrack{height:6px;background:var(--gr100);border-radius:3px;overflow:hidden;margin-top:5px}
+.il{font-size:12px;color:var(--tm)}.iv{font-size:12px;font-weight:600}
+.ptrack{height:5px;background:var(--gr100);border-radius:3px;overflow:hidden;margin-top:4px}
 .pfill{height:100%;background:linear-gradient(90deg,var(--g400),var(--t400));border-radius:3px}
-.tent{padding:11px 0;border-bottom:1px solid var(--bdl)}
+.tent{padding:10px 0;border-bottom:1px solid var(--bdl)}
 .tent:last-child{border-bottom:none}
-.ttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-wrap:wrap;gap:4px}
-.tnum{font-size:13px;font-weight:700;color:var(--ac)}
-.tnotes{font-size:13px;color:var(--ts);line-height:1.6}
+.ttop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:4px;flex-wrap:wrap}
+.tnum{font-size:12px;font-weight:700;color:var(--ac)}
+.tnotes{font-size:12px;color:var(--ts);line-height:1.6}
 .tnotes b{font-weight:600;color:var(--tp)}
-.series-card{background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:11px 13px;margin-bottom:8px}
-.series-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.series-name{font-size:13px;font-weight:700;color:var(--g700)}
-.series-status{font-size:12px;color:var(--tm)}
-.fm{margin-bottom:12px}
-.fl{font-size:12px;font-weight:600;color:var(--tm);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.4px}
-.fi,.fsl,.ftx{width:100%;padding:10px 13px;border:1.5px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:14px;background:var(--sf);color:var(--tp);outline:none;direction:rtl}
+.ser-card{background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;margin-bottom:7px}
+
+/* Forms */
+.fm{margin-bottom:11px}
+.fl{font-size:11px;font-weight:700;color:var(--tm);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.4px}
+.fi,.fsl,.ftx{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none;direction:rtl}
 .fi:focus,.fsl:focus,.ftx:focus{border-color:var(--ac)}
-.ftx{min-height:75px;resize:vertical}
+.ftx{min-height:70px;resize:vertical}
 .chips{display:flex;gap:5px;flex-wrap:wrap}
-.chip{padding:6px 13px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
+.chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
 .chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
-.btn{width:100%;padding:12px;border-radius:var(--rmd);border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px}
+.btn{width:100%;padding:11px;border-radius:var(--rmd);border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px;transition:opacity 0.15s}
+.btn:active{opacity:0.85}
 .bp{background:linear-gradient(135deg,var(--g500),var(--g600));color:#fff}
 .bs{background:var(--sf2);color:var(--tp);border:1px solid var(--bd);margin-top:4px}
 .bd2{background:var(--r50);color:var(--r700);border:1px solid var(--r100);margin-top:4px}
 .bgcal{background:var(--b50);color:var(--b600);border:1px solid var(--b100);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:7px}
-.bgoog{background:#fff;color:#444;border:1px solid #ddd;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:14px}
-.bbtn{display:flex;align-items:center;gap:5px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:14px;color:var(--ac);cursor:pointer;padding:0 0 12px;font-weight:600}
-.bbtn svg{width:17px;height:17px}
-.srow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.sbox{background:var(--sf);border-radius:var(--rmd);padding:12px;border:1px solid var(--bdl)}
-.slbl{font-size:11px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
-.sval{font-size:24px;font-weight:700;color:var(--tp);margin-top:3px}
+.bgoog{background:#fff;color:#444;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:9px;font-size:14px}
+.bbtn{display:flex;align-items:center;gap:5px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ac);cursor:pointer;padding:0 0 11px;font-weight:600}
+.bbtn svg{width:16px;height:16px}
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.sbox{background:var(--sf);border-radius:var(--rmd);padding:11px;border:1px solid var(--bdl)}
+.slbl{font-size:10px;color:var(--tm);font-weight:700;text-transform:uppercase;letter-spacing:0.4px}
+.sval{font-size:22px;font-weight:700;color:var(--tp);margin-top:3px}
 .sval.red{color:var(--r500)}
-.set-section{margin-bottom:18px}
-.set-title{font-size:13px;font-weight:700;color:var(--tp);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bdl)}
-.set-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdl)}
+
+/* Settings */
+.set-sec{margin-bottom:16px}
+.set-ttl{font-size:13px;font-weight:700;color:var(--tp);margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid var(--bdl)}
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdl)}
 .set-row:last-child{border-bottom:none}
 .set-lbl{font-size:13px;color:var(--tp)}
-.set-input{width:90px;padding:6px 10px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none;text-align:center}
-.set-input:focus{border-color:var(--ac)}
-.set-select{padding:6px 10px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none}
-.day-chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-.day-chip{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
-.day-chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
-.series-type-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdl)}
-.series-type-item:last-child{border-bottom:none}
-.login-sc{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 24px;text-align:center}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px 18px 38px;width:100%;max-width:480px}
-.sht{font-size:16px;font-weight:700;text-align:center;margin-bottom:7px}
-.shs{font-size:14px;color:var(--tm);text-align:center;margin-bottom:18px;white-space:pre-line}
-/* PWA install banner */
-.pwa-banner{background:var(--g700);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;flex-shrink:0;cursor:pointer}
-.pwa-banner-close{margin-right:auto;background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 4px}
+.set-inp{width:85px;padding:5px 9px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:12px;background:var(--sf);color:var(--tp);outline:none;text-align:center}
+.set-inp:focus{border-color:var(--ac)}
+.set-sel{padding:5px 9px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:12px;background:var(--sf);color:var(--tp);outline:none}
+.day-sched{border:1px solid var(--bdl);border-radius:var(--rmd);overflow:hidden;margin-top:8px}
+.day-sched-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--bdl)}
+.day-sched-row:last-child{border-bottom:none}
+.day-name{font-size:12px;font-weight:600;min-width:22px;color:var(--tp)}
+.day-toggle{width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;border:none;transition:background 0.2s}
+.day-toggle.on{background:var(--ac)}.day-toggle.off{background:var(--gr400)}
+.day-toggle::after{content:'';position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s}
+.day-toggle.on::after{left:18px}.day-toggle.off::after{left:2px}
+.time-range{display:flex;align-items:center;gap:4px;font-size:11px;flex:1;flex-wrap:wrap}
+.time-inp{width:58px;padding:3px 5px;border:1px solid var(--bd);border-radius:5px;font-family:'Heebo',sans-serif;font-size:11px;text-align:center;outline:none}
+.time-inp:focus{border-color:var(--ac)}
+.add-range{background:none;border:1px dashed var(--bd);border-radius:5px;padding:2px 7px;font-size:10px;color:var(--tm);cursor:pointer;font-family:'Heebo',sans-serif}
+.del-range{background:none;border:none;color:var(--r500);font-size:14px;cursor:pointer;padding:0 2px;line-height:1}
+.ser-type-item{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl)}
+.ser-type-item:last-child{border-bottom:none}
+
+/* Form editor */
+.form-field-item{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl)}
+.form-field-item:last-child{border-bottom:none}
+.form-field-item input{flex:1;padding:5px 9px;border:1px solid var(--bd);border-radius:6px;font-family:'Heebo',sans-serif;font-size:13px;outline:none}
+.form-field-item input:focus{border-color:var(--ac)}
+.drag-handle{color:var(--gr400);cursor:grab;font-size:14px;padding:0 2px}
+
+/* Treatment flow */
+.treat-flow{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);overflow:hidden;box-shadow:var(--shm)}
+.tf-header{background:linear-gradient(135deg,var(--g600),var(--g500));padding:14px 15px;color:#fff}
+.tf-patient{font-size:17px;font-weight:700}
+.tf-time{font-size:12px;opacity:0.8;margin-top:2px}
+.tf-tabs{display:flex;border-bottom:1px solid var(--bdl)}
+.tf-tab{flex:1;padding:10px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s}
+.tf-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.tf-body{padding:13px}
+.tf-section{margin-bottom:14px}
+.tf-sec-title{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tf-sec-title::after{content:'';flex:1;height:1px;background:var(--bdl)}
+.intake-field{margin-bottom:10px}
+.intake-label{font-size:12px;font-weight:600;color:var(--tp);margin-bottom:3px;display:block}
+.intake-input{width:100%;padding:7px 10px;border:1.5px solid var(--bdl);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf2);color:var(--tp);outline:none;direction:rtl;resize:vertical;min-height:36px}
+.intake-input:focus{border-color:var(--ac);background:var(--sf)}
+
+/* Login */
+.login-sc{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 22px;text-align:center}
+
+/* Overlay */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:20px 17px 36px;width:100%;max-width:480px}
+.sht{font-size:15px;font-weight:700;text-align:center;margin-bottom:6px}
+.shs{font-size:13px;color:var(--tm);text-align:center;margin-bottom:16px;white-space:pre-line}
+
+/* PWA banner */
+.pwa-b{background:var(--g700);color:#fff;padding:9px 14px;display:flex;align-items:center;gap:9px;font-size:12px;flex-shrink:0;cursor:pointer}
+.pwa-b button{margin-right:auto;background:none;border:none;color:#fff;font-size:17px;cursor:pointer}
+
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:0}
 </style>
@@ -174,24 +224,20 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <body>
 <div id="app">
 
+<!-- Login -->
 <div id="lview" class="login-sc">
-  <div style="font-size:60px;margin-bottom:20px">🌿</div>
-  <div style="font-size:24px;font-weight:700;margin-bottom:7px">קליניקה</div>
-  <div style="font-size:14px;color:var(--tm);margin-bottom:36px;line-height:1.6">ניהול מטופלים ותורים<br>מסונכרן בין טלפון למחשב</div>
-  <button class="btn bgoog" onclick="doSignIn()" style="width:100%;max-width:280px;">
-    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+  <div style="font-size:56px;margin-bottom:18px">🌿</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה</div>
+  <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים<br>מסונכרן בין כל המכשירים</div>
+  <button class="btn bgoog" onclick="doSignIn()" style="width:100%;max-width:270px;margin-top:0;">
+    <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     כניסה עם חשבון גוגל
   </button>
-  <div id="lerr" style="color:var(--r500);font-size:13px;margin-top:14px;display:none;"></div>
+  <div id="lerr" style="color:var(--r500);font-size:12px;margin-top:12px;display:none;"></div>
 </div>
 
+<!-- Main -->
 <div id="mview" class="hidden" style="display:flex;flex-direction:column;height:100%;">
-
-  <!-- PWA install banner -->
-  <div class="pwa-banner hidden" id="pwa-banner" onclick="installPWA()">
-    <span>📲 הוסף למסך הבית כאפליקציה</span>
-    <button class="pwa-banner-close" onclick="event.stopPropagation();document.getElementById('pwa-banner').classList.add('hidden')">✕</button>
-  </div>
 
   <div class="hdr">
     <div class="hlogo">
@@ -201,8 +247,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     <div class="hacts">
       <button class="hb" onclick="showScreen('new-patient')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
       <button class="hb" onclick="openNewAppt()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>תור</button>
-      <button class="hb" onclick="showScreen('settings')" style="padding:6px 8px;"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg></button>
-      <button class="hb" onclick="doSignOut()" style="background:rgba(255,255,255,0.1);padding:6px 8px;"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg></button>
+      <button class="hb" onclick="showScreen('settings')" style="padding:6px 8px;"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="hb" onclick="doSignOut()" style="background:rgba(255,255,255,0.1);padding:6px 7px;"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg></button>
     </div>
   </div>
   <div class="stbar"><div class="sdot" id="sdot"></div><span id="stxt" style="color:var(--tm)">מתחבר...</span></div>
@@ -214,11 +260,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
   <div class="screens">
 
+    <!-- יומן -->
     <div class="screen active" id="screen-calendar">
       <div class="card">
         <div class="vtabs">
-          <button class="vt active" id="vt-month" onclick="setView('month')">חודשי</button>
-          <button class="vt" id="vt-week" onclick="setView('week')">שבועי</button>
+          <button class="vt active" id="vt-m" onclick="setView('month')">חודשי</button>
+          <button class="vt" id="vt-w" onclick="setView('week')">שבועי</button>
         </div>
         <div class="calh">
           <button class="caln" onclick="navCal(-1)">›</button>
@@ -227,8 +274,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         </div>
         <div id="calbody"></div>
         <div class="daypanel" id="daypanel">
-          <div class="dphead">
-            <div class="dptitle" id="dptitle"></div>
+          <div class="dph">
+            <div class="dpt" id="dptitle"></div>
             <button class="dpadd" id="dpadd-btn" onclick="openNewApptForDay()">+ תור</button>
           </div>
           <div id="dplist"></div>
@@ -236,81 +283,120 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- מטופלים -->
     <div class="screen" id="screen-patients">
       <div class="swrap">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         <input class="si" type="text" placeholder="חיפוש לפי שם או טלפון..." oninput="renderPatients(this.value)"/>
       </div>
-      <div class="card" style="padding:4px 14px;"><div id="plist"></div></div>
+      <div class="card" style="padding:4px 13px;"><div id="plist"></div></div>
     </div>
 
+    <!-- חובות -->
     <div class="screen" id="screen-debts">
       <div class="srow">
         <div class="sbox"><div class="slbl">סה"כ חובות</div><div class="sval red" id="stat-d">₪0</div></div>
         <div class="sbox"><div class="slbl">מטופלים חייבים</div><div class="sval" id="stat-n">0</div></div>
       </div>
-      <div class="card" style="padding:4px 14px;"><div id="dlist"></div></div>
+      <div class="card" style="padding:4px 13px;"><div id="dlist"></div></div>
     </div>
 
+    <!-- הגדרות -->
     <div class="screen" id="screen-settings">
       <div class="card">
-        <div class="set-section">
-          <div class="set-title">הגדרות כלליות</div>
-          <div class="set-row"><div class="set-lbl">מחיר ברירת מחדל (₪)</div><input type="number" inputmode="numeric" class="set-input" id="set-price" value="350" min="0"/></div>
-          <div class="set-row"><div class="set-lbl">משך טיפול (דקות)</div><select class="set-select" id="set-duration"><option value="45">45</option><option value="60" selected>60</option><option value="90">90</option></select></div>
-          <div class="set-row"><div class="set-lbl">שעת התחלה</div><select class="set-select" id="set-start"><option>07:00</option><option>08:00</option><option>09:00</option><option selected>10:00</option><option>11:00</option></select></div>
-          <div class="set-row"><div class="set-lbl">שעת סיום</div><select class="set-select" id="set-end"><option>15:00</option><option>16:00</option><option>17:00</option><option selected>18:00</option><option>19:00</option><option>20:00</option></select></div>
-          <div style="padding:8px 0;">
-            <div style="font-size:12px;font-weight:600;color:var(--tm);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">ימי עבודה (ברירת מחדל)</div>
-            <div class="day-chips" id="day-chips">
-              <button class="day-chip active" data-day="0" onclick="this.classList.toggle('active')">א</button>
-              <button class="day-chip active" data-day="1" onclick="this.classList.toggle('active')">ב</button>
-              <button class="day-chip active" data-day="2" onclick="this.classList.toggle('active')">ג</button>
-              <button class="day-chip active" data-day="3" onclick="this.classList.toggle('active')">ד</button>
-              <button class="day-chip active" data-day="4" onclick="this.classList.toggle('active')">ה</button>
-              <button class="day-chip" data-day="5" onclick="this.classList.toggle('active')">ו</button>
-              <button class="day-chip" data-day="6" onclick="this.classList.toggle('active')">ש</button>
-            </div>
+        <div class="set-sec">
+          <div class="set-ttl">כללי</div>
+          <div class="set-row"><div class="set-lbl">מחיר ברירת מחדל (₪)</div><input type="number" inputmode="numeric" class="set-inp" id="set-price" value="350"/></div>
+          <div class="set-row"><div class="set-lbl">משך טיפול (דקות)</div>
+            <select class="set-sel" id="set-dur"><option value="45">45</option><option value="60" selected>60</option><option value="90">90</option><option value="120">120</option></select>
           </div>
         </div>
-        <div class="set-section">
-          <div class="set-title">סוגי סדרות טיפולים</div>
-          <div id="series-types-list"></div>
-          <button class="btn bs" style="margin-top:10px;" onclick="showScreen('add-series-type')">+ הוסף סוג סדרה</button>
+        <div class="set-sec">
+          <div class="set-ttl">לוח שעות שבועי</div>
+          <div class="day-sched" id="day-sched"></div>
+        </div>
+        <div class="set-sec">
+          <div class="set-ttl">סוגי סדרות</div>
+          <div id="ser-types-list"></div>
+          <button class="btn bs" style="margin-top:8px;" onclick="showScreen('add-series-type')">+ הוסף סדרה</button>
+        </div>
+        <div class="set-sec">
+          <div class="set-ttl">ניהול תורים</div>
+          <button class="btn bs" onclick="cleanOrphanAppts()">🧹 הסר תורים ללא מטופל</button>
+        </div>
+        <div class="set-sec">
+          <div class="set-ttl">עריכת טפסי תשאול</div>
+          <button class="btn bs" onclick="editForm('adult','intake')">✏️ טופס ראשוני — מבוגר</button>
+          <button class="btn bs" onclick="editForm('adult','followup')">✏️ טופס המשך — מבוגר</button>
+          <button class="btn bs" onclick="editForm('baby','intake')">✏️ טופס ראשוני — תינוק</button>
+          <button class="btn bs" onclick="editForm('baby','followup')">✏️ טופס המשך — תינוק</button>
+        </div>
+        <div class="set-sec">
+          <div class="set-ttl">התקנה כאפליקציה</div>
+          <button class="btn bs" id="pwa-install-btn" style="display:none;" onclick="installPWA()">📲 הוסף למסך הבית</button>
+          <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ על כפתור השיתוף ↗ בספארי, ואז "הוסף למסך הבית"</div>
         </div>
         <button class="btn bp" onclick="saveSettings()">שמור הגדרות</button>
       </div>
     </div>
 
+    <!-- הוספת סדרה -->
     <div class="screen" id="screen-add-series-type">
       <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">סוג סדרה חדש</div>
-        <div class="fm"><label class="fl">שם הסדרה *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב"/></div>
+        <div class="fm"><label class="fl">שם *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב"/></div>
         <div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="st-count" type="number" inputmode="numeric" value="5" min="2" max="20"/></div>
         <div class="fm"><label class="fl">מחיר לסדרה (₪)</label><input class="fi" id="st-price" type="number" inputmode="numeric" placeholder="1500"/></div>
         <button class="btn bp" onclick="addSeriesType()">הוסף</button>
       </div>
     </div>
 
+    <!-- עריכת טופס -->
+    <div class="screen" id="screen-edit-form">
+      <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <div class="card">
+        <div class="ct" id="ef-title">עריכת טופס</div>
+        <div id="ef-fields"></div>
+        <button class="btn bs" style="margin-top:8px;" onclick="addFormField()">+ הוסף שדה</button>
+        <button class="btn bp" onclick="saveFormFields()">שמור טופס</button>
+      </div>
+    </div>
+
+    <!-- תיק מטופל -->
     <div class="screen" id="screen-patient-file">
       <button class="bbtn" id="fb-back" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div id="pfile"></div>
     </div>
 
+    <!-- מטופל חדש -->
     <div class="screen" id="screen-new-patient">
       <button class="bbtn" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">מטופל חדש</div>
         <div class="fm"><label class="fl">שם מלא *</label><input class="fi" id="np-nm" type="text" placeholder="שם פרטי ושם משפחה" oninput="this.value=this.value.replace(/[0-9]/g,'')"/></div>
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="np-ph" type="tel" inputmode="numeric" placeholder="0501234567" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
-        <div class="fm"><label class="fl">גיל</label><input class="fi" id="np-ag" type="number" inputmode="numeric" placeholder="גיל" min="0" max="120"/></div>
-        <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="np-pr" type="text" placeholder="לדוגמה: כאב גב תחתון"/></div>
-        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="מחיר (ברירת מחדל לפי הגדרות)"/></div>
+        <div class="fm"><label class="fl">גיל</label><input class="fi" id="np-ag" type="number" inputmode="numeric" min="0" max="120" placeholder="גיל"/></div>
+        <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="np-pr" type="text" placeholder="לדוגמה: כאב גב"/></div>
+        <div class="fm"><label class="fl">סוג מטופל</label>
+          <div class="chips">
+            <button class="chip active" id="np-adult" onclick="setPatType('adult')">מבוגר</button>
+            <button class="chip" id="np-baby" onclick="setPatType('baby')">תינוק</button>
+          </div>
+        </div>
+        <div class="fm"><label class="fl">סוג טיפול</label>
+          <div class="chips">
+            <button class="chip active" id="np-single" onclick="setNpTreat('single')">טיפול יחיד</button>
+            <button class="chip" id="np-ser" onclick="setNpTreat('series')">סדרה</button>
+          </div>
+        </div>
+        <div class="fm hidden" id="np-ser-wrap"><label class="fl">בחר סדרה</label><select class="fsl" id="np-ser-type"></select></div>
+        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="לפי הגדרות"/></div>
         <button class="btn bp" onclick="addPatient()">הוסף מטופל</button>
       </div>
     </div>
 
+    <!-- עריכת מטופל -->
     <div class="screen" id="screen-edit-patient">
       <button class="bbtn" id="ep-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
       <div class="card">
@@ -321,11 +407,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
         <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric"/></div>
-        <button class="btn bp" onclick="saveEdit()">שמור שינויים</button>
+        <button class="btn bp" onclick="saveEdit()">שמור</button>
         <button class="btn bd2" onclick="confirmDel()">מחק מטופל</button>
       </div>
     </div>
 
+    <!-- תור חדש -->
     <div class="screen" id="screen-new-appointment">
       <button class="bbtn" onclick="showScreen('calendar')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -333,36 +420,29 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">מטופל *</label><select class="fsl" id="na-pt"></select></div>
         <div class="fm"><label class="fl">תאריך *</label><input class="fi" id="na-dt" type="date"/></div>
         <div class="fm"><label class="fl">שעה *</label><select class="fsl" id="na-tm"></select></div>
-        <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה אופציונלית..."/></div>
-        <div id="na-err" style="color:var(--r500);font-size:13px;margin-top:3px;display:none;"></div>
+        <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה..."/></div>
+        <div id="na-err" style="color:var(--r500);font-size:12px;margin-top:3px;display:none;"></div>
         <button class="btn bp" onclick="addAppointment()">קבע תור</button>
         <button class="btn bgcal hidden" id="gcal-btn" onclick="openGcal()">📅 הוסף לגוגל קלנדר</button>
       </div>
     </div>
 
-    <div class="screen" id="screen-open-series">
-      <button class="bbtn" id="os-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
-      <div class="card">
-        <div class="ct">פתיחת סדרת טיפולים</div>
-        <div class="fm"><label class="fl">סוג הסדרה *</label><select class="fsl" id="os-type" onchange="updateSeriesPreview()"></select></div>
-        <div class="fm"><label class="fl">הערות</label><input class="fi" id="os-notes" type="text" placeholder="הערה אופציונלית..."/></div>
-        <div id="os-preview" style="background:var(--g50);border-radius:var(--rmd);padding:11px;margin-top:8px;font-size:13px;color:var(--g700);display:none;"></div>
-        <button class="btn bp" onclick="openSeries()">פתח סדרה</button>
-      </div>
-    </div>
-
-    <div class="screen" id="screen-add-treatment">
-      <button class="bbtn" id="tr-bk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
-      <div class="card">
-        <div class="ct" id="tr-ttl">רישום טיפול</div>
-        <input type="hidden" id="tr-eid"/>
-        <div class="fm"><label class="fl">תאריך</label><input class="fi" id="tr-dt" type="date"/></div>
-        <div class="fm"><label class="fl">מה נמצא</label><textarea class="ftx" id="tr-fd" placeholder="ממצאים קליניים..."></textarea></div>
-        <div class="fm"><label class="fl">מה נעשה</label><textarea class="ftx" id="tr-dn" placeholder="פעולות שבוצעו..."></textarea></div>
-        <div class="fm"><label class="fl">המלצות להמשך</label><textarea class="ftx" id="tr-rc" placeholder="המלצות למטופל..."></textarea></div>
-        <div class="fm"><label class="fl">סטטוס תשלום</label><div class="chips"><button class="chip active" id="tr-pd" onclick="setTrPay('paid')">שולם</button><button class="chip" id="tr-up" onclick="setTrPay('unpaid')">לא שולם</button></div></div>
-        <div class="fm" id="tr-mw"><label class="fl">אמצעי תשלום</label><div class="chips"><button class="chip active" onclick="selPM(this)">מזומן</button><button class="chip" onclick="selPM(this)">העברה</button><button class="chip" onclick="selPM(this)">אשראי</button><button class="chip" onclick="selPM(this)">ביט</button></div></div>
-        <button class="btn bp" onclick="saveTreatment()">שמור טיפול</button>
+    <!-- זרימת טיפול -->
+    <div class="screen" id="screen-treatment-flow">
+      <button class="bbtn" id="tf-back"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <div class="treat-flow">
+        <div class="tf-header">
+          <div class="tf-patient" id="tf-pname"></div>
+          <div class="tf-time" id="tf-time"></div>
+        </div>
+        <div class="tf-tabs">
+          <button class="tf-tab active" id="tf-tab-intake" onclick="setTfTab('intake')">תשאול</button>
+          <button class="tf-tab" id="tf-tab-summary" onclick="setTfTab('summary')">סיכום טיפול</button>
+        </div>
+        <div class="tf-body">
+          <div id="tf-intake-body"></div>
+          <div id="tf-summary-body" class="hidden"></div>
+        </div>
       </div>
     </div>
 
@@ -383,23 +463,18 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <button class="btn bs" onclick="document.getElementById('del-ov').classList.add('hidden')">ביטול</button></div>
 </div>
 
-<!-- PWA Service Worker registration -->
 <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
-// PWA install prompt
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();deferredPrompt=e;
-  document.getElementById('pwa-banner').classList.remove('hidden');
-});
-window.installPWA=async()=>{
-  if(!deferredPrompt)return;
-  deferredPrompt.prompt();
-  const{outcome}=await deferredPrompt.userChoice;
-  deferredPrompt=null;
-  document.getElementById('pwa-banner').classList.add('hidden');
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='block';});
+window.installPWA=async()=>{if(!deferredPrompt){return;}deferredPrompt.prompt();deferredPrompt=null;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none';};
+window.showPWASection=()=>{
+  const installBtn=document.getElementById('pwa-install-btn');const iosTip=document.getElementById('pwa-ios-tip');
+  if(isStandalone){if(installBtn)installBtn.style.display='none';if(iosTip){iosTip.style.display='block';iosTip.innerHTML='✓ האפליקציה מותקנת על מסך הבית';}}
+  else if(isIOS){if(installBtn)installBtn.style.display='none';if(iosTip)iosTip.style.display='block';}
+  else{if(installBtn)installBtn.style.display=deferredPrompt?'block':'none';if(iosTip)iosTip.style.display='none';}
 };
 </script>
 
@@ -407,28 +482,17 @@ window.installPWA=async()=>{
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const cfg={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
-const fb=initializeApp(cfg);
-const auth=getAuth(fb);const db=getFirestore(fb);const prov=new GoogleAuthProvider();
+const FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
+const fb=initializeApp(FC);const auth=getAuth(fb);const db=getFirestore(fb);const prov=new GoogleAuthProvider();
 let uid=null,unsubP=null,unsubA=null;
-
 function setSt(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
-
 window.doSignIn=async()=>{try{await signInWithPopup(auth,prov);}catch(e){const el=document.getElementById('lerr');el.textContent='שגיאה: '+e.message;el.style.display='block';}};
-window.doSignOut=async()=>{
-  if(unsubP)unsubP();if(unsubA)unsubA();
-  await fbOut(auth);
-  window.pts=[];window.apts=[];window.appCfg=getDefaultCfg();
-  document.getElementById('lview').classList.remove('hidden');
-  document.getElementById('mview').classList.add('hidden');
-};
+window.doSignOut=async()=>{if(unsubP)unsubP();if(unsubA)unsubA();await fbOut(auth);window.pts=[];window.apts=[];window.appCfg=defCfg();document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');};
 window.fbSaveP=async p=>{if(!uid)return;await setDoc(doc(db,'users',uid,'patients',String(p.id)),p);};
 window.fbDelP=async id=>{if(!uid)return;await deleteDoc(doc(db,'users',uid,'patients',String(id)));};
 window.fbSaveA=async a=>{if(!uid)return;await setDoc(doc(db,'users',uid,'appointments',String(a.id)),a);};
 window.fbDelA=async id=>{if(!uid)return;await deleteDoc(doc(db,'users',uid,'appointments',String(id)));};
 window.fbSaveCfg=async c=>{if(!uid)return;await setDoc(doc(db,'users',uid,'config','main'),c);};
-
 onAuthStateChanged(auth,async user=>{
   if(user){
     uid=user.uid;
@@ -436,53 +500,92 @@ onAuthStateChanged(auth,async user=>{
     const mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
-
-    // Load config first (one-time, not realtime — avoids freeze)
-    try{
-      const cfgSnap=await getDoc(doc(db,'users',uid,'config','main'));
-      if(cfgSnap.exists()) window.appCfg={...getDefaultCfg(),...cfgSnap.data()};
-      else window.appCfg=getDefaultCfg();
-    }catch(e){window.appCfg=getDefaultCfg();}
+    try{const s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?{...defCfg(),...s.data()}:defCfg();}catch(e){window.appCfg=defCfg();}
     applySettings();
-
     if(unsubP)unsubP();if(unsubA)unsubA();
-    let pReady=false,aReady=false;
-    const tryRender=()=>{if(pReady&&aReady){window.render();setSt('gr','מסונכרן ✓');}};
-
-    unsubP=onSnapshot(collection(db,'users',uid,'patients'),s=>{
-      window.pts=s.docs.map(d=>d.data());pReady=true;tryRender();setSt('gr','מסונכרן ✓');
-    },()=>{pReady=true;tryRender();setSt('rd','שגיאת חיבור');});
-
-    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),s=>{
-      window.apts=s.docs.map(d=>d.data());aReady=true;tryRender();setSt('gr','מסונכרן ✓');
-    },()=>{aReady=true;tryRender();setSt('rd','שגיאת חיבור');});
-
-  } else {
-    uid=null;
-    document.getElementById('lview').classList.remove('hidden');
-    document.getElementById('mview').classList.add('hidden');
-  }
+    let pr=false,ar=false;
+    const go=()=>{if(pr&&ar){window.render();setSt('gr','מסונכרן ✓');}};
+    unsubP=onSnapshot(collection(db,'users',uid,'patients'),s=>{window.pts=s.docs.map(d=>d.data());pr=true;go();},()=>{pr=true;go();setSt('rd','שגיאת חיבור');});
+    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),s=>{window.apts=s.docs.map(d=>d.data());ar=true;go();},()=>{ar=true;go();setSt('rd','שגיאת חיבור');});
+  } else {uid=null;document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');}
 });
 </script>
 
 <script>
 window.pts=[];window.apts=[];
-
-function getDefaultCfg(){
-  return {price:350,duration:60,start:'10:00',end:'18:00',workDays:[0,1,2,3,4],seriesTypes:[
-    {id:'st1',name:'סדרת בסיס',count:5,price:1500},
-    {id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}
-  ]};
-}
-window.appCfg=getDefaultCfg();
-
 const AVC=['avg','avb','avt','ava'];
 const HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const DS=['א','ב','ג','ד','ה','ו','ש'];
 const DFL=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
+// Default form fields
+const DEF_FORMS={
+  adult:{
+    intake:[
+      {id:'f1',label:'תלונה עיקרית',multi:true},{id:'f2',label:'אזור התלונה',multi:false},
+      {id:'f3',label:'הקרנה + סימנים נוירולוגיים',multi:false},{id:'f4',label:'תחילת הופעת התלונה',multi:false},
+      {id:'f5',label:'השתנות (קבוע/בהחמרה/בהטבה)',multi:false},{id:'f6',label:'אופי הכאב',multi:false},
+      {id:'f7',label:'VAS (0-10)',multi:false},{id:'f8',label:'כאבי לילה',multi:false},
+      {id:'f9',label:'קשיון/כאבי בוקר',multi:false},{id:'f10',label:'גורמים מחמירים',multi:false},
+      {id:'f11',label:'גורמים מקלים',multi:false},{id:'f12',label:'טיפולים אחרים שקיבל',multi:false},
+      {id:'f13',label:'היסטוריה רפואית + תרופות',multi:true},{id:'f14',label:'היסטוריה משפחתית',multi:false},
+      {id:'f15',label:'מערכות',multi:true},{id:'f16',label:'רקע אישי (מצב משפחתי, מקצוע)',multi:false}
+    ],
+    followup:[
+      {id:'fu1',label:'תלונה היום',multi:false},{id:'fu2',label:'VAS',multi:false},
+      {id:'fu3',label:'שינויים מהטיפול הקודם',multi:false},{id:'fu4',label:'הערות',multi:true}
+    ]
+  },
+  baby:{
+    intake:[
+      {id:'b1',label:'תלונה כיום',multi:true},{id:'b2',label:'מתי התחיל',multi:false},
+      {id:'b3',label:'דגלים אדומים (חום/הקאות)',multi:false},{id:'b4',label:'הזנה (תמ"ל/הנקה)',multi:false},
+      {id:'b5',label:'שינה',multi:false},{id:'b6',label:'יציאות',multi:false},
+      {id:'b7',label:'משקל היום',multi:false},{id:'b8',label:'אבני דרך התפתחותיים',multi:false},
+      {id:'b9',label:'בירור רופא',multi:false},{id:'b10',label:'תגובה לחיסונים',multi:false},
+      {id:'b11',label:'היסטוריה רפואית/אשפוזים/ניתוחים',multi:true},{id:'b12',label:'תרופות',multi:false},
+      {id:'b13',label:'לידה — איך התחילה',multi:false},{id:'b14',label:'שבוע לידה + משקל לידה',multi:false},
+      {id:'b15',label:'מים מקוניאלים',multi:false},{id:'b16',label:'משככי כאבים בלידה',multi:false},
+      {id:'b17',label:'התערבויות בלידה',multi:false},{id:'b18',label:'מצג לידה',multi:false},
+      {id:'b19',label:'אשפוז לאחר לידה',multi:false},{id:'b20',label:'הריון — סיבוכים',multi:false},
+      {id:'b21',label:'סכרת/רעלת/כאבים',multi:false},{id:'b22',label:'שמירת הריון',multi:false}
+    ],
+    followup:[
+      {id:'bf1',label:'שינויים מהטיפול הקודם',multi:false},{id:'bf2',label:'הזנה',multi:false},
+      {id:'bf3',label:'שינה',multi:false},{id:'bf4',label:'הערות',multi:true}
+    ]
+  }
+};
+
+function defCfg(){
+  return {
+    price:350,duration:60,
+    schedule:{
+      0:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+      1:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+      2:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+      3:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+      4:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+      5:{active:false,ranges:[{s:'10:00',e:'14:00'}]},
+      6:{active:false,ranges:[]}
+    },
+    seriesTypes:[
+      {id:'st1',name:'סדרת בסיס',count:5,price:1500},
+      {id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}
+    ],
+    forms:{
+      adult:{intake:DEF_FORMS.adult.intake,followup:DEF_FORMS.adult.followup},
+      baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup}
+    }
+  };
+}
+window.appCfg=defCfg();
+
 let calView='month',navDate=ltoday(),selDate=ltoday();
-let curPid=null,trPid=null,trPay='paid',delPid=null,lastAppt=null,editTrNum=null,osPid=null;
+let curPid=null,delPid=null,lastAppt=null;
+let npPatType='adult',npTreatType='single';
+let tfPid=null,tfApptId=null,tfTab='intake';
+let efType=null,efForm=null;
 let sampleLoaded=false;
 
 function ltoday(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
@@ -492,46 +595,54 @@ function dstr(d){return `${d.getFullYear()}-${S2(d.getMonth()+1)}-${S2(d.getDate
 function sToD(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function adMap(){const m={};(window.apts||[]).forEach(a=>{if(!m[a.date])m[a.date]=[];m[a.date].push(a);});return m;}
 function findP(id){return (window.pts||[]).find(x=>String(x.id)===String(id));}
+function avCls(p){if(!p)return 'avg';if(p.patType==='baby')return 'avp';return AVC[(p.color||0)%4];}
+function avSize(s){return `width:${s}px;height:${s}px;font-size:${Math.round(s*0.38)}px`;}
 
-function getHours(){
-  const c=window.appCfg||getDefaultCfg();
-  const s=parseInt((c.start||'10:00'));const e=parseInt((c.end||'18:00'));
-  const h=[];for(let i=s;i<e;i++)h.push(S2(i));return h;
+function getTimeSlotsForDate(ds){
+  const d=sToD(ds);const dow=d.getDay();
+  const cfg=window.appCfg||defCfg();
+  const sched=cfg.schedule||{};
+  const day=sched[dow];
+  if(!day||!day.active)return[];
+  const slots=[];
+  (day.ranges||[]).forEach(r=>{
+    const sh=parseInt(r.s);const eh=parseInt(r.e);
+    for(let h=sh;h<eh;h++)slots.push(S2(h)+':00');
+  });
+  return slots;
 }
 
+// ---- SAMPLE DATA ----
 async function maybeLoadSample(){
   if(sampleLoaded)return;sampleLoaded=true;
   if((window.pts||[]).length>0)return;
   const td=ltoday();
   const fD=o=>{const d=new Date(td.getFullYear(),td.getMonth(),td.getDate()+o);return dstr(d);};
   const SP=[
-    {id:'s1',name:'שרה כהן',phone:'0521234567',age:'45',problem:'כאב גב תחתון כרוני',price:350,color:0,treatments:[
-      {num:1,date:fD(-20),found:'מתח בשרירי הגב התחתון, הגבלה בL4-L5',done:'שחרור מיופשיאלי, מניפולציה עדינה',recommend:'תרגילי מתיחה יומיים',paid:true,amount:350,method:'מזומן'},
-      {num:2,date:fD(-7),found:'שיפור קל, עדיין רגישות',done:'עבודה על האגן והסקרום',recommend:'להמשיך תרגילים',paid:false,amount:350,method:''}
-    ],series:[]},
-    {id:'s2',name:'דוד לוי',phone:'0549876543',age:'38',problem:'כאב צוואר לאחר תאונה',price:300,color:1,treatments:[
-      {num:1,date:fD(-30),found:'נוקשות קשה בC3-C5',done:'מניפולציה עדינה, שחרור עורף',recommend:'הפחתת שימוש במסך',paid:true,amount:300,method:'העברה'},
-      {num:2,date:fD(-16),found:'שיפור בטווח תנועה',done:'עבודה רקמות רכות',recommend:'כרית ארגונומית',paid:true,amount:300,method:'העברה'},
-      {num:3,date:fD(-9),found:'כמעט תקין',done:'שחזור תנועה מלאה',recommend:'תרגול יומי',paid:true,amount:300,method:'ביט'}
-    ],series:[{id:'ser1',typeId:'st1',name:'סדרת בסיס',count:5,price:1500,used:3,open:true,openDate:fD(-30)}]},
-    {id:'s3',name:'מירי אברהם',phone:'0505555555',age:'52',problem:'כאב ברך שמאל לאחר ניתוח',price:350,color:2,treatments:[],series:[]},
-    {id:'s4',name:'יוסי גולן',phone:'0537777777',age:'29',problem:'כאב ראש כרוני',price:300,color:3,treatments:[
-      {num:1,date:fD(-5),found:'מתח בעורף ובסיס הגולגולת',done:'שחרור עורף, קרניו-סקרל',recommend:'שתיית מים, שינה סדירה',paid:false,amount:300,method:''}
-    ],series:[{id:'ser2',typeId:'st2',name:'סדרה אינטנסיבית',count:10,price:2800,used:1,open:true,openDate:fD(-5)}]},
-    {id:'s5',name:'רחל ברק',phone:'0583334444',age:'67',problem:'כאב כתף ימין',price:350,color:0,treatments:[
-      {num:1,date:fD(-3),found:'הגבלה בתנועת הכתף',done:'עבודה על מפרק הכתף',recommend:'חימום לפני פעילות',paid:true,amount:350,method:'אשראי'}
-    ],series:[]},
-    {id:'s6',name:'אלי שמעון',phone:'0528889999',age:'44',problem:'כאב גב עליון',price:300,color:1,treatments:[],series:[]}
+    {id:'s1',name:'שרה כהן',phone:'0521234567',age:'45',problem:'כאב גב תחתון כרוני',price:350,color:0,patType:'adult',treatType:'single',series:null,treatments:[
+      {num:1,date:fD(-20),found:'מתח בשרירי הגב',done:'שחרור מיופשיאלי',recommend:'תרגילי מתיחה',paid:true,amount:350,method:'מזומן',intakeData:{}},
+      {num:2,date:fD(-7),found:'שיפור קל',done:'עבודה על האגן',recommend:'להמשיך תרגילים',paid:false,amount:350,method:'',intakeData:{}}
+    ]},
+    {id:'s2',name:'דוד לוי',phone:'0549876543',age:'38',problem:'כאב צוואר',price:300,color:1,patType:'adult',treatType:'series',
+      series:{typeId:'st1',name:'סדרת בסיס',count:5,price:1500,used:3,openDate:fD(-30)},
+      treatments:[
+        {num:1,date:fD(-30),found:'נוקשות בC3-C5',done:'מניפולציה עדינה',recommend:'הפחתת מסך',paid:true,amount:300,method:'העברה',intakeData:{}},
+        {num:2,date:fD(-16),found:'שיפור',done:'עבודה רכה',recommend:'כרית ארגונומית',paid:true,amount:300,method:'העברה',intakeData:{}},
+        {num:3,date:fD(-9),found:'כמעט תקין',done:'שחזור תנועה',recommend:'תרגול יומי',paid:true,amount:300,method:'ביט',intakeData:{}}
+      ]},
+    {id:'s3',name:'מירי אברהם',phone:'0505555555',age:'52',problem:'כאב ברך שמאל',price:350,color:2,patType:'adult',treatType:'single',series:null,treatments:[]},
+    {id:'s4',name:'יוסי גולן',phone:'0537777777',age:'29',problem:'כאב ראש כרוני',price:300,color:3,patType:'adult',treatType:'series',
+      series:{typeId:'st2',name:'סדרה אינטנסיבית',count:10,price:2800,used:1,openDate:fD(-5)},
+      treatments:[{num:1,date:fD(-5),found:'מתח בעורף',done:'שחרור עורף',recommend:'שתיית מים',paid:false,amount:300,method:'',intakeData:{}}]},
+    {id:'s5',name:'נועם ברק',phone:'0521112233',age:'0.3',problem:'קוליק וקשיי הנקה',price:350,color:0,patType:'baby',treatType:'single',series:null,
+      treatments:[{num:1,date:fD(-10),found:'מתח בעצמות הגולגולת',done:'קרניו-סקרל עדין',recommend:'עמדות הנקה',paid:true,amount:350,method:'מזומן',intakeData:{}}]},
+    {id:'s6',name:'אלי שמעון',phone:'0528889999',age:'44',problem:'כאב גב עליון',price:300,color:1,patType:'adult',treatType:'single',series:null,treatments:[]}
   ];
   const SA=[
-    {id:'a1',patientId:'s1',date:fD(0),time:'10:00',notes:''},
-    {id:'a2',patientId:'s2',date:fD(0),time:'11:00',notes:'טיפול 4 בסדרה'},
-    {id:'a3',patientId:'s4',date:fD(0),time:'14:00',notes:''},
-    {id:'a4',patientId:'s3',date:fD(1),time:'09:00',notes:'ביקור ראשון'},
-    {id:'a5',patientId:'s5',date:fD(2),time:'11:00',notes:''},
-    {id:'a6',patientId:'s6',date:fD(3),time:'10:00',notes:''},
-    {id:'a7',patientId:'s1',date:fD(7),time:'10:00',notes:''},
-    {id:'a8',patientId:'s2',date:fD(5),time:'15:00',notes:''},
+    {id:'a1',patientId:'s1',date:fD(0),time:'10:00',notes:''},{id:'a2',patientId:'s2',date:fD(0),time:'11:00',notes:''},
+    {id:'a3',patientId:'s4',date:fD(0),time:'14:00',notes:''},{id:'a4',patientId:'s3',date:fD(1),time:'10:00',notes:''},
+    {id:'a5',patientId:'s5',date:fD(2),time:'11:00',notes:''},{id:'a6',patientId:'s6',date:fD(3),time:'10:00',notes:''},
+    {id:'a7',patientId:'s1',date:fD(7),time:'10:00',notes:''},{id:'a8',patientId:'s2',date:fD(5),time:'11:00',notes:''}
   ];
   for(const p of SP)await window.fbSaveP(p);
   for(const a of SA)await window.fbSaveA(a);
@@ -539,488 +650,580 @@ async function maybeLoadSample(){
 
 // ---- SETTINGS ----
 function applySettings(){
-  const c=window.appCfg||getDefaultCfg();
+  const c=window.appCfg||defCfg();
   const sp=document.getElementById('set-price');if(sp)sp.value=c.price||350;
-  const sd=document.getElementById('set-duration');if(sd)sd.value=c.duration||60;
-  const ss=document.getElementById('set-start');if(ss)ss.value=c.start||'10:00';
-  const se=document.getElementById('set-end');if(se)se.value=c.end||'18:00';
-  document.querySelectorAll('.day-chip').forEach(el=>{
-    el.classList.toggle('active',(c.workDays||[0,1,2,3,4]).includes(parseInt(el.dataset.day)));
-  });
-  renderSeriesTypes();rebuildTimeSelect();
+  const sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
+  renderDaySchedule();renderSerTypes();
+}
+
+function renderDaySchedule(){
+  const c=window.appCfg||defCfg();const sched=c.schedule||{};
+  const el=document.getElementById('day-sched');if(!el)return;
+  el.innerHTML=DS.map((d,i)=>{
+    const day=sched[i]||{active:false,ranges:[{s:'10:00',e:'18:00'}]};
+    const ranges=(day.ranges||[{s:'10:00',e:'18:00'}]).map((r,ri)=>`
+      <span style="display:inline-flex;align-items:center;gap:3px;margin-bottom:3px;">
+        <input class="time-inp" value="${r.s}" onchange="updateRange(${i},${ri},'s',this.value)" placeholder="09:00"/>
+        <span style="font-size:10px;color:var(--tm)">עד</span>
+        <input class="time-inp" value="${r.e}" onchange="updateRange(${i},${ri},'e',this.value)" placeholder="18:00"/>
+        ${ri>0?`<button class="del-range" onclick="delRange(${i},${ri})">✕</button>`:''}
+      </span>`).join('');
+    return `<div class="day-sched-row">
+      <div class="day-name">${d}</div>
+      <button class="day-toggle ${day.active?'on':'off'}" id="dtog-${i}" onclick="toggleDay(${i})"></button>
+      <div class="time-range" id="ranges-${i}" style="display:${day.active?'flex':'none'};flex-direction:column;">
+        ${ranges}
+        <button class="add-range" onclick="addRange(${i})">+ שעות נוספות</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDay(i){
+  const c=window.appCfg||defCfg();
+  if(!c.schedule[i])c.schedule[i]={active:false,ranges:[{s:'10:00',e:'18:00'}]};
+  c.schedule[i].active=!c.schedule[i].active;
+  window.appCfg=c;renderDaySchedule();
+}
+function updateRange(di,ri,key,val){
+  const c=window.appCfg||defCfg();
+  if(!c.schedule[di]||!c.schedule[di].ranges[ri])return;
+  c.schedule[di].ranges[ri][key]=val;window.appCfg=c;
+}
+function addRange(di){
+  const c=window.appCfg||defCfg();
+  if(!c.schedule[di])c.schedule[di]={active:true,ranges:[]};
+  c.schedule[di].ranges.push({s:'15:00',e:'18:00'});window.appCfg=c;renderDaySchedule();
+}
+function delRange(di,ri){
+  const c=window.appCfg||defCfg();
+  c.schedule[di].ranges.splice(ri,1);window.appCfg=c;renderDaySchedule();
 }
 
 async function saveSettings(){
-  const workDays=[];
-  document.querySelectorAll('.day-chip.active').forEach(el=>workDays.push(parseInt(el.dataset.day)));
-  window.appCfg={...window.appCfg,
-    price:parseInt(document.getElementById('set-price').value)||350,
-    duration:parseInt(document.getElementById('set-duration').value)||60,
-    start:document.getElementById('set-start').value,
-    end:document.getElementById('set-end').value,
-    workDays
-  };
-  await window.fbSaveCfg(window.appCfg);
+  const c=window.appCfg||defCfg();
+  c.price=parseInt(document.getElementById('set-price').value)||350;
+  c.duration=parseInt(document.getElementById('set-dur').value)||60;
+  window.appCfg=c;
+  await window.fbSaveCfg(c);
   rebuildTimeSelect();
   alert('ההגדרות נשמרו ✓');
 }
 
-function renderSeriesTypes(){
+function renderSerTypes(){
   const types=(window.appCfg.seriesTypes||[]);
-  const el=document.getElementById('series-types-list');if(!el)return;
-  if(!types.length){el.innerHTML='<div style="color:var(--tm);font-size:13px;padding:8px 0;">אין סדרות מוגדרות</div>';return;}
-  el.innerHTML=types.map(t=>`<div class="series-type-item">
-    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.name}</div><div style="font-size:12px;color:var(--tm);">${t.count} טיפולים · ₪${(t.price||0).toLocaleString()}</div></div>
-    <button onclick="delSeriesType('${t.id}')" style="background:var(--r50);border:none;border-radius:5px;padding:3px 9px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">מחק</button>
+  const el=document.getElementById('ser-types-list');if(!el)return;
+  if(!types.length){el.innerHTML='<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין סדרות</div>';return;}
+  el.innerHTML=types.map(t=>`<div class="ser-type-item">
+    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.name}</div><div style="font-size:11px;color:var(--tm);">${t.count} טיפולים · ₪${(t.price||0).toLocaleString()}</div></div>
+    <button onclick="delSerType('${t.id}')" style="background:var(--r50);border:none;border-radius:5px;padding:3px 8px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">מחק</button>
   </div>`).join('');
 }
 
 async function addSeriesType(){
-  const name=document.getElementById('st-name').value.trim();
-  if(!name){alert('נא להזין שם');return;}
+  const name=document.getElementById('st-name').value.trim();if(!name){alert('נא להזין שם');return;}
   const t={id:'st'+Date.now(),name,count:parseInt(document.getElementById('st-count').value)||5,price:parseInt(document.getElementById('st-price').value)||0};
   window.appCfg.seriesTypes=[...(window.appCfg.seriesTypes||[]),t];
   await window.fbSaveCfg(window.appCfg);
   showScreen('settings');
 }
-
-async function delSeriesType(id){
+async function delSerType(id){
   if(!confirm('למחוק?'))return;
   window.appCfg.seriesTypes=(window.appCfg.seriesTypes||[]).filter(t=>t.id!==id);
-  await window.fbSaveCfg(window.appCfg);
-  renderSeriesTypes();
+  await window.fbSaveCfg(window.appCfg);renderSerTypes();
 }
 
-function rebuildTimeSelect(){
-  const hrs=getHours();
+async function cleanOrphanAppts(){
+  const ids=new Set((window.pts||[]).map(p=>String(p.id)));
+  const orphans=(window.apts||[]).filter(a=>!ids.has(String(a.patientId)));
+  if(!orphans.length){alert('אין תורים לא משויכים ✓');return;}
+  if(!confirm(`נמצאו ${orphans.length} תורים ללא מטופל. למחוק?`))return;
+  for(const a of orphans){window.apts=(window.apts||[]).filter(x=>x.id!==a.id);await window.fbDelA(a.id);}
+  alert('נוקה ✓');render();
+}
+
+function rebuildTimeSelect(ds){
   const sel=document.getElementById('na-tm');if(!sel)return;
-  sel.innerHTML=hrs.map(h=>`<option>${h}:00</option>`).join('');
+  const dateStr=ds||document.getElementById('na-dt').value||todayStr();
+  const slots=getTimeSlotsForDate(dateStr);
+  sel.innerHTML=slots.length?slots.map(s=>`<option>${s}</option>`).join(''):'<option>אין שעות פנויות</option>';
 }
 
-// ---- ALERTS ----
-window.render=function(){
-  maybeLoadSample();
-  renderCal();renderPatients();renderDebts();renderAlerts();
-};
+// ---- FORM EDITOR ----
+function editForm(type,form){
+  efType=type;efForm=form;
+  const titles={adult:{intake:'טופס ראשוני — מבוגר',followup:'טופס המשך — מבוגר'},baby:{intake:'טופס ראשוני — תינוק',followup:'טופס המשך — תינוק'}};
+  document.getElementById('ef-title').textContent=titles[type][form];
+  renderFormFields();showScreen('edit-form');
+}
+
+function getFormFields(){
+  const cfg=window.appCfg||defCfg();
+  return((cfg.forms||{})[efType]||{})[efForm]||DEF_FORMS[efType][efForm]||[];
+}
+
+function renderFormFields(){
+  const fields=getFormFields();
+  document.getElementById('ef-fields').innerHTML=fields.map((f,i)=>`
+    <div class="form-field-item" id="ff-${i}">
+      <span class="drag-handle">⠿</span>
+      <input value="${f.label}" id="ff-lbl-${i}" placeholder="שם שדה"/>
+      <select style="padding:4px 6px;border:1px solid var(--bd);border-radius:5px;font-size:12px;font-family:Heebo,sans-serif;" id="ff-type-${i}">
+        <option value="false" ${!f.multi?'selected':''}>שורה</option>
+        <option value="true" ${f.multi?'selected':''}>פסקה</option>
+      </select>
+      <button onclick="delFormField(${i})" style="background:var(--r50);border:none;border-radius:5px;padding:3px 8px;font-size:12px;color:var(--r700);cursor:pointer;">✕</button>
+    </div>`).join('');
+}
+
+function addFormField(){
+  const fields=getFormFields();
+  const cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={adult:{intake:[...DEF_FORMS.adult.intake],followup:[...DEF_FORMS.adult.followup]},baby:{intake:[...DEF_FORMS.baby.intake],followup:[...DEF_FORMS.baby.followup]}};
+  if(!cfg.forms[efType])cfg.forms[efType]={intake:[...DEF_FORMS[efType].intake],followup:[...DEF_FORMS[efType].followup]};
+  cfg.forms[efType][efForm]=[...fields,{id:'ff'+Date.now(),label:'שדה חדש',multi:false}];
+  window.appCfg=cfg;renderFormFields();
+}
+
+function delFormField(i){
+  const fields=getFormFields();fields.splice(i,1);
+  const cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={};if(!cfg.forms[efType])cfg.forms[efType]={};
+  cfg.forms[efType][efForm]=fields;window.appCfg=cfg;renderFormFields();
+}
+
+async function saveFormFields(){
+  const fields=getFormFields();
+  const cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={};if(!cfg.forms[efType])cfg.forms[efType]={};
+  const saved=fields.map((f,i)=>({...f,label:document.getElementById('ff-lbl-'+i).value.trim(),multi:document.getElementById('ff-type-'+i).value==='true'}));
+  cfg.forms[efType][efForm]=saved;window.appCfg=cfg;
+  await window.fbSaveCfg(cfg);alert('נשמר ✓');showScreen('settings');
+}
+
+// ---- RENDER ----
+window.render=function(){maybeLoadSample();renderCal();renderPatients();renderDebts();renderAlerts();};
 
 function renderAlerts(){
   const bar=document.getElementById('alerts-bar');if(!bar)return;
   const rows=[];
   const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
-  if(drs.length>0){
-    const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
-    rows.push(`<div class="alert-row amber">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      <span>${drs.length} מטופלים עם חוב — ₪${tot.toLocaleString()}</span>
-      <span class="alert-link" onclick="showScreen('debts')">לצפייה ←</span>
-    </div>`);
-  }
-  const now=new Date();const nowMins=now.getHours()*60+now.getMinutes();
-  const ts=todayStr();const dur=parseInt((window.appCfg||{}).duration||60);
-  const reminders=[];
+  if(drs.length){const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
+    rows.push(`<div class="arow amber"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>${drs.length} מטופלים עם חוב — ₪${tot.toLocaleString()}</span><span class="alink" onclick="showScreen('debts')">לצפייה ←</span></div>`);}
+  const ts=todayStr();const now=new Date();const nowM=now.getHours()*60+now.getMinutes();const dur=parseInt((window.appCfg||{}).duration||60);
+  const rems=[];
   (window.apts||[]).forEach(a=>{
-    if(a.date>ts)return;
-    const p=findP(a.patientId);if(!p)return;
+    if(a.date>ts)return;const p=findP(a.patientId);if(!p)return;
     const[ah,am]=a.time.split(':').map(Number);
-    const isPastDay=a.date<ts;
-    const isTodayEnded=a.date===ts&&nowMins>=(ah*60+am+dur+30);
-    if(!isPastDay&&!isTodayEnded)return;
-    if(!(p.treatments||[]).some(t=>t.date===a.date)) reminders.push({p,a});
+    if(a.date===ts&&nowM<(ah*60+am+dur+30))return;
+    if(!(p.treatments||[]).some(t=>t.date===a.date))rems.push({p,a});
   });
-  if(reminders.length>0){
-    const f=reminders[0];
-    rows.push(`<div class="alert-row red">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-      <span>טיפול ב${f.p.name} ${f.a.date===ts?'היום':'ב-'+f.a.date} לא תועד${reminders.length>1?' (+'+(reminders.length-1)+')':''}</span>
-      <span class="alert-link" onclick="openAddTreat('${f.p.id}')">לרישום ←</span>
-    </div>`);
-  }
+  if(rems.length){const f=rems[0];
+    rows.push(`<div class="arow red"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg><span>טיפול ב${f.p.name} ${f.a.date===ts?'היום':'ב-'+f.a.date} לא תועד${rems.length>1?' (+'+(rems.length-1)+')':''}</span><span class="alink" onclick="openTreatFlow('${f.p.id}','${f.a.id}')">לרישום ←</span></div>`);}
   bar.innerHTML=rows.join('');
 }
 
 // ---- CALENDAR ----
-function setView(v){
-  calView=v;navDate=ltoday();selDate=ltoday();
-  document.getElementById('vt-month').classList.toggle('active',v==='month');
-  document.getElementById('vt-week').classList.toggle('active',v==='week');
-  document.getElementById('daypanel').style.display=v==='month'?'block':'none';
-  renderCal();
-}
-function navCal(dir){
-  if(calView==='month') navDate=new Date(navDate.getFullYear(),navDate.getMonth()+dir,1);
-  else navDate=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()+dir*7);
-  renderCal();
-}
-function renderCal(){
-  if(calView==='month'){renderMonth();renderDayPanel();}
-  else renderWeek();
-}
+function setView(v){calView=v;navDate=ltoday();selDate=ltoday();document.getElementById('vt-m').classList.toggle('active',v==='month');document.getElementById('vt-w').classList.toggle('active',v==='week');document.getElementById('daypanel').style.display=v==='month'?'block':'none';renderCal();}
+function navCal(dir){if(calView==='month')navDate=new Date(navDate.getFullYear(),navDate.getMonth()+dir,1);else navDate=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()+dir*7);renderCal();}
+function renderCal(){if(calView==='month'){renderMonth();renderDayPanel();}else renderWeek();}
+
 function renderMonth(){
   const y=navDate.getFullYear(),m=navDate.getMonth();
   document.getElementById('calt').textContent=`${HM[m]} ${y}`;
-  const sdow=new Date(y,m,1).getDay();
-  const dim=new Date(y,m+1,0).getDate();
-  const prevD=new Date(y,m,0).getDate();
-  const ts=todayStr();const ss=dstr(selDate);const ad=adMap();
+  const sdow=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),prevD=new Date(y,m,0).getDate();
+  const ts=todayStr(),ss=dstr(selDate),ad=adMap();
   let h='<div class="mgrid">';
   DS.forEach(d=>h+=`<div class="mdn">${d}</div>`);
-  for(let i=0;i<sdow;i++) h+=`<div class="mday other"><div class="dn">${prevD-sdow+i+1}</div></div>`;
+  for(let i=0;i<sdow;i++)h+=`<div class="mday other"><div class="dn">${prevD-sdow+i+1}</div></div>`;
   for(let d=1;d<=dim;d++){
-    const ds=`${y}-${S2(m+1)}-${S2(d)}`;
-    const isT=ds===ts,isSel=ds===ss&&!isT;
-    const aps=ad[ds]||[];
-    let dots='';
+    const ds=`${y}-${S2(m+1)}-${S2(d)}`;const isT=ds===ts,isSel=ds===ss&&!isT;
+    const aps=ad[ds]||[];let dots='';
     if(aps.length){const hd=aps.some(a=>{const p=findP(a.patientId);return p&&p.treatments&&p.treatments.some(t=>!t.paid);});dots=`<div class="ddots"><div class="dd ${hd?'r':'g'}"></div></div>`;}
     h+=`<div class="mday${isT?' today':''}${isSel?' sel':''}" onclick="selDay('${ds}')"><div class="dn">${d}</div>${dots}</div>`;
   }
-  const rem=(sdow+dim)%7;if(rem>0)for(let i=1;i<=7-rem;i++) h+=`<div class="mday other"><div class="dn">${i}</div></div>`;
+  const rem=(sdow+dim)%7;if(rem>0)for(let i=1;i<=7-rem;i++)h+=`<div class="mday other"><div class="dn">${i}</div></div>`;
   document.getElementById('calbody').innerHTML=h+'</div>';
 }
+
 function renderWeek(){
-  const dow=navDate.getDay();
-  const sun=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()-dow);
-  const sat=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+6);
+  const dow=navDate.getDay();const sun=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()-dow);const sat=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+6);
   document.getElementById('calt').textContent=`${sun.getDate()} ${HM[sun.getMonth()]} – ${sat.getDate()} ${HM[sat.getMonth()]}`;
   document.getElementById('daypanel').style.display='none';
-  const ts=todayStr();const ad=adMap();
+  const ts=todayStr(),ad=adMap();
   const days=[];for(let i=0;i<7;i++){const d=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i);days.push(d);}
-  const hrs=getHours();
+  // gather all hour slots across all days
+  const allSlots=new Set();days.forEach(d=>{getTimeSlotsForDate(dstr(d)).forEach(s=>allSlots.add(s));});
+  const hrs=[...allSlots].sort();
   let h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:40px repeat(7,1fr);margin-bottom:2px;"><div></div>';
-  days.forEach(d=>{
-    const ds=dstr(d);const isT=ds===ts;
-    h+=`<div style="text-align:center;padding:3px 1px;"><div style="font-size:10px;font-weight:600;color:${isT?'var(--ac)':'var(--tm)'};">${DS[d.getDay()]}</div><div style="font-size:12px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;${isT?'background:var(--ac);color:#fff;':''}">${d.getDate()}</div></div>`;
-  });
+  days.forEach(d=>{const ds=dstr(d);const isT=ds===ts;h+=`<div style="text-align:center;padding:2px 1px;"><div style="font-size:9px;font-weight:700;color:${isT?'var(--ac)':'var(--tm)'};">${DS[d.getDay()]}</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;${isT?'background:var(--ac);color:#fff;':''}">${d.getDate()}</div></div>`;});
   h+='</div><div style="display:grid;grid-template-columns:40px repeat(7,1fr);">';
   hrs.forEach(hr=>{
     h+=`<div class="wtl">${hr}</div>`;
     days.forEach(d=>{
-      const ds=dstr(d);const isPast=ds<ts;
-      const appt=(ad[ds]||[]).find(a=>a.time===`${hr}:00`);
+      const ds=dstr(d);const isPast=ds<ts;const avail=getTimeSlotsForDate(ds).includes(hr);
+      const appt=(ad[ds]||[]).find(a=>a.time===hr);
       if(appt){
-        const p=findP(appt.patientId);
-        const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
-        const isSer=p&&(p.series||[]).some(s=>s.open);
-        const cls=hd?'wrd':isSer?'wgr':'wbl';
-        h+=`<div class="wcell" onclick="openPatient('${appt.patientId}')"><div class="wappt ${cls}">${p?p.name.split(' ')[0]:''}</div></div>`;
-      } else if(isPast){
-        h+=`<div class="wcell" style="background:var(--sf2);opacity:0.4;cursor:default;"></div>`;
+        const p=findP(appt.patientId);const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
+        const isSer=p&&p.treatType==='series';const isBaby=p&&p.patType==='baby';
+        const cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
+        h+=`<div class="wcell" onclick="openTreatFlow('${appt.patientId}','${appt.id}')"><div class="wappt ${cls}">${p?p.name.split(' ')[0]:''}</div></div>`;
+      } else if(!avail||isPast){
+        h+=`<div class="wcell" style="background:var(--sf2);opacity:0.35;cursor:default;"></div>`;
       } else {
-        h+=`<div class="wcell" onclick="openNewApptAt('${ds}','${hr}:00')"></div>`;
+        h+=`<div class="wcell" onclick="openNewApptAt('${ds}','${hr}')"></div>`;
       }
     });
   });
   document.getElementById('calbody').innerHTML=h+'</div></div>';
 }
+
 function renderDayPanel(){
-  const ds=dstr(selDate);const ad=adMap();
-  const dayApts=(ad[ds]||[]).sort((a,b)=>a.time.localeCompare(b.time));
-  const isPast=ds<todayStr();
+  const ds=dstr(selDate);const ad=adMap();const dayApts=(ad[ds]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  const isPast=ds<todayStr();const avail=getTimeSlotsForDate(ds).length>0;
   document.getElementById('dptitle').textContent=`${DFL[selDate.getDay()]}, ${selDate.getDate()} ${HM[selDate.getMonth()]}`;
-  document.getElementById('dpadd-btn').style.display=isPast?'none':'block';
-  if(!dayApts.length){document.getElementById('dplist').innerHTML=`<div style="color:var(--tm);font-size:13px;padding:8px 0;text-align:center;">${isPast?'לא היו תורים':'אין תורים ביום זה'}</div>`;return;}
+  document.getElementById('dpadd-btn').style.display=(isPast||!avail)?'none':'block';
+  if(!dayApts.length){document.getElementById('dplist').innerHTML=`<div style="color:var(--tm);font-size:12px;padding:7px 0;text-align:center;">${isPast?'לא היו תורים':'אין תורים ביום זה'}</div>`;return;}
   document.getElementById('dplist').innerHTML=dayApts.map(a=>{
-    const p=findP(a.patientId);const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
-    return `<div class="aitem" onclick="openPatient('${a.patientId}')">
+    const p=findP(a.patientId);const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);const isBaby=p&&p.patType==='baby';
+    return `<div class="aitem" onclick="openTreatFlow('${a.patientId}','${a.id}')">
       <div class="atb"><div class="ath">${a.time}</div></div>
-      <div class="pav ${AVC[(p?p.color:0)%4]}" style="width:36px;height:36px;font-size:13px;">${p?p.name.charAt(0):'?'}</div>
-      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${p?p.name:''}</div><div style="font-size:11px;color:var(--tm);">${p?p.problem:''}</div></div>
+      <div class="pav ${avCls(p)}" style="${avSize(36)}">${p?p.name.charAt(0):'?'}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${p?p.name:''}</div><div style="font-size:11px;color:var(--tm);">${p?p.problem:''}${isBaby?' 👶':''}</div></div>
       ${hd?'<span class="badge br">חוב</span>':''}
-      ${!isPast?`<button onclick="event.stopPropagation();delAppt('${a.id}','${a.patientId}')" style="background:var(--r50);border:none;border-radius:5px;padding:3px 8px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;flex-shrink:0;">ביטול</button>`:''}
+      ${!isPast?`<button onclick="event.stopPropagation();delAppt('${a.id}','${a.patientId}')" style="background:var(--r50);border:none;border-radius:5px;padding:2px 7px;font-size:10px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;flex-shrink:0;">ביטול</button>`:''}
     </div>`;
   }).join('');
 }
+
 function selDay(ds){selDate=sToD(ds);navDate=new Date(selDate);renderCal();}
-function openNewApptForDay(){openNewApptAt(dstr(selDate),getHours()[0]+':00');}
-function openNewApptAt(ds,time){openNewAppt();document.getElementById('na-dt').value=ds;document.getElementById('na-tm').value=time;}
+function openNewApptForDay(){const slots=getTimeSlotsForDate(dstr(selDate));openNewApptAt(dstr(selDate),slots[0]||'10:00');}
+function openNewApptAt(ds,time){openNewAppt();document.getElementById('na-dt').value=ds;rebuildTimeSelect(ds);document.getElementById('na-tm').value=time;}
+
+// ---- TREATMENT FLOW ----
+window.openTreatFlow=function(pid,apptId){
+  tfPid=String(pid);tfApptId=String(apptId);
+  const p=findP(pid);if(!p)return;
+  const a=(window.apts||[]).find(x=>String(x.id)===String(apptId));
+  const isFirst=!(p.treatments&&p.treatments.length);
+  document.getElementById('tf-pname').textContent=p.name+(p.patType==='baby'?' 👶':'');
+  document.getElementById('tf-time').textContent=a?`${a.date} · ${a.time}`:'';
+  document.getElementById('tf-back').onclick=()=>{selDay(a?a.date:todayStr());showScreen('calendar');};
+  // build intake tab
+  const cfg=window.appCfg||defCfg();
+  const formType=p.patType==='baby'?'baby':'adult';
+  const formKey=isFirst?'intake':'followup';
+  const fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
+  const existingData=(p.treatments||[]).find(t=>t.date===(a?a.date:''))||{};
+  const iData=existingData.intakeData||{};
+  let intakeHtml=`<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn bp" style="flex:1;margin-top:0;font-size:12px;" onclick="setTfTab('summary')">דלג לסיכום טיפול →</button>
+  </div>`;
+  intakeHtml+=`<div class="tf-section"><div class="tf-sec-title">${isFirst?'תשאול ראשוני':'תשאול המשך'}</div>`;
+  fields.forEach(f=>{
+    const val=iData[f.id]||'';
+    intakeHtml+=`<div class="intake-field"><label class="intake-label">${f.label}</label>${f.multi?`<textarea class="intake-input" id="if-${f.id}" style="min-height:60px;">${val}</textarea>`:`<input class="intake-input" id="if-${f.id}" value="${val}" type="text"/>`}</div>`;
+  });
+  intakeHtml+='</div>';
+  intakeHtml+=`<button class="btn bp" onclick="saveIntakeAndGoSummary()">המשך לסיכום טיפול →</button>`;
+  document.getElementById('tf-intake-body').innerHTML=intakeHtml;
+  // build summary tab
+  buildSummaryTab(p,a,existingData);
+  setTfTab('intake');
+  showScreen('treatment-flow');
+};
+
+function setTfTab(tab){
+  tfTab=tab;
+  document.getElementById('tf-tab-intake').classList.toggle('active',tab==='intake');
+  document.getElementById('tf-tab-summary').classList.toggle('active',tab==='summary');
+  document.getElementById('tf-intake-body').classList.toggle('hidden',tab!=='intake');
+  document.getElementById('tf-summary-body').classList.toggle('hidden',tab!=='summary');
+}
+
+function getIntakeData(){
+  const p=findP(tfPid);if(!p)return{};
+  const cfg=window.appCfg||defCfg();const formType=p.patType==='baby'?'baby':'adult';
+  const isFirst=!(p.treatments&&p.treatments.length);const formKey=isFirst?'intake':'followup';
+  const fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
+  const data={};
+  fields.forEach(f=>{const el=document.getElementById('if-'+f.id);if(el)data[f.id]=el.value;});
+  return data;
+}
+
+function saveIntakeAndGoSummary(){
+  setTfTab('summary');
+}
+
+function buildSummaryTab(p,a,existingData){
+  const ed=existingData.intakeData?existingData:{};
+  const trPay=ed.paid?'paid':'unpaid';
+  const method=ed.method||'מזומן';
+  const hasDoneTreatment=(p.treatments||[]).length>0||(existingData&&existingData.num>0);
+  const price=(p.treatType==='series'&&p.series&&hasDoneTreatment)?(Math.round(p.series.price/p.series.count)):p.price||350;
+  const seriesNote=(!hasDoneTreatment&&p.treatType==='series')?'<div style="background:var(--a50);border:1px solid var(--a100);border-radius:var(--rsm);padding:7px 10px;font-size:11px;color:var(--a700);margin-bottom:8px;">⚠ מחיר הסדרה יחול מהטיפול הראשון ואילך. הטיפול הנוכחי מחושב כטיפול יחיד.</div>':'';
+
+  let h=`<div class="tf-section">${seriesNote}<div class="tf-sec-title">סיכום טיפול</div>`;
+  h+=`<div class="intake-field"><label class="intake-label">TCS</label><textarea class="intake-input" id="sum-tcs" style="min-height:50px;">${ed.tcs||''}</textarea></div>`;
+  h+=`<div class="intake-field"><label class="intake-label">מה בוצע בטיפול</label><textarea class="intake-input" id="sum-done" style="min-height:80px;">${ed.done||''}</textarea></div>`;
+  h+=`<div class="intake-field"><label class="intake-label">ממצאים</label><textarea class="intake-input" id="sum-found" style="min-height:60px;">${ed.found||''}</textarea></div>`;
+  h+=`<div class="intake-field"><label class="intake-label">המלצות/טיפים</label><textarea class="intake-input" id="sum-rec" style="min-height:60px;">${ed.recommend||''}</textarea></div>`;
+  h+=`<div class="intake-field"><label class="intake-label">תרגילים</label><input class="intake-input" id="sum-ex" value="${ed.exercises||''}"/></div>`;
+  h+='</div>';
+  h+=`<div class="tf-section"><div class="tf-sec-title">תשלום · ₪${price.toLocaleString()} לטיפול</div>`;
+  h+=`<div style="display:flex;gap:7px;margin-bottom:10px;">
+    <button class="chip ${trPay==='paid'?'active':''}" id="sum-paid-btn" onclick="setSumPay('paid')">שולם</button>
+    <button class="chip ${trPay==='unpaid'?'active':''}" id="sum-unpaid-btn" onclick="setSumPay('unpaid')">לא שולם</button>
+  </div>`;
+  h+=`<div id="sum-method-wrap" style="display:${trPay==='paid'?'flex':'none'};gap:7px;flex-wrap:wrap;margin-bottom:10px;">
+    ${['מזומן','העברה','אשראי','ביט'].map(m=>`<button class="chip ${method===m?'active':''}" onclick="setSumMethod(this,'${m}')">${m}</button>`).join('')}
+  </div></div>`;
+  h+=`<button class="btn bp" onclick="saveTreatmentFlow()">סגור טיפול ושמור</button>`;
+  document.getElementById('tf-summary-body').innerHTML=h;
+}
+
+function setSumPay(v){
+  document.getElementById('sum-paid-btn').classList.toggle('active',v==='paid');
+  document.getElementById('sum-unpaid-btn').classList.toggle('active',v==='unpaid');
+  document.getElementById('sum-method-wrap').style.display=v==='paid'?'flex':'none';
+}
+function setSumMethod(el,m){document.querySelectorAll('#sum-method-wrap .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+
+async function saveTreatmentFlow(){
+  const p=findP(tfPid);if(!p)return;
+  const a=(window.apts||[]).find(x=>String(x.id)===String(tfApptId));
+  const intakeData=getIntakeData();
+  const tcs=document.getElementById('sum-tcs')?.value||'';
+  const done=document.getElementById('sum-done')?.value||'';
+  const found=document.getElementById('sum-found')?.value||'';
+  const rec=document.getElementById('sum-rec')?.value||'';
+  const ex=document.getElementById('sum-ex')?.value||'';
+  const paid=document.getElementById('sum-paid-btn')?.classList.contains('active')??true;
+  const methodEl=document.querySelector('#sum-method-wrap .chip.active');
+  const method=methodEl?methodEl.textContent:'מזומן';
+  const hasDoneTreatment=(p.treatments||[]).length>0||(existingData&&existingData.num>0);
+  const price=(p.treatType==='series'&&p.series&&hasDoneTreatment)?(Math.round(p.series.price/p.series.count)):p.price||350;
+  const seriesNote=(!hasDoneTreatment&&p.treatType==='series')?'<div style="background:var(--a50);border:1px solid var(--a100);border-radius:var(--rsm);padding:7px 10px;font-size:11px;color:var(--a700);margin-bottom:8px;">⚠ מחיר הסדרה יחול מהטיפול הראשון ואילך. הטיפול הנוכחי מחושב כטיפול יחיד.</div>':'';
+
+  p.treatments=p.treatments||[];
+  const tdate=a?a.date:todayStr();
+  const existing=p.treatments.findIndex(t=>t.date===tdate);
+  const tobj={num:existing>=0?p.treatments[existing].num:(p.treatments.length+1),date:tdate,intakeData,tcs,done,found,recommend:rec,exercises:ex,paid,amount:price,method:paid?method:''};
+  if(existing>=0)p.treatments[existing]=tobj;
+  else{
+    p.treatments.push(tobj);
+    if(p.treatType==='series'&&p.series){p.series.used++;if(p.series.used>=p.series.count)p.series.active=false;}
+  }
+  await window.fbSaveP(p);
+  render();
+  const backDs=a?a.date:todayStr();selDate=sToD(backDs);navDate=new Date(selDate);showScreen('calendar');
+}
 
 // ---- PATIENTS ----
 function renderPatients(filter=''){
   const list=document.getElementById('plist');
   const filtered=(window.pts||[]).filter(p=>p.name.includes(filter)||(p.phone&&p.phone.includes(filter)));
-  if(!filtered.length){list.innerHTML='<div style="color:var(--tm);font-size:13px;padding:14px;text-align:center;">לא נמצאו מטופלים</div>';return;}
+  if(!filtered.length){list.innerHTML='<div style="color:var(--tm);font-size:12px;padding:13px;text-align:center;">לא נמצאו מטופלים</div>';return;}
   filtered.sort((a,b)=>a.name.localeCompare(b.name,'he'));
   list.innerHTML=filtered.map(p=>{
     const hd=p.treatments&&p.treatments.some(t=>!t.paid);
     const last=p.treatments&&p.treatments.length?p.treatments[p.treatments.length-1].date:null;
-    const os=(p.series||[]).filter(s=>s.open);
+    const hasSer=p.treatType==='series'&&p.series;const isBaby=p.patType==='baby';
     return `<div class="pi" onclick="openPatient('${p.id}')">
-      <div class="pav ${AVC[(p.color||0)%4]}">${p.name.charAt(0)}</div>
-      <div class="pb"><div class="pn">${p.name}</div><div class="ps">${p.problem||''}${p.phone?' · '+p.phone:''}</div></div>
-      <div class="pr">${hd?'<span class="badge br">חוב</span>':''}${os.map(s=>`<span class="badge bg">${s.name} ${s.used}/${s.count}</span>`).join('')}${last?`<span style="font-size:11px;color:var(--tm);">${last}</span>`:''}</div>
+      <div class="pav ${avCls(p)}" style="${avSize(40)}">${p.name.charAt(0)}</div>
+      <div class="pb"><div class="pn">${p.name}${isBaby?' 👶':''}</div><div class="ps">${p.problem||''}${p.phone?' · '+p.phone:''}</div></div>
+      <div class="pr">${hd?'<span class="badge br">חוב</span>':''}${hasSer?`<span class="badge bg">${p.series.name} ${p.series.used}/${p.series.count}</span>`:''}${last?`<span style="font-size:10px;color:var(--tm);">${last}</span>`:''}</div>
     </div>`;
   }).join('');
 }
 
 window.openPatient=function(id){
-  id=String(id);curPid=id;
-  const p=findP(id);if(!p)return;
-  const hd=p.treatments&&p.treatments.some(t=>!t.paid);
-  const td=p.treatments?p.treatments.filter(t=>!t.paid).reduce((s,t)=>s+(t.amount||0),0):0;
-  const ts=todayStr();
+  id=String(id);curPid=id;const p=findP(id);if(!p)return;
+  const hd=p.treatments&&p.treatments.some(t=>!t.paid);const td=p.treatments?p.treatments.filter(t=>!t.paid).reduce((s,t)=>s+(t.amount||0),0):0;
+  const ts=todayStr();const hasSer=p.treatType==='series'&&p.series;
   const upcoming=(window.apts||[]).filter(a=>String(a.patientId)===id&&a.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).slice(0,3);
-  const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdl);">
-    <span style="font-size:12px;color:var(--tm);min-width:80px;">${a.date}</span>
-    <span style="font-size:13px;font-weight:600;color:var(--ac);">${a.time}</span>
-    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:3px 9px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>
-  </div>`).join(''):'<div style="color:var(--tm);font-size:13px;padding:7px 0;">אין תורים קרובים</div>';
-  const now=new Date();const nowM=now.getHours()*60+now.getMinutes();
-  const dur=parseInt((window.appCfg||{}).duration||60);
-  const pendingTr=(window.apts||[]).filter(a=>{
-    if(String(a.patientId)!==id||a.date>ts)return false;
-    const[ah,am]=a.time.split(':').map(Number);
-    const isPastDay=a.date<ts;const isTodayEnded=a.date===ts&&nowM>=(ah*60+am+dur+30);
-    if(!isPastDay&&!isTodayEnded)return false;
-    return !(p.treatments||[]).some(t=>t.date===a.date);
-  });
-  const trRem=pendingTr.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:9px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
-    <span style="font-size:13px;color:var(--r700);flex:1;">טיפול ב-${pendingTr[0].date} לא תועד</span>
-    <button onclick="openAddTreat('${id}')" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button>
+  const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--bdl);">
+    <span style="font-size:11px;color:var(--tm);min-width:76px;">${a.date}</span>
+    <span style="font-size:12px;font-weight:600;color:var(--ac);">${a.time}</span>
+    <button onclick="openTreatFlow('${id}','${a.id}')" style="background:var(--g50);border:1px solid var(--g200);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--g700);cursor:pointer;font-family:Heebo,sans-serif;font-weight:600;">פתח טיפול</button>
+    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:2px 7px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>
+  </div>`).join(''):'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין תורים קרובים</div>';
+  const serH=hasSer?`<div class="ser-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+      <div style="font-size:13px;font-weight:700;color:var(--g700);">${p.series.name}</div>
+      <div style="font-size:11px;color:var(--tm);">${p.series.used}/${p.series.count} · ₪${Math.round(p.series.price/p.series.count)}/טיפול</div>
+    </div>
+    <div class="ptrack"><div class="pfill" style="width:${Math.round((p.series.used/p.series.count)*100)}%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tm);margin-top:3px;"><span>נפתחה: ${p.series.openDate||''}</span><span>${Math.round((p.series.used/p.series.count)*100)}%</span></div>
   </div>`:'';
-  const os=(p.series||[]).filter(s=>s.open);
-  const serH=os.map(s=>{const pct=Math.round((s.used/s.count)*100);return `<div class="series-card">
-    <div class="series-card-head"><div class="series-name">${s.name}</div><div class="series-status">${s.used}/${s.count} · ₪${(s.price||0).toLocaleString()}</div></div>
-    <div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tm);margin-top:4px;"><span>נפתחה: ${s.openDate||''}</span><span>${pct}%</span></div>
-  </div>`;}).join('');
+
+  // treat reminder
+  const pend=(window.apts||[]).filter(a=>{if(String(a.patientId)!==id||a.date>ts)return false;const[ah,am]=a.time.split(':').map(Number);const dur=parseInt((window.appCfg||{}).duration||60);if(a.date===ts&&(new Date().getHours()*60+new Date().getMinutes())<(ah*60+am+dur+30))return false;return!(p.treatments||[]).some(t=>t.date===a.date);});
+  const remH=pend.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:8px 11px;margin-bottom:9px;display:flex;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--r700);flex:1;">טיפול ב-${pend[0].date} לא תועד</span><button onclick="openTreatFlow('${id}','${pend[0].id}')" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button></div>`:'';
+
   const trH=(p.treatments&&p.treatments.length)?[...p.treatments].reverse().map(t=>`<div class="tent">
     <div class="ttop">
       <span class="tnum">טיפול ${t.num}</span>
-      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
         ${t.paid?'<span class="badge bg">שולם</span>':'<span class="badge br">לא שולם</span>'}
-        <span style="font-size:11px;color:var(--tm);">${t.date}</span>
-        <button onclick="openEditTreat('${id}',${t.num})" style="background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:Heebo,sans-serif;">עריכה</button>
+        <span style="font-size:10px;color:var(--tm);">${t.date}</span>
       </div>
     </div>
     <div class="tnotes">
       ${t.found?`<div><b>ממצא:</b> ${t.found}</div>`:''}
       ${t.done?`<div><b>טיפול:</b> ${t.done}</div>`:''}
       ${t.recommend?`<div><b>המלצה:</b> ${t.recommend}</div>`:''}
+      ${t.exercises?`<div><b>תרגילים:</b> ${t.exercises}</div>`:''}
       ${t.method?`<div><b>תשלום:</b> ${t.method}</div>`:''}
     </div>
-    ${!t.paid?`<button onclick="mkPaid('${id}',${t.num})" style="margin-top:7px;padding:5px 13px;border-radius:20px;border:1.5px solid var(--ac);background:none;color:var(--ac);font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✓ סמן כשולם</button>`:''}
-  </div>`).join(''):'<div style="color:var(--tm);font-size:13px;padding:7px 0;">אין טיפולים עדיין</div>';
+    ${!t.paid?`<button onclick="mkPaid('${id}',${t.num})" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--ac);background:none;color:var(--ac);font-family:Heebo,sans-serif;font-size:11px;font-weight:600;cursor:pointer;">✓ סמן כשולם</button>`:`<button onclick="undoPaid('${id}',${t.num})" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--r500);background:none;color:var(--r500);font-family:Heebo,sans-serif;font-size:10px;cursor:pointer;">↩ בטל תשלום</button>`}
+  </div>`).join(''):'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין טיפולים עדיין</div>';
 
   document.getElementById('pfile').innerHTML=`
-    ${trRem}
+    ${remH}
     <div class="card">
       <div class="pfh">
-        <div class="pfav ${AVC[(p.color||0)%4]}">${p.name.charAt(0)}</div>
-        <div style="flex:1;"><div class="pfn">${p.name}</div><div class="pfs">${p.phone||''}</div></div>
-        <button onclick="openEdit('${id}')" style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 12px;font-family:Heebo,sans-serif;font-size:12px;cursor:pointer;font-weight:600;">עריכה</button>
+        <div class="pfav ${avCls(p)}" style="${avSize(52)}">${p.name.charAt(0)}</div>
+        <div style="flex:1;"><div class="pfn">${p.name}${p.patType==='baby'?' 👶':''}</div><div class="pfs">${p.phone||''}</div></div>
+        <button onclick="openEdit('${id}')" style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:4px 11px;font-family:Heebo,sans-serif;font-size:12px;cursor:pointer;font-weight:600;">עריכה</button>
       </div>
-      ${hd?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:9px 11px;margin-bottom:11px;font-size:13px;color:var(--r700);">⚠ חוב פתוח: ₪${td.toLocaleString()}</div>`:''}
+      ${hd?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪${td.toLocaleString()}</div>`:''}
       <div class="ir"><span class="il">גיל</span><span class="iv">${p.age||'—'}</span></div>
       <div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">${p.problem||'—'}</span></div>
+      <div class="ir"><span class="il">סוג מטופל</span><span class="iv">${p.patType==='baby'?'תינוק':'מבוגר'}</span></div>
+      <div class="ir"><span class="il">סוג טיפול</span><span class="iv">${p.treatType==='series'?'סדרה':'יחיד'}</span></div>
       <div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪${(p.price||350).toLocaleString()}</span></div>
     </div>
-    ${os.length?`<div class="card"><div class="ct">סדרות פעילות</div>${serH}</div>`:''}
+    ${hasSer?`<div class="card"><div class="ct">סדרה פעילה</div>${serH}</div>`:''}
     <div class="card">
       <div class="ct">תורים קרובים</div>${upH}
-      <button onclick="openNewApptFor('${id}')" style="margin-top:9px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:7px 12px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--g700);width:100%;">+ קבע תור חדש</button>
+      <button onclick="openNewApptFor('${id}')" style="margin-top:8px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:6px 11px;font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--g700);width:100%;">+ קבע תור חדש</button>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div class="ct" style="margin-bottom:0;">היסטוריית טיפולים</div>
-        <div style="display:flex;gap:5px;">
-          <button onclick="openSeriesScreen('${id}')" style="background:var(--g50);color:var(--g700);border:1px solid var(--g200);border-radius:var(--rsm);padding:5px 10px;font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">+ סדרה</button>
-          <button onclick="openAddTreat('${id}')" style="background:var(--ac);color:#fff;border:none;border-radius:var(--rsm);padding:5px 10px;font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;">+ רישום</button>
-        </div>
-      </div>
+      <div class="ct">היסטוריית טיפולים</div>
       ${trH}
     </div>
-    <button class="btn bgcal" onclick="openPaperless('${p.name}')">🧾 פתח קבלה ב-Paperless</button>
+    ${buildReceiptSection(p)}
   `;
   showScreen('patient-file');
 };
 
-// ---- SERIES ----
-function openSeriesScreen(pid){
-  osPid=String(pid);
-  const types=window.appCfg.seriesTypes||[];
-  if(!types.length){alert('אין סוגי סדרות. פתח הגדרות והוסף סדרה.');showScreen('settings');return;}
-  document.getElementById('os-bk').onclick=()=>openPatient(pid);
-  document.getElementById('os-type').innerHTML=types.map(t=>`<option value="${t.id}">${t.name} (${t.count} טיפולים · ₪${t.price})</option>`).join('');
-  document.getElementById('os-notes').value='';
-  updateSeriesPreview();
-  showScreen('open-series');
-}
-function updateSeriesPreview(){
-  const types=window.appCfg.seriesTypes||[];
-  const t=types.find(x=>x.id===document.getElementById('os-type').value);
-  const prev=document.getElementById('os-preview');
-  if(t){prev.style.display='block';prev.textContent=`${t.name}: ${t.count} טיפולים · ₪${t.price.toLocaleString()} (₪${Math.round(t.price/t.count)} לטיפול)`;}
-  else prev.style.display='none';
-}
-async function openSeries(){
-  const p=findP(osPid);if(!p)return;
-  const types=window.appCfg.seriesTypes||[];
-  const t=types.find(x=>x.id===document.getElementById('os-type').value);if(!t)return;
-  const ns={id:'ser'+Date.now(),typeId:t.id,name:t.name,count:t.count,price:t.price,used:0,open:true,openDate:todayStr(),notes:document.getElementById('os-notes').value};
-  p.series=[...(p.series||[]),ns];
-  await window.fbSaveP(p);openPatient(osPid);
-}
-
-// ---- APPOINTMENTS ----
-window.delAppt=async(aid,pid)=>{if(!confirm('לבטל את התור?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);openPatient(pid);render();};
+window.delAppt=async(aid,pid)=>{if(!confirm('לבטל?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);if(pid)openPatient(pid);render();};
 window.mkPaid=async(pid,num)=>{const p=findP(pid);if(!p)return;const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();};
 
 function openEdit(id){
   const p=findP(id);if(!p)return;
-  document.getElementById('ep-id').value=id;
-  document.getElementById('ep-nm').value=p.name;
-  document.getElementById('ep-ph').value=p.phone||'';
-  document.getElementById('ep-ag').value=p.age||'';
-  document.getElementById('ep-pr').value=p.problem||'';
-  document.getElementById('ep-px').value=p.price||350;
-  document.getElementById('ep-bk').onclick=()=>openPatient(id);
-  showScreen('edit-patient');
+  document.getElementById('ep-id').value=id;document.getElementById('ep-nm').value=p.name;
+  document.getElementById('ep-ph').value=p.phone||'';document.getElementById('ep-ag').value=p.age||'';
+  document.getElementById('ep-pr').value=p.problem||'';document.getElementById('ep-px').value=p.price||350;
+  document.getElementById('ep-bk').onclick=()=>openPatient(id);showScreen('edit-patient');
 }
 async function saveEdit(){
-  const id=String(document.getElementById('ep-id').value);
-  const p=findP(id);if(!p)return;
-  p.name=document.getElementById('ep-nm').value.trim()||p.name;
-  p.phone=document.getElementById('ep-ph').value.trim();
-  p.age=document.getElementById('ep-ag').value;
-  p.problem=document.getElementById('ep-pr').value.trim();
+  const id=String(document.getElementById('ep-id').value);const p=findP(id);if(!p)return;
+  p.name=document.getElementById('ep-nm').value.trim()||p.name;p.phone=document.getElementById('ep-ph').value.trim();
+  p.age=document.getElementById('ep-ag').value;p.problem=document.getElementById('ep-pr').value.trim();
   p.price=parseInt(document.getElementById('ep-px').value)||350;
   await window.fbSaveP(p);openPatient(id);
 }
-function confirmDel(){
-  const id=String(document.getElementById('ep-id').value);
-  const p=findP(id);delPid=id;
-  document.getElementById('del-sub').textContent=`האם למחוק את ${p?p.name:'המטופל'}?\nפעולה זו אינה ניתנת לביטול.`;
-  document.getElementById('del-ov').classList.remove('hidden');
-}
-async function doDelete(){
-  window.pts=(window.pts||[]).filter(x=>String(x.id)!==delPid);
-  window.apts=(window.apts||[]).filter(a=>String(a.patientId)!==delPid);
-  await window.fbDelP(delPid);
-  document.getElementById('del-ov').classList.add('hidden');
-  render();showScreen('patients');
-}
+function confirmDel(){const id=String(document.getElementById('ep-id').value);const p=findP(id);delPid=id;document.getElementById('del-sub').textContent=`האם למחוק את ${p?p.name:'המטופל'}?\nלא ניתן לביטול.`;document.getElementById('del-ov').classList.remove('hidden');}
+async function doDelete(){window.pts=(window.pts||[]).filter(x=>String(x.id)!==delPid);window.apts=(window.apts||[]).filter(a=>String(a.patientId)!==delPid);await window.fbDelP(delPid);document.getElementById('del-ov').classList.add('hidden');render();showScreen('patients');}
 function closeDelOv(e){if(e.target===document.getElementById('del-ov'))document.getElementById('del-ov').classList.add('hidden');}
 
 function renderDebts(){
   const drs=(window.pts||[]).filter(p=>p.treatments&&p.treatments.some(t=>!t.paid));
   const tot=drs.reduce((s,p)=>s+p.treatments.filter(t=>!t.paid).reduce((ss,t)=>ss+(t.amount||0),0),0);
-  document.getElementById('stat-d').textContent='₪'+tot.toLocaleString();
-  document.getElementById('stat-n').textContent=drs.length;
+  document.getElementById('stat-d').textContent='₪'+tot.toLocaleString();document.getElementById('stat-n').textContent=drs.length;
   const list=document.getElementById('dlist');
-  if(!drs.length){list.innerHTML='<div style="text-align:center;padding:22px;color:var(--tm);font-size:14px;">✓ אין חובות פתוחים</div>';return;}
+  if(!drs.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--tm);font-size:13px;">✓ אין חובות</div>';return;}
   list.innerHTML=drs.map(p=>{const u=p.treatments.filter(t=>!t.paid);const a=u.reduce((s,t)=>s+(t.amount||0),0);
     return `<div class="pi" onclick="openPatient('${p.id}')">
-      <div class="pav ${AVC[(p.color||0)%4]}">${p.name.charAt(0)}</div>
+      <div class="pav ${avCls(p)}" style="${avSize(40)}">${p.name.charAt(0)}</div>
       <div class="pb"><div class="pn">${p.name}</div><div class="ps">${u.length} טיפולים לא שולמו</div></div>
-      <div style="font-size:15px;font-weight:700;color:var(--r500);">₪${a.toLocaleString()}</div>
-    </div>`;
-  }).join('');
+      <div style="font-size:14px;font-weight:700;color:var(--r500);">₪${a.toLocaleString()}</div>
+    </div>`;}).join('');
 }
 
+// ---- ADD PATIENT ----
+function setPatType(t){npPatType=t;document.getElementById('np-adult').classList.toggle('active',t==='adult');document.getElementById('np-baby').classList.toggle('active',t==='baby');}
+function setNpTreat(t){
+  npTreatType=t;
+  document.getElementById('np-single').classList.toggle('active',t==='single');
+  document.getElementById('np-ser').classList.toggle('active',t==='series');
+  document.getElementById('np-ser-wrap').classList.toggle('hidden',t!=='series');
+  if(t==='series'){
+    const types=window.appCfg.seriesTypes||[];
+    document.getElementById('np-ser-type').innerHTML=types.length?types.map(x=>`<option value="${x.id}">${x.name} (${x.count} טיפולים · ₪${x.price})</option>`).join(''):'<option>אין סדרות מוגדרות</option>';
+  }
+}
 async function addPatient(){
   const name=document.getElementById('np-nm').value.trim();if(!name){alert('נא להזין שם');return;}
+  const cfg=window.appCfg||defCfg();const defPrice=cfg.price||350;
   const px=document.getElementById('np-px').value;
-  const p={id:String(Date.now()),name,phone:document.getElementById('np-ph').value.trim(),age:document.getElementById('np-ag').value,problem:document.getElementById('np-pr').value.trim(),price:px?parseInt(px):(window.appCfg.price||350),color:(window.pts||[]).length%4,treatments:[],series:[]};
-  window.pts=[...(window.pts||[]),p];
-  await window.fbSaveP(p);
+  let series=null;
+  if(npTreatType==='series'){
+    const types=cfg.seriesTypes||[];const selId=document.getElementById('np-ser-type').value;
+    const t=types.find(x=>x.id===selId);
+    if(t)series={typeId:t.id,name:t.name,count:t.count,price:t.price,used:0,openDate:todayStr(),active:true};
+  }
+  const p={id:String(Date.now()),name,phone:document.getElementById('np-ph').value.trim(),age:document.getElementById('np-ag').value,problem:document.getElementById('np-pr').value.trim(),price:px?parseInt(px):defPrice,color:(window.pts||[]).length%4,patType:npPatType,treatType:npTreatType,series,treatments:[]};
+  window.pts=[...(window.pts||[]),p];await window.fbSaveP(p);
   ['np-nm','np-ph','np-ag','np-pr','np-px'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
-  showScreen('patients');
+  setPatType('adult');setNpTreat('single');showScreen('patients');
 }
 
+// ---- APPOINTMENTS ----
 function openNewAppt(){
-  showScreen('new-appointment');rebuildTimeSelect();
+  showScreen('new-appointment');
   const sel=document.getElementById('na-pt');
-  sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort((a,b)=>a.name.localeCompare(b.name,'he')).map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort((a,b)=>a.name.localeCompare(b.name,'he')).map(p=>`<option value="${p.id}">${p.name}${p.patType==='baby'?' 👶':''}</option>`).join('');
   document.getElementById('na-dt').value=todayStr();
+  rebuildTimeSelect();
   document.getElementById('gcal-btn').classList.add('hidden');
-  document.getElementById('na-err').style.display='none';
-  document.getElementById('na-nt').value='';
+  document.getElementById('na-err').style.display='none';document.getElementById('na-nt').value='';
 }
 function openNewApptFor(id){openNewAppt();document.getElementById('na-pt').value=String(id);}
 
 async function addAppointment(){
-  const pid=String(document.getElementById('na-pt').value);
-  const date=document.getElementById('na-dt').value;
-  const time=document.getElementById('na-tm').value;
+  const pid=String(document.getElementById('na-pt').value);const date=document.getElementById('na-dt').value;const time=document.getElementById('na-tm').value;
   const err=document.getElementById('na-err');
   if(!pid){err.textContent='נא לבחור מטופל';err.style.display='block';return;}
   if(!date){err.textContent='נא לבחור תאריך';err.style.display='block';return;}
   if(date<todayStr()){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
-  const ad=adMap();
-  if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time}`;err.style.display='block';return;}
+  const ad=adMap();if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time}`;err.style.display='block';return;}
   err.style.display='none';
   const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-nt').value};
-  window.apts=[...(window.apts||[]),a];lastAppt=a;
-  await window.fbSaveA(a);
+  window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
   selDate=sToD(date);navDate=new Date(selDate);
-  document.getElementById('gcal-btn').classList.remove('hidden');
-  renderCal();
+  document.getElementById('gcal-btn').classList.remove('hidden');renderCal();
 }
 
 function openGcal(){
-  if(!lastAppt)return;
-  const p=findP(lastAppt.patientId);
-  const[h,m]=lastAppt.time.split(':').map(Number);
-  const d=sToD(lastAppt.date);
-  const pad=n=>String(n).padStart(2,'0');
-  const fmt=(d,h,m)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(h)}${pad(m)}00`;
-  const dur=parseInt((window.appCfg||{}).duration||60);
-  const em=h*60+m+dur;
+  if(!lastAppt)return;const p=findP(lastAppt.patientId);const[h,m]=lastAppt.time.split(':').map(Number);const d=sToD(lastAppt.date);
+  const pad=n=>String(n).padStart(2,'0');const fmt=(d,h,m)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(h)}${pad(m)}00`;
+  const dur=parseInt((window.appCfg||{}).duration||60);const em=h*60+m+dur;
   window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('טיפול — '+(p?p.name:''))}&dates=${fmt(d,h,m)}/${fmt(d,Math.floor(em/60),em%60)}&details=${encodeURIComponent(p?p.problem:'')}`,'_blank');
 }
 
-function openAddTreat(id){
-  trPid=String(id);editTrNum=null;
-  const p=findP(id);
-  document.getElementById('tr-ttl').textContent=`רישום טיפול — ${p?p.name:''}`;
-  document.getElementById('tr-eid').value='';
-  document.getElementById('tr-bk').onclick=()=>openPatient(id);
-  document.getElementById('tr-dt').value=todayStr();
-  ['tr-fd','tr-dn','tr-rc'].forEach(i=>document.getElementById(i).value='');
-  trPay='paid';
-  document.getElementById('tr-pd').classList.add('active');document.getElementById('tr-up').classList.remove('active');
-  document.getElementById('tr-mw').style.display='block';
-  document.querySelectorAll('#tr-mw .chip').forEach((c,i)=>c.classList.toggle('active',i===0));
-  showScreen('add-treatment');
+function buildReceiptSection(p){
+  if(!p.treatments||!p.treatments.length)return'';
+  // Find last paid treatment
+  const lastPaid=[...p.treatments].reverse().find(t=>t.paid);
+  if(!lastPaid)return'<div style="font-size:12px;color:var(--tm);padding:6px 0;text-align:center;">קבלה תהיה זמינה לאחר תשלום</div>';
+  const amt=lastPaid.amount||p.price||350;
+  return `<button class="btn bgcal" onclick="openPaperless('${p.name}',${amt})" style="margin-top:5px;">🧾 צור קבלה ב-Paperless (₪${amt.toLocaleString()})</button>`;
 }
-function openEditTreat(pid,num){
-  trPid=String(pid);editTrNum=num;
+
+window.undoPaid=async(pid,num)=>{
+  if(!confirm('לבטל את סימון התשלום?'))return;
   const p=findP(pid);if(!p)return;
-  const t=p.treatments.find(x=>x.num===num);if(!t)return;
-  document.getElementById('tr-ttl').textContent=`עריכת טיפול ${num} — ${p.name}`;
-  document.getElementById('tr-eid').value=num;
-  document.getElementById('tr-bk').onclick=()=>openPatient(pid);
-  document.getElementById('tr-dt').value=t.date;
-  document.getElementById('tr-fd').value=t.found||'';
-  document.getElementById('tr-dn').value=t.done||'';
-  document.getElementById('tr-rc').value=t.recommend||'';
-  trPay=t.paid?'paid':'unpaid';
-  document.getElementById('tr-pd').classList.toggle('active',t.paid);
-  document.getElementById('tr-up').classList.toggle('active',!t.paid);
-  document.getElementById('tr-mw').style.display=t.paid?'block':'none';
-  const ms=['מזומן','העברה','אשראי','ביט'];
-  document.querySelectorAll('#tr-mw .chip').forEach((c,i)=>c.classList.toggle('active',ms[i]===(t.method||'מזומן')));
-  showScreen('add-treatment');
+  const t=p.treatments.find(x=>x.num===num);if(t){t.paid=false;t.method='';}
+  await window.fbSaveP(p);openPatient(pid);renderAlerts();
+};
+
+function openPaperless(name,amount){
+  const url='https://www.paperless.tax/admin/invoice';
+  window.open(url,'_blank');
 }
-function setTrPay(v){trPay=v;document.getElementById('tr-pd').classList.toggle('active',v==='paid');document.getElementById('tr-up').classList.toggle('active',v==='unpaid');document.getElementById('tr-mw').style.display=v==='paid'?'block':'none';}
-function selPM(el){document.querySelectorAll('#tr-mw .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
-async function saveTreatment(){
-  const p=findP(trPid);if(!p)return;
-  p.treatments=p.treatments||[];
-  const tdate=document.getElementById('tr-dt').value;
-  if(tdate>todayStr()){alert('לא ניתן לרשום טיפול לתאריך עתידי');return;}
-  const am=document.querySelector('#tr-mw .chip.active');
-  const td={date:tdate,found:document.getElementById('tr-fd').value,done:document.getElementById('tr-dn').value,recommend:document.getElementById('tr-rc').value,paid:trPay==='paid',amount:p.price||350,method:trPay==='paid'?(am?am.textContent:'מזומן'):''};
-  if(editTrNum!==null){
-    const idx=p.treatments.findIndex(x=>x.num===editTrNum);
-    if(idx>=0)p.treatments[idx]={...p.treatments[idx],...td};
-  } else {
-    p.treatments.push({num:p.treatments.length+1,...td});
-    const os=(p.series||[]).find(s=>s.open);
-    if(os){os.used++;if(os.used>=os.count)os.open=false;}
-  }
-  await window.fbSaveP(p);openPatient(trPid);renderAlerts();
-}
-function openPaperless(name){alert(`פתח את אפליקציית Paperless וצור קבלה עבור:\n${name}`);}
 
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1030,21 +1233,26 @@ function showScreen(name){
   if(nm[name])document.getElementById(nm[name]).classList.add('active');
   if(name==='calendar'){document.getElementById('daypanel').style.display=calView==='month'?'block':'none';renderCal();}
   if(name==='patients')renderPatients();
-  if(name==='settings'){renderSeriesTypes();applySettings();}
+  if(name==='settings'){renderSerTypes();applySettings();if(window.showPWASection)showPWASection();}
+  if(name==='new-patient'){
+    const types=window.appCfg.seriesTypes||[];
+    document.getElementById('np-ser-type').innerHTML=types.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');
+  }
 }
 
-// expose
 window.showScreen=showScreen;window.setView=setView;window.navCal=navCal;window.selDay=selDay;
 window.openNewApptAt=openNewApptAt;window.openNewAppt=openNewAppt;window.addAppointment=addAppointment;
 window.openGcal=openGcal;window.renderPatients=renderPatients;window.addPatient=addPatient;
 window.openEdit=openEdit;window.saveEdit=saveEdit;window.confirmDel=confirmDel;window.doDelete=doDelete;
-window.closeDelOv=closeDelOv;window.openAddTreat=openAddTreat;window.openEditTreat=openEditTreat;
-window.setTrPay=setTrPay;window.selPM=selPM;window.saveTreatment=saveTreatment;
-window.openPaperless=openPaperless;window.openNewApptFor=openNewApptFor;
-window.openNewApptForDay=openNewApptForDay;window.saveSettings=saveSettings;
-window.addSeriesType=addSeriesType;window.delSeriesType=delSeriesType;
-window.openSeriesScreen=openSeriesScreen;window.openSeries=openSeries;window.updateSeriesPreview=updateSeriesPreview;
-window.delAppt=delAppt;window.mkPaid=mkPaid;window.rebuildTimeSelect=rebuildTimeSelect;
+window.closeDelOv=closeDelOv;window.setPatType=setPatType;window.setNpTreat=setNpTreat;
+window.saveSettings=saveSettings;window.addSeriesType=addSeriesType;window.delSerType=delSerType;
+window.cleanOrphanAppts=cleanOrphanAppts;window.editForm=editForm;window.addFormField=addFormField;
+window.delFormField=delFormField;window.saveFormFields=saveFormFields;window.openNewApptForDay=openNewApptForDay;
+window.toggleDay=toggleDay;window.updateRange=updateRange;window.addRange=addRange;window.delRange=delRange;
+window.delAppt=delAppt;window.mkPaid=mkPaid;window.openTreatFlow=openTreatFlow;window.setTfTab=setTfTab;
+window.saveIntakeAndGoSummary=saveIntakeAndGoSummary;window.saveTreatmentFlow=saveTreatmentFlow;
+window.setSumPay=setSumPay;window.setSumMethod=setSumMethod;window.openNewApptFor=openNewApptFor;
+window.openPatient=openPatient;window.openPaperless=openPaperless;window.rebuildTimeSelect=rebuildTimeSelect;window.undoPaid=undoPaid;window.buildReceiptSection=buildReceiptSection;
 </script>
 </body>
 </html>
