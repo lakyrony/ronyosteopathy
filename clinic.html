@@ -148,6 +148,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .bgcal{background:var(--b50);color:var(--b600);border:1px solid var(--b100);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:7px}
 .bgoog{background:#fff;color:#444;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:9px;font-size:14px}
 .bbtn{display:flex;align-items:center;gap:5px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ac);cursor:pointer;padding:0 0 11px;font-weight:600}
+.back-bar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer;color:var(--ac);font-size:13px;font-weight:600;font-family:'Heebo',sans-serif}
+.back-bar svg{width:16px;height:16px}
 .bbtn svg{width:16px;height:16px}
 .srow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
 .sbox{background:var(--sf);border-radius:var(--rmd);padding:11px;border:1px solid var(--bdl)}
@@ -303,6 +305,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- הגדרות -->
     <div class="screen" id="screen-settings">
+      <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="set-sec">
           <div class="set-ttl">כללי</div>
@@ -342,7 +345,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- הוספת סדרה -->
     <div class="screen" id="screen-add-series-type">
-      <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">סוג סדרה חדש</div>
         <div class="fm"><label class="fl">שם *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב"/></div>
@@ -354,7 +357,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- עריכת טופס -->
     <div class="screen" id="screen-edit-form">
-      <button class="bbtn" onclick="showScreen('settings')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct" id="ef-title">עריכת טופס</div>
         <div id="ef-fields"></div>
@@ -365,13 +368,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- תיק מטופל -->
     <div class="screen" id="screen-patient-file">
-      <button class="bbtn" id="fb-back" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" id="fb-back" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div id="pfile"></div>
     </div>
 
     <!-- מטופל חדש -->
     <div class="screen" id="screen-new-patient">
-      <button class="bbtn" onclick="showScreen('patients')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">מטופל חדש</div>
         <div class="fm"><label class="fl">שם מלא *</label><input class="fi" id="np-nm" type="text" placeholder="שם פרטי ושם משפחה" oninput="this.value=this.value.replace(/[0-9]/g,'')"/></div>
@@ -414,11 +417,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- תור חדש -->
     <div class="screen" id="screen-new-appointment">
-      <button class="bbtn" onclick="showScreen('calendar')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">קביעת תור חדש</div>
         <div class="fm"><label class="fl">מטופל *</label><select class="fsl" id="na-pt"></select></div>
-        <div class="fm"><label class="fl">תאריך *</label><input class="fi" id="na-dt" type="date"/></div>
+        <div class="fm"><label class="fl">תאריך *</label><input class="fi" id="na-dt" type="date" onchange="rebuildTimeSelect(this.value)"/></div>
         <div class="fm"><label class="fl">שעה *</label><select class="fsl" id="na-tm"></select></div>
         <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה..."/></div>
         <div id="na-err" style="color:var(--r500);font-size:12px;margin-top:3px;display:none;"></div>
@@ -429,7 +432,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- זרימת טיפול -->
     <div class="screen" id="screen-treatment-flow">
-      <button class="bbtn" id="tf-back"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
+      <button class="bbtn" id="tf-back" onclick="goBack()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="treat-flow">
         <div class="tf-header">
           <div class="tf-patient" id="tf-pname"></div>
@@ -818,8 +821,12 @@ function renderAlerts(){
     if(a.date===ts&&nowM<(ah*60+am+dur+30))return;
     if(!(p.treatments||[]).some(t=>t.date===a.date))rems.push({p,a});
   });
-  if(rems.length){const f=rems[0];
-    rows.push(`<div class="arow red"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg><span>טיפול ב${f.p.name} ${f.a.date===ts?'היום':'ב-'+f.a.date} לא תועד${rems.length>1?' (+'+(rems.length-1)+')':''}</span><span class="alink" onclick="openTreatFlow('${f.p.id}','${f.a.id}')">לרישום ←</span></div>`);}
+  if(rems.length===1){const f=rems[0];
+    rows.push(`<div class="arow red"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg><span>טיפול ב-${f.p.name} ${f.a.date===ts?'היום':'ב-'+f.a.date} לא תועד</span><span class="alink" onclick="openTreatFlow('${f.p.id}','${f.a.id}')">לרישום ←</span></div>`);
+  } else if(rems.length>1){
+    rows.push(`<div class="arow red" style="cursor:pointer;" onclick="showUndocumentedList()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg><span>${rems.length} טיפולים ללא תיעוד</span><span class="alink">לבחירה ←</span></div>`);
+    window._undocRems=rems;
+  }
   bar.innerHTML=rows.join('');
 }
 
@@ -1067,6 +1074,7 @@ window.openPatient=function(id){
       <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
         ${t.paid?'<span class="badge bg">שולם</span>':'<span class="badge br">לא שולם</span>'}
         <span style="font-size:10px;color:var(--tm);">${t.date}</span>
+        <button onclick="openEditTreatment('${id}',${t.num})" style="background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:Heebo,sans-serif;">✏️ עריכה</button>
       </div>
     </div>
     <div class="tnotes">
@@ -1109,6 +1117,32 @@ window.openPatient=function(id){
 };
 
 window.delAppt=async(aid,pid)=>{if(!confirm('לבטל?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);if(pid)openPatient(pid);render();};
+window.openEditTreatment=function(pid,num){
+  // Open treatment flow in edit mode for existing treatment
+  const p=findP(pid);if(!p)return;
+  const t=p.treatments.find(x=>x.num===num);if(!t)return;
+  tfPid=String(pid);
+  // Find appointment for that date if exists
+  const appt=(window.apts||[]).find(a=>String(a.patientId)===pid&&a.date===t.date);
+  tfApptId=appt?appt.id:null;
+  document.getElementById('tf-pname').textContent=p.name+(p.patType==='baby'?' 👶':'');
+  document.getElementById('tf-time').textContent=`${t.date} · עריכת טיפול ${num}`;
+  document.getElementById('tf-back').onclick=()=>{goBack();};
+  // Build intake with existing data
+  const cfg=window.appCfg||defCfg();const formType=p.patType==='baby'?'baby':'adult';
+  const isFirst=num===1;const formKey=isFirst?'intake':'followup';
+  const fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
+  const iData=t.intakeData||{};
+  let intakeHtml=`<div style="margin-bottom:12px;"><button class="btn bp" style="font-size:12px;margin-top:0;" onclick="setTfTab('summary')">דלג לסיכום →</button></div>`;
+  intakeHtml+=`<div class="tf-section"><div class="tf-sec-title">${isFirst?'תשאול ראשוני':'תשאול המשך'}</div>`;
+  fields.forEach(f=>{const val=iData[f.id]||'';intakeHtml+=`<div class="intake-field"><label class="intake-label">${f.label}</label>${f.multi?`<textarea class="intake-input" id="if-${f.id}" style="min-height:60px;">${val}</textarea>`:`<input class="intake-input" id="if-${f.id}" value="${val}" type="text"/>`}</div>`;});
+  intakeHtml+='</div><button class="btn bp" onclick="saveIntakeAndGoSummary()">המשך לסיכום →</button>';
+  document.getElementById('tf-intake-body').innerHTML=intakeHtml;
+  buildSummaryTab(p,appt,t);
+  setTfTab('intake');
+  showScreen('treatment-flow');
+};
+
 window.mkPaid=async(pid,num)=>{const p=findP(pid);if(!p)return;const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();};
 
 function openEdit(id){
@@ -1190,6 +1224,9 @@ async function addAppointment(){
   if(!date){err.textContent='נא לבחור תאריך';err.style.display='block';return;}
   if(date<todayStr()){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
   const ad=adMap();if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time}`;err.style.display='block';return;}
+  // Check if time is within working hours
+  const availSlots=getTimeSlotsForDate(date);
+  if(availSlots.length>0&&!availSlots.includes(time)){err.textContent=`השעה ${time} אינה בשעות הזמינות ליום זה`;err.style.display='block';return;}
   err.style.display='none';
   const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
@@ -1225,12 +1262,42 @@ function openPaperless(name,amount){
   window.open(url,'_blank');
 }
 
-function showScreen(name){
+// Show list of undocumented treatments
+function showUndocumentedList(){
+  const rems=window._undocRems||[];
+  if(!rems.length)return;
+  const ts=new Date().toISOString().split('T')[0];
+  // Build overlay with list
+  let html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:flex;align-items:flex-end;justify-content:center;" onclick="this.remove()">
+    <div style="background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:20px 16px 36px;width:100%;max-width:480px;" onclick="event.stopPropagation()">
+      <div style="font-size:15px;font-weight:700;margin-bottom:14px;">טיפולים ללא תיעוד</div>`;
+  rems.forEach(({p,a})=>{
+    html+=`<div onclick="document.querySelector('[onclick*=remove]')&&document.querySelector('[onclick*=remove]').remove();openTreatFlow('${p.id}','${a.id}')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdl);cursor:pointer;">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--g100);color:var(--g700);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">${p.name.charAt(0)}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${p.name}</div><div style="font-size:11px;color:var(--tm);">${a.date===ts?'היום':a.date} · ${a.time}</div></div>
+      <span style="font-size:12px;color:var(--ac);font-weight:600;">לרישום ←</span>
+    </div>`;
+  });
+  html+=`<button style="width:100%;margin-top:12px;padding:11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);font-family:Heebo,sans-serif;font-size:14px;cursor:pointer;" onclick="this.closest('[onclick]').click()">סגור</button>
+    </div></div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+// Navigation history stack for back button
+let navHistory=[];
+function showScreen(name,skipHistory=false){
+  const prev=document.querySelector('.screen.active');
+  const prevId=prev?prev.id.replace('screen-',''):null;
+  if(!skipHistory&&prevId&&prevId!==name)navHistory.push(prevId);
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'));
   const s=document.getElementById('screen-'+name);if(s)s.classList.add('active');
   const nm={calendar:'nav-cal',patients:'nav-pts',debts:'nav-dbt',settings:'nav-set'};
   if(nm[name])document.getElementById(nm[name]).classList.add('active');
+  // Show/hide bottom nav (hide on full-screen flows)
+  const fullScreens=['treatment-flow'];
+  const nav=document.querySelector('.bnav');
+  if(nav)nav.style.display=fullScreens.includes(name)?'none':'flex';
   if(name==='calendar'){document.getElementById('daypanel').style.display=calView==='month'?'block':'none';renderCal();}
   if(name==='patients')renderPatients();
   if(name==='settings'){renderSerTypes();applySettings();if(window.showPWASection)showPWASection();}
@@ -1238,6 +1305,10 @@ function showScreen(name){
     const types=window.appCfg.seriesTypes||[];
     document.getElementById('np-ser-type').innerHTML=types.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');
   }
+}
+function goBack(){
+  if(navHistory.length>0){const prev=navHistory.pop();showScreen(prev,true);}
+  else showScreen('calendar',true);
 }
 
 window.showScreen=showScreen;window.setView=setView;window.navCal=navCal;window.selDay=selDay;
@@ -1252,7 +1323,7 @@ window.toggleDay=toggleDay;window.updateRange=updateRange;window.addRange=addRan
 window.delAppt=delAppt;window.mkPaid=mkPaid;window.openTreatFlow=openTreatFlow;window.setTfTab=setTfTab;
 window.saveIntakeAndGoSummary=saveIntakeAndGoSummary;window.saveTreatmentFlow=saveTreatmentFlow;
 window.setSumPay=setSumPay;window.setSumMethod=setSumMethod;window.openNewApptFor=openNewApptFor;
-window.openPatient=openPatient;window.openPaperless=openPaperless;window.rebuildTimeSelect=rebuildTimeSelect;window.undoPaid=undoPaid;window.buildReceiptSection=buildReceiptSection;
+window.openPatient=openPatient;window.openPaperless=openPaperless;window.rebuildTimeSelect=rebuildTimeSelect;window.undoPaid=undoPaid;window.buildReceiptSection=buildReceiptSection;window.openEditTreatment=openEditTreatment;window.showUndocumentedList=showUndocumentedList;window.goBack=goBack;
 </script>
 </body>
 </html>
