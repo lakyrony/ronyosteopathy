@@ -649,7 +649,7 @@ window.appCfg=defCfg();
 let calView='month',navDate=ltoday(),selDate=ltoday();
 let curPid=null,delPid=null,lastAppt=null;
 let npPatType='adult',npTreatType='single';
-let tfPid=null,tfApptId=null,tfTab='intake';
+let tfPid=null,tfApptId=null,tfTab='intake',tfEditDate=null;
 let efType=null,efForm=null;
 let sampleLoaded=false;
 
@@ -822,8 +822,13 @@ async function cleanOrphanAppts(){
 function rebuildTimeSelect(ds){
   const sel=document.getElementById('na-tm');if(!sel)return;
   const dateStr=ds||document.getElementById('na-dt').value||todayStr();
-  const slots=getTimeSlotsForDate(dateStr);
-  sel.innerHTML=slots.length?slots.map(s=>`<option>${s}</option>`).join(''):'<option>אין שעות פנויות</option>';
+  const ad=adMap();
+  const slots=getTimeSlotsForDate(dateStr).filter(s=>!(ad[dateStr]||[]).some(a=>a.time===s));
+  sel.innerHTML=slots.length?slots.map(s=>`<option>${s}</option>`).join(''):'<option value="">אין שעות פנויות</option>';
+  // Show warning if no slots
+  const err=document.getElementById('na-err');
+  if(!slots.length&&err){err.textContent='אין שעות פנויות ביום זה';err.style.display='block';}
+  else if(err)err.style.display='none';
 }
 
 // ---- FORM EDITOR ----
@@ -986,7 +991,11 @@ function renderDayPanel(){
 }
 
 function selDay(ds){selDate=sToD(ds);navDate=new Date(selDate);renderCal();}
-function openNewApptForDay(){const slots=getTimeSlotsForDate(dstr(selDate));openNewApptAt(dstr(selDate),slots[0]||'10:00');}
+function openNewApptForDay(){
+  const slots=getTimeSlotsForDate(dstr(selDate));
+  if(!slots.length){alert('אין שעות עבודה ביום זה. ניתן לשנות בהגדרות.');return;}
+  openNewApptAt(dstr(selDate),slots[0]);
+}
 function openNewApptAt(ds,time){openNewAppt();document.getElementById('na-dt').value=ds;rebuildTimeSelect(ds);document.getElementById('na-tm').value=time;}
 
 // ---- TREATMENT FLOW ----
@@ -994,7 +1003,9 @@ window.openTreatFlow=function(pid,apptId){
   tfPid=String(pid);tfApptId=String(apptId);
   const p=findP(pid);if(!p)return;
   const a=(window.apts||[]).find(x=>String(x.id)===String(apptId));
-  const tdate=a?a.date:todayStr();
+  // Use edit date if in edit mode (apptId starts with __edit__)
+  const isEditMode=tfApptId&&String(tfApptId).startsWith('__edit__');
+  const tdate=isEditMode?tfEditDate:(a?a.date:todayStr());
   const existingTreat=(p.treatments||[]).find(t=>t.date===tdate);
   const isFirst=!existingTreat&&!(p.treatments&&p.treatments.length);
   // Previous treatment (not same date)
@@ -1109,7 +1120,9 @@ async function saveTreatmentFlow(){
   const method=methodEl?methodEl.textContent:'מזומן';
   // Find existing treatment for this date
   p.treatments=p.treatments||[];
-  const tdate=a?a.date:todayStr();
+  // Use edit date if in edit mode (apptId starts with __edit__)
+  const isEditMode=tfApptId&&String(tfApptId).startsWith('__edit__');
+  const tdate=isEditMode?tfEditDate:(a?a.date:todayStr());
   const existingIdx=p.treatments.findIndex(t=>t.date===tdate);
   const existingT=existingIdx>=0?p.treatments[existingIdx]:null;
   const hasDoneTreatment=p.treatments.length>0&&!(existingIdx===0&&p.treatments.length===1&&!existingT?.tcs);
@@ -1164,7 +1177,7 @@ window.openPatient=function(id){
   const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--bdl);">
     <span style="font-size:11px;color:var(--tm);min-width:76px;">${a.date}</span>
     <span style="font-size:12px;font-weight:600;color:var(--ac);">${a.time}</span>
-    <button onclick="openTreatFlow('${id}','${a.id}')" style="background:var(--g50);border:1px solid var(--g200);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--g700);cursor:pointer;font-family:Heebo,sans-serif;font-weight:600;">פתח טיפול</button>
+    <button data-pid="${id}" data-aid="${a.id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)" style="background:var(--g50);border:1px solid var(--g200);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--g700);cursor:pointer;font-family:Heebo,sans-serif;font-weight:600;">פתח טיפול</button>
     <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:2px 7px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>
   </div>`).join(''):'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין תורים קרובים</div>';
   const serH=hasSer?`<div class="ser-card">
@@ -1231,13 +1244,13 @@ window.openPatient=function(id){
 
 window.delAppt=async(aid,pid)=>{if(!confirm('לבטל?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);if(pid)openPatient(pid);render();};
 window.openEditTreatment=function(pid,num){
-  // Open treatment flow in edit mode for existing treatment
   const p=findP(pid);if(!p)return;
   const t=p.treatments.find(x=>x.num===num);if(!t)return;
   tfPid=String(pid);
-  // Find appointment for that date if exists
+  // Store treatment date for save — critical for edits without matching appointment
+  tfEditDate=t.date;
   const appt=(window.apts||[]).find(a=>String(a.patientId)===pid&&a.date===t.date);
-  tfApptId=appt?appt.id:null;
+  tfApptId=appt?appt.id:'__edit__'+t.date;  // special marker for edit mode
   document.getElementById('tf-pname').textContent=p.name+(p.patType==='baby'?' 👶':'');
   document.getElementById('tf-time').textContent=`${t.date} · עריכת טיפול ${num}`;
   document.getElementById('tf-back').onclick=()=>{goBack();};
@@ -1345,9 +1358,10 @@ async function addAppointment(){
   if(!date){err.textContent='נא לבחור תאריך';err.style.display='block';return;}
   if(date<todayStr()){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
   const ad=adMap();if((ad[date]||[]).some(a=>a.time===time)){err.textContent=`כבר יש תור בשעה ${time}`;err.style.display='block';return;}
-  // Check if time is within working hours
+  // Check working hours
   const availSlots=getTimeSlotsForDate(date);
-  if(availSlots.length>0&&!availSlots.includes(time)){err.textContent=`השעה ${time} אינה בשעות הזמינות ליום זה`;err.style.display='block';return;}
+  if(availSlots.length===0){err.textContent='היום הנבחר אינו יום עבודה. בחרי יום אחר.';err.style.display='block';return;}
+  if(!availSlots.includes(time)){err.textContent=`השעה ${time} אינה בשעות הזמינות ליום זה (${availSlots[0]}–${availSlots[availSlots.length-1]})`;err.style.display='block';return;}
   err.style.display='none';
   const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
