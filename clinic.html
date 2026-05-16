@@ -953,7 +953,7 @@ function renderWeek(){
         const p=findP(appt.patientId);const hd=p&&p.treatments&&p.treatments.some(t=>!t.paid);
         const isSer=p&&p.treatType==='series';const isBaby=p&&p.patType==='baby';
         const cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
-        h+=`<div class="wcell" onclick="openTreatFlow('${appt.patientId}','${appt.id}')"><div class="wappt ${cls}">${p?p.name.split(' ')[0]:''}</div></div>`;
+        h+=`<div class="wcell" data-pid="${appt.patientId}" data-aid="${appt.id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)"><div class="wappt ${cls}" style="pointer-events:none;">${p?p.name.split(' ')[0]:''}</div></div>`;
       } else if(!avail||isPast){
         h+=`<div class="wcell" style="background:var(--sf2);opacity:0.35;cursor:default;"></div>`;
       } else {
@@ -980,7 +980,7 @@ function renderDayPanel(){
     let borderColor='var(--bdl)';
     if(isHappening)borderColor='var(--ac)';
     else if(isUpcoming)borderColor='var(--a500)';
-    return `<div class="aitem" style="border-right:3px solid ${borderColor};padding-right:8px;" onclick="openTreatFlow('${a.patientId}','${a.id}')">
+    return `<div class="aitem" style="border-right:3px solid ${borderColor};padding-right:8px;" data-pid="${a.patientId}" data-aid="${a.id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)">
       <div class="atb"><div class="ath">${a.time}</div>${isHappening?'<div style="font-size:9px;color:var(--ac);font-weight:700;">עכשיו</div>':isUpcoming?'<div style="font-size:9px;color:var(--a700);">בקרוב</div>':''}</div>
       <div class="pav ${avCls(p)}" style="${avSize(36)}">${p?p.name.charAt(0):'?'}</div>
       <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${p?p.name:''}</div><div style="font-size:11px;color:var(--tm);">${p?p.problem:''}${isBaby?' 👶':''}</div></div>
@@ -1173,13 +1173,18 @@ window.openPatient=function(id){
   id=String(id);curPid=id;const p=findP(id);if(!p)return;
   const hd=p.treatments&&p.treatments.some(t=>!t.paid);const td=p.treatments?p.treatments.filter(t=>!t.paid).reduce((s,t)=>s+(t.amount||0),0):0;
   const ts=todayStr();const hasSer=p.treatType==='series'&&p.series;
-  const upcoming=(window.apts||[]).filter(a=>String(a.patientId)===id&&a.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).slice(0,3);
-  const upH=upcoming.length?upcoming.map(a=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--bdl);">
-    <span style="font-size:11px;color:var(--tm);min-width:76px;">${a.date}</span>
-    <span style="font-size:12px;font-weight:600;color:var(--ac);">${a.time}</span>
-    <button data-pid="${id}" data-aid="${a.id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)" style="background:var(--g50);border:1px solid var(--g200);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--g700);cursor:pointer;font-family:Heebo,sans-serif;font-weight:600;">פתח טיפול</button>
-    <button onclick="delAppt('${a.id}','${id}')" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:2px 7px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>
-  </div>`).join(''):'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין תורים קרובים</div>';
+  const upcoming=(window.apts||[]).filter(a=>String(a.patientId)===id&&a.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).slice(0,5);
+  const pastAppts=(window.apts||[]).filter(a=>String(a.patientId)===id&&a.date<ts).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3);
+  const apptRow=(a,isPastRow)=>`<div style="display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl);">
+    <span style="font-size:11px;color:${isPastRow?'var(--gr400)':'var(--tm)'};min-width:76px;">${a.date}</span>
+    <span style="font-size:12px;font-weight:600;color:${isPastRow?'var(--gr400)':'var(--ac)'};">${a.time}</span>
+    <button data-pid="${id}" data-aid="${a.id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)" style="background:${isPastRow?'var(--sf2)':'var(--g50)'};border:1px solid var(--bdl);border-radius:5px;padding:2px 8px;font-size:11px;color:${isPastRow?'var(--tm)':'var(--g700)'};cursor:pointer;font-family:Heebo,sans-serif;font-weight:600;">${isPastRow?'הצג':'פתח טיפול'}</button>
+    ${!isPastRow?`<button data-aid="${a.id}" data-pid="${id}" onclick="delAppt(this.dataset.aid,this.dataset.pid)" style="margin-right:auto;background:var(--r50);border:none;border-radius:5px;padding:2px 7px;font-size:11px;color:var(--r700);cursor:pointer;font-family:Heebo,sans-serif;">ביטול</button>`:''}
+  </div>`;
+  const upH=(upcoming.length||pastAppts.length)?`
+    ${upcoming.length?`<div style="font-size:10px;font-weight:700;color:var(--ac);text-transform:uppercase;letter-spacing:0.5px;padding:4px 0 2px;">עתידיים</div>${upcoming.map(a=>apptRow(a,false)).join('')}`:''}
+    ${pastAppts.length?`<div style="font-size:10px;font-weight:700;color:var(--gr400);text-transform:uppercase;letter-spacing:0.5px;padding:${upcoming.length?'10px':'4px'} 0 2px;">אחרונים</div>${pastAppts.map(a=>apptRow(a,true)).join('')}`:''}
+  `:'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין תורים</div>';
   const serH=hasSer?`<div class="ser-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
       <div style="font-size:13px;font-weight:700;color:var(--g700);">${p.series.name}</div>
@@ -1191,7 +1196,7 @@ window.openPatient=function(id){
 
   // treat reminder
   const pend=(window.apts||[]).filter(a=>{if(String(a.patientId)!==id||a.date>ts)return false;const[ah,am]=a.time.split(':').map(Number);const dur=parseInt((window.appCfg||{}).duration||60);if(a.date===ts&&(new Date().getHours()*60+new Date().getMinutes())<(ah*60+am+dur+30))return false;return!(p.treatments||[]).some(t=>t.date===a.date);});
-  const remH=pend.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:8px 11px;margin-bottom:9px;display:flex;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--r700);flex:1;">טיפול ב-${pend[0].date} לא תועד</span><button onclick="openTreatFlow('${id}','${pend[0].id}')" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button></div>`:'';
+  const remH=pend.length?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:8px 11px;margin-bottom:9px;display:flex;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--r700);flex:1;">טיפול ב-${pend[0].date} לא תועד</span><button data-pid="${id}" data-aid="${pend[0].id}" onclick="openTreatFlow(this.dataset.pid,this.dataset.aid)" style="background:var(--r500);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button></div>`:'';
 
   const trH=(p.treatments&&p.treatments.length)?[...p.treatments].reverse().map(t=>`<div class="tent">
     <div class="ttop">
@@ -1199,7 +1204,7 @@ window.openPatient=function(id){
       <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
         ${t.paid?'<span class="badge bg">שולם</span>':'<span class="badge br">לא שולם</span>'}
         <span style="font-size:10px;color:var(--tm);">${t.date}</span>
-        <button onclick="openEditTreatment('${id}',${t.num})" style="background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:Heebo,sans-serif;">✏️ עריכה</button>
+        <button data-pid="${id}" data-num="${t.num}" onclick="openEditTreatment(this.dataset.pid,this.dataset.num)" style="background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer;font-family:Heebo,sans-serif;">✏️ עריכה</button>
       </div>
     </div>
     <div class="tnotes">
@@ -1210,7 +1215,7 @@ window.openPatient=function(id){
       ${t.exercises?`<div><b>תרגילים:</b> ${t.exercises}</div>`:''}
       ${t.method?`<div><b>תשלום:</b> ${t.method}</div>`:''}
     </div>
-    ${!t.paid?`<button onclick="mkPaid('${id}',${t.num})" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--ac);background:none;color:var(--ac);font-family:Heebo,sans-serif;font-size:11px;font-weight:600;cursor:pointer;">✓ סמן כשולם</button>`:`<button onclick="undoPaid('${id}',${t.num})" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--r500);background:none;color:var(--r500);font-family:Heebo,sans-serif;font-size:10px;cursor:pointer;">↩ בטל תשלום</button>`}
+    ${!t.paid?`<button data-pid="${id}" data-num="${t.num}" onclick="mkPaid(this.dataset.pid,this.dataset.num)" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--ac);background:none;color:var(--ac);font-family:Heebo,sans-serif;font-size:11px;font-weight:600;cursor:pointer;">✓ סמן כשולם</button>`:`<button data-pid="${id}" data-num="${t.num}" onclick="undoPaid(this.dataset.pid,this.dataset.num)" style="margin-top:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--r500);background:none;color:var(--r500);font-family:Heebo,sans-serif;font-size:10px;cursor:pointer;">↩ בטל תשלום</button>`}
   </div>`).join(''):'<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין טיפולים עדיין</div>';
 
   document.getElementById('pfile').innerHTML=`
@@ -1219,7 +1224,7 @@ window.openPatient=function(id){
       <div class="pfh">
         <div class="pfav ${avCls(p)}" style="${avSize(52)}">${p.name.charAt(0)}</div>
         <div style="flex:1;"><div class="pfn">${p.name}${p.patType==='baby'?' 👶':''}</div><div class="pfs">${p.phone||''}</div></div>
-        <button onclick="openEdit('${id}')" style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:4px 11px;font-family:Heebo,sans-serif;font-size:12px;cursor:pointer;font-weight:600;">עריכה</button>
+        <button data-id="${id}" onclick="openEdit(this.dataset.id)" style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:4px 11px;font-family:Heebo,sans-serif;font-size:12px;cursor:pointer;font-weight:600;">עריכה</button>
       </div>
       ${hd?`<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪${td.toLocaleString()}</div>`:''}
       <div class="ir"><span class="il">גיל</span><span class="iv">${p.age||'—'}</span></div>
@@ -1231,7 +1236,7 @@ window.openPatient=function(id){
     ${hasSer?`<div class="card"><div class="ct">סדרה פעילה</div>${serH}</div>`:''}
     <div class="card">
       <div class="ct">תורים קרובים</div>${upH}
-      <button onclick="openNewApptFor('${id}')" style="margin-top:8px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:6px 11px;font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--g700);width:100%;">+ קבע תור חדש</button>
+      <button data-id="${id}" onclick="openNewApptFor(this.dataset.id)" style="margin-top:8px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:6px 11px;font-family:Heebo,sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--g700);width:100%;">+ קבע תור חדש</button>
     </div>
     <div class="card">
       <div class="ct">היסטוריית טיפולים</div>
@@ -1244,6 +1249,7 @@ window.openPatient=function(id){
 
 window.delAppt=async(aid,pid)=>{if(!confirm('לבטל?'))return;window.apts=(window.apts||[]).filter(a=>String(a.id)!==String(aid));await window.fbDelA(aid);if(pid)openPatient(pid);render();};
 window.openEditTreatment=function(pid,num){
+  num=parseInt(num);
   const p=findP(pid);if(!p)return;
   const t=p.treatments.find(x=>x.num===num);if(!t)return;
   tfPid=String(pid);
@@ -1269,7 +1275,7 @@ window.openEditTreatment=function(pid,num){
   showScreen('treatment-flow');
 };
 
-window.mkPaid=async(pid,num)=>{const p=findP(pid);if(!p)return;const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();};
+window.mkPaid=async(pid,num)=>{num=parseInt(num);const p=findP(pid);if(!p)return;const t=p.treatments.find(x=>x.num===num);if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();};
 
 function openEdit(id){
   const p=findP(id);if(!p)return;
@@ -1366,7 +1372,11 @@ async function addAppointment(){
   const a={id:String(Date.now()),patientId:pid,date,time,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
   selDate=sToD(date);navDate=new Date(selDate);
-  document.getElementById('gcal-btn').classList.remove('hidden');renderCal();
+  document.getElementById('gcal-btn').classList.remove('hidden');
+  render(); // update all views immediately
+  // Show success message
+  const err2=document.getElementById('na-err');
+  if(err2){err2.style.color='var(--ac)';err2.textContent='✓ התור נקבע בהצלחה!';err2.style.display='block';}
 }
 
 function openGcal(){
@@ -1385,7 +1395,7 @@ function buildReceiptSection(p){
   return `<button class="btn bgcal" onclick="openPaperless('${p.name}',${amt})" style="margin-top:5px;">🧾 צור קבלה ב-Paperless (₪${amt.toLocaleString()})</button>`;
 }
 
-window.undoPaid=async(pid,num)=>{
+window.undoPaid=async(pid,num)=>{num=parseInt(num);
   if(!confirm('לבטל את סימון התשלום?'))return;
   const p=findP(pid);if(!p)return;
   const t=p.treatments.find(x=>x.num===num);if(t){t.paid=false;t.method='';}
