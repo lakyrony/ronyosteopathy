@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: 2026-05-17 14:02:18 v2.3 -->
+<!-- BUILD: 2026-05-17 14:02:18 v2.4 -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -210,7 +210,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v2.3</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v2.4</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -265,8 +265,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     <div class="screen" id="screen-settings">
       <div class="set-group">
         <div class="set-group-hdr">⚙️ כללי</div>
-        <div class="set-item"><div class="set-item-lbl">מחיר ברירת מחדל</div>
-          <select class="set-sel" id="set-price"><option value="200">₪200</option><option value="250">₪250</option><option value="300">₪300</option><option value="350" selected>₪350</option><option value="400">₪400</option><option value="450">₪450</option><option value="500">₪500</option><option value="600">₪600</option><option value="700">₪700</option></select>
+        <div class="set-item"><div class="set-item-lbl">מחיר ברירת מחדל (₪)</div>
+          <input type="number" inputmode="numeric" id="set-price" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
         </div>
         <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
           <select class="set-sel" id="set-dur"><option value="30">30 דק׳</option><option value="45">45 דק׳</option><option value="60" selected>60 דק׳</option><option value="75">75 דק׳</option><option value="90">90 דק׳</option><option value="120">120 דק׳</option></select>
@@ -548,10 +548,16 @@ function getSlots(ds){
   var d=sToD(ds),dow=d.getDay();
   var cfg=window.appCfg||defCfg(),sched=cfg.schedule||{},day=sched[dow];
   if(!day||!day.active)return[];
+  var dur=parseInt(cfg.duration||60);
   var slots=[];
   (day.ranges||[]).forEach(function(r){
     var sh=parseInt(r.s),eh=parseInt(r.e);
-    for(var h=sh;h<eh;h++)slots.push(S2(h)+':00');
+    var totalMins=(eh-sh)*60;
+    var steps=Math.floor(totalMins/dur);
+    for(var i=0;i<steps;i++){
+      var mins=sh*60+i*dur;
+      slots.push(S2(Math.floor(mins/60))+':'+S2(mins%60));
+    }
   });
   return slots;
 }
@@ -796,7 +802,8 @@ function renderDayPanel(){
     // Build row with DOM
     var row=document.createElement('div');
     row.className='aitem';
-    row.style.cssText='border-right:3px solid '+borderColor+';padding-right:8px;'+(isPast?'opacity:0.75;':'');
+    var rowBg=isNow?'rgba(46,148,96,0.06)':isSoon?'rgba(230,168,23,0.06)':isPast?'rgba(0,0,0,0.02)':'';
+    row.style.cssText='border-right:3px solid '+borderColor+';padding-right:8px;background:'+rowBg+';border-radius:var(--rsm);margin-bottom:2px;'+(isPast?'opacity:0.72;':'');
     // Time block
     var timeBlock=document.createElement('div');timeBlock.className='atb';
     var timeNum=document.createElement('div');timeNum.className='ath';
@@ -814,6 +821,7 @@ function renderDayPanel(){
     var nm=document.createElement('div');nm.style.cssText='font-size:13px;font-weight:600;color:'+nameColor+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';nm.textContent=p?p.name:'';
     var prob=document.createElement('div');prob.style.cssText='font-size:11px;color:var(--tm);';prob.textContent=p?p.problem:'';
     nameArea.appendChild(nm);nameArea.appendChild(prob);
+    if(a.notes){var noteEl=document.createElement('div');noteEl.style.cssText='font-size:10px;color:var(--a700);font-style:italic;margin-top:1px;';noteEl.textContent='📝 '+a.notes;nameArea.appendChild(noteEl);}
     row.appendChild(nameArea);
     // Status badge
     if(hasTreat){var tb=document.createElement('span');tb.className='badge bg';tb.style.cssText='font-size:9px;flex-shrink:0;margin-left:4px;';tb.textContent='✓ תועד';row.appendChild(tb);}
@@ -876,6 +884,10 @@ function renderPatients(filter){
 
 function openPatient(id){
   id=String(id);curPid=id;
+  // Push current screen to navHistory so goBack() works
+  var curActive=document.querySelector('.screen.active');
+  var curName=curActive?curActive.id.replace('screen-',''):null;
+  if(curName&&curName!=='patient-file'){navHistory.push(curName);}
   var p=findP(id);if(!p)return;
   var hd=p.treatments&&p.treatments.some(function(t){return !t.paid;});
   var td=p.treatments?p.treatments.filter(function(t){return !t.paid;}).reduce(function(s,t){return s+(t.amount||0);},0):0;
@@ -1250,9 +1262,13 @@ function buildCarousel(container,p,prevTreats){
     if(!has)body.innerHTML='<div style="color:var(--tm);font-style:italic;">אין תיעוד</div>';
     slide.appendChild(body);
 
-    // Click to edit — IIFE captures t
+    // Only the edit hint opens treatment
     (function(captT){
-      slide.addEventListener('click',function(){openEditTreatment(p.id,captT.num);});
+      sHint.style.cursor='pointer';
+      sHint.style.color='var(--ac)';
+      sHint.style.fontWeight='600';
+      sHint.addEventListener('click',function(e){e.stopPropagation();openEditTreatment(p.id,captT.num);});
+      slide.style.cursor='default';
     })(t);
 
     track.appendChild(slide);
@@ -1292,11 +1308,12 @@ function buildCarousel(container,p,prevTreats){
     arrows.style.cssText='display:flex;justify-content:space-between;margin-top:6px;';
     var prevArrow=document.createElement('button');
     prevArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:14px;cursor:pointer;color:var(--ac);';
-    prevArrow.textContent='›'; // RTL: › = right = newer
+    prevArrow.textContent='← חדש יותר';
+    prevArrow.style.fontSize='11px';
     prevArrow.addEventListener('click',function(){goTo(carIdx-1);});
     var nextArrow=document.createElement('button');
-    nextArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:14px;cursor:pointer;color:var(--ac);';
-    nextArrow.textContent='‹'; // RTL: ‹ = left = older
+    nextArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:11px;cursor:pointer;color:var(--ac);';
+    nextArrow.textContent='ישן יותר →';
     nextArrow.addEventListener('click',function(){goTo(carIdx+1);});
     arrows.appendChild(prevArrow);arrows.appendChild(nextArrow);
     carousel.appendChild(arrows);
@@ -1517,7 +1534,7 @@ async function undoPaid(pid,num){
   render();
   openPatient(pid);
 }
-async function delAppt(aid,pid){if(!confirm('לבטל את התור?'))return;window.apts=(window.apts||[]).filter(function(a){return String(a.id)!==String(aid);});await window.fbDelA(aid);if(pid)openPatient(pid);renderCal();}
+async function delAppt(aid,pid){if(!confirm('לבטל את התור?'))return;window.apts=(window.apts||[]).filter(function(a){return String(a.id)!==String(aid);});await window.fbDelA(aid);render();}
 
 // ---- SETTINGS ----
 function applySettings(){
@@ -1557,13 +1574,31 @@ function renderDaySchedule(){
 }
 
 function toggleDay(i){var c=window.appCfg||defCfg();if(!c.schedule[i])c.schedule[i]={active:false,ranges:[{s:'10:00',e:'18:00'}]};c.schedule[i].active=!c.schedule[i].active;window.appCfg=c;renderDaySchedule();autoSave();}
-function updateRange(di,ri,k,val){var c=window.appCfg||defCfg();if(!c.schedule[di]||!c.schedule[di].ranges[ri])return;c.schedule[di].ranges[ri][k]=val;window.appCfg=c;autoSave();}
-function addRange(di){var c=window.appCfg||defCfg();if(!c.schedule[di])c.schedule[di]={active:true,ranges:[]};c.schedule[di].ranges.push({s:'15:00',e:'18:00'});window.appCfg=c;renderDaySchedule();autoSave();}
+function updateRange(di,ri,k,val){
+  var cfg2=window.appCfg||defCfg();
+  if(!cfg2.schedule[di]||!cfg2.schedule[di].ranges[ri])return;
+  var range=cfg2.schedule[di].ranges[ri];
+  range[k]=val;
+  if(k==='s'){var sv=parseInt(val);if(sv>=parseInt(range.e))range.e=S2(Math.min(sv+1,22))+':00';}
+  if(k==='e'){var ev=parseInt(val);if(ev<=parseInt(range.s))range.e=S2(parseInt(range.s)+1)+':00';}
+  window.appCfg=cfg2;autoSave();renderDaySchedule();
+}
+function addRange(di){
+  var cfg3=window.appCfg||defCfg();
+  if(!cfg3.schedule[di])cfg3.schedule[di]={active:true,ranges:[]};
+  var ranges=cfg3.schedule[di].ranges;
+  // Start from last end time
+  var lastEnd=ranges.length?ranges[ranges.length-1].e:'09:00';
+  var startH=parseInt(lastEnd);
+  var endH=Math.min(startH+2,22);
+  ranges.push({s:S2(startH)+':00',e:S2(endH)+':00'});
+  window.appCfg=cfg3;renderDaySchedule();autoSave();
+}
 function delRange(di,ri){var c=window.appCfg||defCfg();c.schedule[di].ranges.splice(ri,1);window.appCfg=c;renderDaySchedule();autoSave();}
 
 async function saveSettings(){
   var c=window.appCfg||defCfg();
-  var sp=document.getElementById('set-price');if(sp)c.price=parseInt(sp.value)||350;
+  var sp=document.getElementById('set-price');if(sp)c.price=Math.min(9999,parseInt(sp.value)||350);
   var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
   window.appCfg=c;await window.fbSaveCfg(c);rebuildTimeSelect();
 }
