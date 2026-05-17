@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: 2026-05-17 14:02:18 v2.4 -->
+<!-- BUILD: 2026-05-17 14:02:18 v2.5 -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -210,7 +210,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v2.4</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v2.5</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -795,15 +795,16 @@ function renderDayPanel(){
     var treat=(p&&p.treatments||[]).find(function(t){return t.date===ds;});
     var hasTreat=treat&&(treat.done||treat.found||treat.tcs||
       (treat.intakeData&&Object.values(treat.intakeData).some(function(v){return v&&v.trim();})));
-    // Border color: now=green, soon=orange, past=light grey, future=border
-    var borderColor=isNow?'var(--ac)':isSoon?'var(--a500)':isPast?'var(--gr100)':'var(--bdl)';
-    var timeColor=isNow?'var(--ac)':isPast?'var(--gr400)':'var(--ac)';
-    var nameColor=isPast?'var(--gr400)':'var(--tp)';
+    // Per-appointment status colors
+    var isApptPast=isPast||(ds===ts&&nowM>=(apptM+dur));
+    var borderColor=isNow?'var(--ac)':isSoon?'var(--a500)':isApptPast?'var(--gr100)':'var(--b100)';
+    var timeColor=isNow?'var(--ac)':isApptPast?'var(--gr400)':'var(--tp)';
+    var nameColor=isApptPast?'var(--gr400)':'var(--tp)';
     // Build row with DOM
     var row=document.createElement('div');
     row.className='aitem';
-    var rowBg=isNow?'rgba(46,148,96,0.06)':isSoon?'rgba(230,168,23,0.06)':isPast?'rgba(0,0,0,0.02)':'';
-    row.style.cssText='border-right:3px solid '+borderColor+';padding-right:8px;background:'+rowBg+';border-radius:var(--rsm);margin-bottom:2px;'+(isPast?'opacity:0.72;':'');
+    var rowBg=isNow?'rgba(46,148,96,0.08)':isSoon?'rgba(230,168,23,0.07)':isApptPast?'rgba(0,0,0,0.02)':'rgba(74,159,212,0.04)';
+    row.style.cssText='border-right:3px solid '+borderColor+';padding-right:8px;background:'+rowBg+';border-radius:var(--rsm);margin-bottom:2px;'+(isApptPast?'opacity:0.70;':'');
     // Time block
     var timeBlock=document.createElement('div');timeBlock.className='atb';
     var timeNum=document.createElement('div');timeNum.className='ath';
@@ -811,7 +812,8 @@ function renderDayPanel(){
     timeBlock.appendChild(timeNum);
     if(isNow){var nowTag=document.createElement('div');nowTag.style.cssText='font-size:9px;color:var(--ac);font-weight:700;';nowTag.textContent='עכשיו';timeBlock.appendChild(nowTag);}
     else if(isSoon){var soonTag=document.createElement('div');soonTag.style.cssText='font-size:9px;color:var(--a700);';soonTag.textContent='בקרוב';timeBlock.appendChild(soonTag);}
-    else if(isPast){var pastTag=document.createElement('div');pastTag.style.cssText='font-size:9px;color:var(--gr400);';pastTag.textContent='עבר';timeBlock.appendChild(pastTag);}
+    else if(isApptPast){var pastTag=document.createElement('div');pastTag.style.cssText='font-size:9px;color:var(--gr400);';pastTag.textContent='עבר';timeBlock.appendChild(pastTag);}
+    else{var futTag=document.createElement('div');futTag.style.cssText='font-size:9px;color:var(--b600);';futTag.textContent='עתידי';timeBlock.appendChild(futTag);}
     row.appendChild(timeBlock);
     // Avatar
     var av=document.createElement('div');av.className='pav '+avCls(p);av.style.cssText=avSz(36);av.textContent=p?p.name.charAt(0):'?';
@@ -829,12 +831,12 @@ function renderDayPanel(){
     // Treatment button — explicit, flex-shrink:0
     // Treatment button — top right
     var tfBtn=document.createElement('button');
-    tfBtn.className='pbtn '+(isPast?'pbtn-gray':'pbtn-g');
+    tfBtn.className='pbtn '+(isApptPast?'pbtn-gray':'pbtn-g');
     tfBtn.style.cssText='white-space:nowrap;flex-shrink:0;align-self:flex-start;';
-    tfBtn.textContent=isPast?'הצג':'טיפול ▶';
+    tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';
     row.appendChild(tfBtn);
     // Cancel button — separate, small, below name area (not next to treatment)
-    if(!isPast){
+    if(!isApptPast){
       var cancelWrap=document.createElement('div');
       cancelWrap.style.cssText='flex-shrink:0;display:flex;align-items:center;';
       var delBtn=document.createElement('button');
@@ -1113,10 +1115,11 @@ function openAddTreatmentManual(pid){
   goBtn.addEventListener('click',function(){
     var chosenNum=parseInt(numSel.value);
     var chosenDate=dateInp.value||todayStr();
+    if(!chosenDate){alert('נא לבחור תאריך');return;}
     ov.remove();
-    // Set TF state for manual add
     TF.pid=String(pid);TF.apptId=null;TF.editDate=chosenDate;TF.manualNum=chosenNum;
-    var pFresh=findP(pid);
+    var pFresh=findP(String(pid));
+    if(!pFresh){alert('שגיאה: מטופל לא נמצא');return;}
     buildTFManual(pFresh,chosenDate,chosenNum);
     showScreen('treatment-flow');
   });
@@ -1222,21 +1225,19 @@ function buildCarousel(container,p,prevTreats){
   carHead.appendChild(carTitle);carHead.appendChild(carCounter);
   carousel.appendChild(carHead);
 
-  // Viewport clips content
+  // Viewport: scroll-based (most reliable cross-browser)
   var viewport=document.createElement('div');
-  viewport.style.cssText='position:relative;overflow:hidden;border-radius:var(--rmd);width:100%;';
+  viewport.style.cssText='overflow-x:hidden;border-radius:var(--rmd);width:100%;scroll-behavior:smooth;';
 
-  // Track — flex row, must NOT wrap, full width per slide
-  // Key: track width = N * 100% of viewport, each slide = 100%/N of track = 100% of viewport
-  var nSlides=prevTreats.length;
+  // Track: flex, no-wrap, each slide is exactly viewport width
   var track=document.createElement('div');
-  track.style.cssText='display:flex;flex-wrap:nowrap;width:'+(nSlides*100)+'%;';
+  track.style.cssText='display:flex;flex-wrap:nowrap;';
 
+  var nSlides=prevTreats.length;
   // Build slides
   prevTreats.forEach(function(t,i){
     var slide=document.createElement('div');
-    // Each slide = (1/N) of track = 100% of viewport
-    slide.style.cssText='width:'+(100/nSlides)+'%;flex-shrink:0;background:var(--sf2);border:1px solid var(--bdl);border-radius:var(--rmd);padding:11px 13px;box-sizing:border-box;cursor:pointer;';
+    slide.style.cssText='flex:0 0 100%;background:var(--sf2);border:1px solid var(--bdl);border-radius:var(--rmd);padding:11px 13px;box-sizing:border-box;cursor:default;';
 
     // Title
     var sHead=document.createElement('div');
@@ -1277,11 +1278,11 @@ function buildCarousel(container,p,prevTreats){
   viewport.appendChild(track);
   carousel.appendChild(viewport);
 
-  // goTo function — defined BEFORE dots so dots can reference it
+  // goTo — uses scrollLeft (reliable, no math needed)
   function goTo(n){
     carIdx=Math.max(0,Math.min(n,carTotal-1));
-    track.style.transition='transform 0.28s ease';
-    track.style.transform='translateX(-'+(carIdx*(100/carTotal))+'%)';
+    var w=viewport.offsetWidth||300;
+    viewport.scrollTo({left:carIdx*w,behavior:'smooth'});
     carCounter.textContent=(carIdx+1)+' / '+carTotal;
     if(dotsEl){
       dotsEl.childNodes.forEach(function(d,i){
@@ -1322,8 +1323,8 @@ function buildCarousel(container,p,prevTreats){
     var tx0=0;
     viewport.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX;},{passive:true});
     viewport.addEventListener('touchend',function(e){
-      var dx=tx0-e.changedTouches[0].clientX;
-      if(Math.abs(dx)>35)goTo(dx>0?carIdx+1:carIdx-1);
+      var dx=e.changedTouches[0].clientX-tx0; // positive = swiped right = go to newer (lower idx)
+      if(Math.abs(dx)>35)goTo(dx>0?carIdx-1:carIdx+1);
     },{passive:true});
   }
 
@@ -1534,7 +1535,15 @@ async function undoPaid(pid,num){
   render();
   openPatient(pid);
 }
-async function delAppt(aid,pid){if(!confirm('לבטל את התור?'))return;window.apts=(window.apts||[]).filter(function(a){return String(a.id)!==String(aid);});await window.fbDelA(aid);render();}
+async function delAppt(aid,pid){
+  if(!confirm('לבטל את התור?'))return;
+  window.apts=(window.apts||[]).filter(function(a){return String(a.id)!==String(aid);});
+  await window.fbDelA(aid);
+  render();
+  // If on patient file, refresh it
+  var cur=document.querySelector('.screen.active');
+  if(cur&&cur.id==='screen-patient-file'&&pid)openPatient(pid);
+}
 
 // ---- SETTINGS ----
 function applySettings(){
@@ -1591,6 +1600,7 @@ function addRange(di){
   var lastEnd=ranges.length?ranges[ranges.length-1].e:'09:00';
   var startH=parseInt(lastEnd);
   var endH=Math.min(startH+2,22);
+  if(startH>=22){alert('הגעת לגבול השעות (22:00)');return;}
   ranges.push({s:S2(startH)+':00',e:S2(endH)+':00'});
   window.appCfg=cfg3;renderDaySchedule();autoSave();
 }
@@ -1675,7 +1685,16 @@ function rebuildTimeSelect(ds){
   var sel=document.getElementById('na-tm');if(!sel)return;
   var dateStr=ds||document.getElementById('na-dt').value||todayStr();
   var ad=adMap();var takenAtDate=(ad[dateStr]||[]).map(function(a){return a.time;});
-  var slots=getSlots(dateStr).filter(function(s){return !takenAtDate.includes(s);});
+  var now=new Date();var nowM=now.getHours()*60+now.getMinutes();
+  var slots=getSlots(dateStr).filter(function(s){
+    if(takenAtDate.includes(s))return false;
+    // For today, filter out past times
+    if(dateStr===todayStr()){
+      var sh=parseInt(s.split(':')[0]),sm=parseInt(s.split(':')[1]);
+      if(sh*60+sm<=nowM)return false;
+    }
+    return true;
+  });
   sel.innerHTML=slots.length?slots.map(function(s){return '<option>'+s+'</option>';}).join(''):'<option value="">אין שעות פנויות</option>';
   var err=document.getElementById('na-err');if(!slots.length&&err){err.style.color='var(--r500)';err.textContent='אין שעות פנויות ביום זה';err.style.display='block';}else if(err)err.style.display='none';
 }
@@ -1700,6 +1719,11 @@ async function addAppointment(){
   if(!pid){err.style.color='var(--r500)';err.textContent='נא לבחור מטופל';err.style.display='block';return;}
   if(!date){err.style.color='var(--r500)';err.textContent='נא לבחור תאריך';err.style.display='block';return;}
   if(date<todayStr()){err.style.color='var(--r500)';err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
+  if(date===todayStr()&&time){
+    var nh=new Date().getHours(),nm=new Date().getMinutes();
+    var th=parseInt(time.split(':')[0]),tm2=parseInt(time.split(':')[1]);
+    if(th*60+tm2<=nh*60+nm){err.style.color='var(--r500)';err.textContent='השעה '+time+' כבר עברה היום';err.style.display='block';return;}
+  }
   var availSlots=getSlots(date);
   if(availSlots.length===0){err.style.color='var(--r500)';err.textContent='היום הנבחר אינו יום עבודה';err.style.display='block';return;}
   if(!availSlots.includes(time)){err.style.color='var(--r500)';err.textContent='השעה '+time+' אינה בשעות הזמינות';err.style.display='block';return;}
