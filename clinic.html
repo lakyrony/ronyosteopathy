@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: 2026-05-17 14:02:18 v2.5 -->
+<!-- BUILD: 2026-05-17 14:02:18 v3.4 -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -196,12 +196,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
   <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
-  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;">
+  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="if(window._doSignIn)window._doSignIn();else alert('טוען...');">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     כניסה עם חשבון גוגל
   </button>
   <div style="margin-top:12px;color:var(--tm);font-size:11px;">— או —</div>
-  <button id="btn-demo" class="btn bs" style="width:100%;max-width:280px;margin-top:8px;font-size:13px;">🧪 כניסת דמו (בדיקה)</button>
+  <button id="btn-demo" class="btn bs" style="width:100%;max-width:280px;margin-top:8px;font-size:13px;" onclick="if(window._enterDemo)window._enterDemo();">🧪 כניסת דמו (בדיקה)</button>
   <div id="lerr" style="color:var(--r500);font-size:12px;margin-top:12px;display:none;"></div>
 </div>
 
@@ -210,7 +210,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v2.5</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v3.4</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -243,6 +243,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           <div class="dph"><div class="dpt" id="dptitle"></div><button class="dpadd" id="dpadd-btn">+ תור</button></div>
           <div id="dplist"></div>
         </div>
+        <div id="week-daypanel" class="daypanel" style="display:none;"></div>
       </div>
     </div>
 
@@ -419,8 +420,15 @@ var fb=initializeApp(FC);var auth=getAuth(fb);var db=getFirestore(fb);var prov=n
 var uid=null,unsubP=null,unsubA=null;
 function setSt(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
 
-document.getElementById('btn-signin').onclick=async function(){
-  try{await signInWithPopup(auth,prov);}catch(e){var el=document.getElementById('lerr');el.textContent='שגיאה: '+e.message;el.style.display='block';}
+// btn-signin wired in DOMContentLoaded below
+window._doSignIn=async function(){
+  try{
+    await signInWithPopup(auth,prov);
+  }catch(e){
+    var el=document.getElementById('lerr');
+    if(el){el.textContent='שגיאה: '+e.message;el.style.display='block';}
+    console.error('Sign in error:',e);
+  }
 };
 
 window.doSignOut=async function(){
@@ -532,7 +540,7 @@ var efType=null,efForm=null;
 var sampleLoaded=false;
 var navHistory=[];
 // Treatment flow state
-var TF={pid:null,apptId:null,editDate:null,manualNum:null};
+var TF={pid:null,apptId:null,editDate:null};
 
 function ltoday(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+S2(d.getMonth()+1)+'-'+S2(d.getDate());}
@@ -563,7 +571,8 @@ function getSlots(ds){
 }
 
 // ---- DEMO MODE ----
-document.getElementById('btn-demo').onclick=function(){
+window._enterDemo=function(){
+  try{
   window.pts=[];window.apts=[];window.appCfg=defCfg();
   // Override Firebase functions with local storage
   window.fbSaveP=function(p){var i=window.pts.findIndex(function(x){return String(x.id)===String(p.id);});if(i>=0)window.pts[i]=p;else window.pts.push(p);return Promise.resolve();};
@@ -578,6 +587,7 @@ document.getElementById('btn-demo').onclick=function(){
   document.getElementById('stxt').textContent='דמו — נתונים לא נשמרים';
   applySettings();
   loadSample().then(function(){render();});
+  }catch(err){alert('שגיאה: '+err.message);console.error(err);}
 };
 
 async function loadSample(){
@@ -682,6 +692,7 @@ function setView(v){
   document.getElementById('vt-m').classList.toggle('active',v==='month');
   document.getElementById('vt-w').classList.toggle('active',v==='week');
   document.getElementById('daypanel').style.display=v==='month'?'block':'none';
+  document.getElementById('week-daypanel').style.display=v==='week'?'block':'none';
   renderCal();
 }
 function navCal(dir){
@@ -726,7 +737,7 @@ function renderWeek(){
   var h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:40px repeat(7,1fr);margin-bottom:2px;"><div></div>';
   days.forEach(function(d){
     var ds=dstr(d),isT=ds===ts;
-    h+='<div style="text-align:center;padding:2px 1px;"><div style="font-size:9px;font-weight:700;color:'+(isT?'var(--ac)':'var(--tm)')+';">'+DS[d.getDay()]+'</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;'+(isT?'background:var(--ac);color:#fff;':'')+'">'+d.getDate()+'</div></div>';
+    h+='<div style="text-align:center;padding:2px 1px;cursor:pointer;" data-ds="'+ds+'" onclick="selDate=sToD(this.dataset.ds);renderWeekDayPanel();document.getElementById('week-daypanel').style.display='block';"><div style="font-size:9px;font-weight:700;color:'+(isT?'var(--ac)':'var(--tm)')+';">'+DS[d.getDay()]+'</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;'+(isT?'background:var(--ac);color:#fff;':'')+'">'+d.getDate()+'</div></div>';
   });
   h+='</div><div style="display:grid;grid-template-columns:40px repeat(7,1fr);">';
   hrs.forEach(function(hr){
@@ -739,7 +750,7 @@ function renderWeek(){
         var cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
         h+='<div class="wcell" data-pid="'+appt.patientId+'" data-aid="'+appt.id+'"><div class="wappt '+cls+'">'+(p?p.name.split(' ')[0]:'')+'</div></div>';
       } else if(!avail||isPast){
-        h+='<div class="wcell" style="background:var(--sf2);opacity:0.35;cursor:default;"></div>';
+        h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'" style="background:var(--sf2);opacity:0.5;cursor:pointer;" onclick="switchToDayView(\''+ds+'\')" ></div>';
       } else {
         h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'"></div>';
       }
@@ -749,19 +760,78 @@ function renderWeek(){
   cb.innerHTML=h+'</div></div>';
   cb.querySelectorAll('.wcell[data-pid]').forEach(function(el){
     (function(pid,aid){
-      // Click cell = open patient card
       el.addEventListener('click',function(e){openPatient(pid);});
-      // Click the name text = open treatment flow  
       var nameEl=el.querySelector('.wappt');
       if(nameEl){
         nameEl.style.cursor='pointer';
-        // Add a small "▶" indicator
         nameEl.title='לחץ לפתיחת טיפול';
         nameEl.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid,aid);});
       }
     })(el.dataset.pid,el.dataset.aid);
   });
-  cb.querySelectorAll('.wcell[data-ds]').forEach(function(el){el.addEventListener('click',function(){openNewApptAt(this.dataset.ds,this.dataset.hr);});});
+  cb.querySelectorAll('.wcell[data-ds]:not([data-pid])').forEach(function(el){
+    el.addEventListener('click',function(){selectWeekDay(this.dataset.ds,this.dataset.hr);});
+  });
+  // Day panel below week grid — show selected day
+  renderWeekDayPanel();
+}
+
+function selectWeekDay(ds,hr){
+  selDate=sToD(ds);
+  renderWeekDayPanel();
+  if(hr){
+    // If empty slot clicked, open new appt
+    var slots=getSlots(ds);
+    if(slots.length&&slots.includes(hr)){openNewApptAt(ds,hr);}
+  }
+}
+
+function renderWeekDayPanel(){
+  var weekDp=document.getElementById('week-daypanel');if(!weekDp)return;
+  var ds=dstr(selDate);
+  var ad=adMap();
+  var dayApts=(ad[ds]||[]).sort(function(a,b){return a.time.localeCompare(b.time);});
+  var ts=todayStr();var isPast=ds<ts;var avail=getSlots(ds).length>0;
+  weekDp.innerHTML='';
+  var dpHead=document.createElement('div');dpHead.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:10px 0 7px;';
+  var dpTitle=document.createElement('div');dpTitle.style.cssText='font-size:13px;font-weight:700;color:var(--tp);';
+  dpTitle.textContent=DFL[selDate.getDay()]+', '+selDate.getDate()+' '+HM[selDate.getMonth()];
+  dpHead.appendChild(dpTitle);
+  if(!isPast&&avail){var addBtn=document.createElement('button');addBtn.className='dpadd';addBtn.textContent='+ תור';addBtn.addEventListener('click',function(){openNewApptForDay();});dpHead.appendChild(addBtn);}
+  weekDp.appendChild(dpHead);
+  if(!dayApts.length){
+    var empty=document.createElement('div');empty.style.cssText='color:var(--tm);font-size:12px;padding:5px 0;';
+    empty.textContent=isPast?'לא היו תורים':'אין תורים ביום זה';weekDp.appendChild(empty);return;
+  }
+  var now=new Date();var nowM=now.getHours()*60+now.getMinutes();var dur=parseInt((window.appCfg||{}).duration||60);
+  dayApts.forEach(function(a){
+    var p=findP(a.patientId);var hd=p&&p.treatments&&p.treatments.some(function(t){return !t.paid;});
+    var ah=parseInt(a.time.split(':')[0]);var am2=parseInt(a.time.split(':')[1]);var apptM=ah*60+am2;
+    var isNow=ds===ts&&nowM>=apptM&&nowM<apptM+dur;var isSoon=ds===ts&&nowM<apptM&&(apptM-nowM)<=60;
+    var isApptPast=isPast||(ds===ts&&nowM>=(apptM+dur));
+    var row=document.createElement('div');row.className='aitem';
+    row.style.cssText='border-right:3px solid '+(isNow?'var(--ac)':isSoon?'var(--a500)':isApptPast?'var(--gr100)':'var(--b100)')+';padding-right:8px;'+(isApptPast?'opacity:0.7;':'');
+    var timeB=document.createElement('div');timeB.className='atb';
+    var timeN=document.createElement('div');timeN.className='ath';timeN.style.color=isNow?'var(--ac)':isApptPast?'var(--gr400)':'var(--ac)';timeN.textContent=a.time;
+    timeB.appendChild(timeN);
+    if(isNow){var nt=document.createElement('div');nt.style.cssText='font-size:9px;color:var(--ac);font-weight:700;';nt.textContent='עכשיו';timeB.appendChild(nt);}
+    else if(isSoon){var st2=document.createElement('div');st2.style.cssText='font-size:9px;color:var(--a700);';st2.textContent='בקרוב';timeB.appendChild(st2);}
+    else if(isApptPast){var pt=document.createElement('div');pt.style.cssText='font-size:9px;color:var(--gr400);';pt.textContent='עבר';timeB.appendChild(pt);}
+    row.appendChild(timeB);
+    var av=document.createElement('div');av.className='pav '+avCls(p);av.style.cssText=avSz(32);av.textContent=p?p.name.charAt(0):'?';row.appendChild(av);
+    var nameA=document.createElement('div');nameA.style.cssText='flex:1;cursor:pointer;';
+    var nm=document.createElement('div');nm.style.cssText='font-size:12px;font-weight:600;';nm.textContent=p?p.name:'';
+    nameA.appendChild(nm);
+    (function(pid2){nameA.addEventListener('click',function(e){e.stopPropagation();openPatient(pid2);});})(a.patientId);
+    row.appendChild(nameA);
+    var tfBtn=document.createElement('button');tfBtn.className='pbtn '+(isApptPast?'pbtn-gray':'pbtn-g');tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';tfBtn.style.cssText='flex-shrink:0;white-space:nowrap;';
+    (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(a.patientId,a.id);
+    row.appendChild(tfBtn);
+    if(!isApptPast){var db=document.createElement('button');db.className='pbtn pbtn-r';db.textContent='✕';db.title='ביטול תור';
+      (function(pid2,aid2){db.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(a.patientId,a.id);row.appendChild(db);}
+    row.addEventListener('click',function(){openTreatFlow(a.patientId,a.id);});
+    weekDp.appendChild(row);
+  });
 }
 
 function renderDayPanel(){
@@ -862,6 +932,17 @@ function renderDayPanel(){
 }
 
 function selDay(ds){selDate=sToD(ds);navDate=new Date(selDate);renderCal();}
+function switchToDayView(ds){
+  selDate=sToD(ds);navDate=new Date(selDate);
+  // Switch to month view which has day panel, then show the day panel
+  calView='month';
+  document.getElementById('vt-m').classList.add('active');
+  document.getElementById('vt-w').classList.remove('active');
+  document.getElementById('daypanel').style.display='block';
+  renderCal();
+  // Scroll to day panel
+  setTimeout(function(){var dp=document.getElementById('daypanel');if(dp)dp.scrollIntoView({behavior:'smooth'});},100);
+}
 
 // ---- PATIENTS ----
 function renderPatients(filter){
@@ -886,17 +967,27 @@ function renderPatients(filter){
 
 function openPatient(id){
   id=String(id);curPid=id;
-  // Push current screen to navHistory so goBack() works
-  var curActive=document.querySelector('.screen.active');
-  var curName=curActive?curActive.id.replace('screen-',''):null;
-  if(curName&&curName!=='patient-file'){navHistory.push(curName);}
+  // navHistory managed by showScreen — no manual push needed
   var p=findP(id);if(!p)return;
   var hd=p.treatments&&p.treatments.some(function(t){return !t.paid;});
   var td=p.treatments?p.treatments.filter(function(t){return !t.paid;}).reduce(function(s,t){return s+(t.amount||0);},0):0;
   var ts=todayStr();
   var allAppts=(window.apts||[]).filter(function(a){return String(a.patientId)===id;});
-  var upcoming=allAppts.filter(function(a){return a.date>=ts;}).sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time);}).slice(0,5);
-  var pastAppts=allAppts.filter(function(a){return a.date<ts;}).sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,3);
+  var nowForSort=new Date();var nowMSort=nowForSort.getHours()*60+nowForSort.getMinutes();
+  var upcoming=allAppts.filter(function(a){
+    if(a.date>ts)return true;
+    if(a.date<ts)return false;
+    // Today — only future times
+    var ah=parseInt(a.time.split(':')[0]),am2=parseInt(a.time.split(':')[1]);
+    return (ah*60+am2)>nowMSort;
+  }).sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time);}).slice(0,5);
+  var pastAppts=allAppts.filter(function(a){
+    if(a.date<ts)return true;
+    if(a.date>ts)return false;
+    // Today — past times
+    var ah=parseInt(a.time.split(':')[0]),am2=parseInt(a.time.split(':')[1]);
+    return (ah*60+am2)<=nowMSort;
+  }).sort(function(a,b){return b.date.localeCompare(a.date)||b.time.localeCompare(a.time);}).slice(0,5);
 
   // Build HTML safely
   var pfile=document.getElementById('pfile');
@@ -949,42 +1040,39 @@ function openPatient(id){
     pfile.appendChild(sCard);
   }
 
-  // Appointments card
+  // Appointments card — built with DOM for reliable event listeners
   var aCard=document.createElement('div');aCard.className='card';
-  var aHtml='<div class="ct">תורים</div>';
+  var aTitle=document.createElement('div');aTitle.className='ct';aTitle.textContent='תורים';aCard.appendChild(aTitle);
+  function isDocumented(apptDate){var tr=(p.treatments||[]).find(function(t){return t.date===apptDate;});return tr&&(tr.done||tr.found||tr.tcs||(tr.intakeData&&Object.values(tr.intakeData).some(function(v){return v&&v.trim();})));}
+  function makeApptRow(a,isPastRow){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl);';
+    var dateS=document.createElement('span');dateS.style.cssText='font-size:11px;color:'+(isPastRow?'var(--gr400)':'var(--tm)')+';min-width:76px;';dateS.textContent=a.date;
+    var timeS=document.createElement('span');timeS.style.cssText='font-size:12px;font-weight:600;color:'+(isPastRow?'var(--gr400)':'var(--ac)')+';';timeS.textContent=a.time;
+    var doc=isDocumented(a.date);
+    var tfBtn=document.createElement('button');
+    tfBtn.className='pbtn '+(isPastRow?'pbtn-gray':'pbtn-g');
+    tfBtn.textContent=doc?(isPastRow?'✓ הצג':'✓ תועד'):(isPastRow?'רישום':'פתח טיפול');
+    (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(id,a.id);
+    row.appendChild(dateS);row.appendChild(timeS);row.appendChild(tfBtn);
+    if(!isPastRow){
+      var delB=document.createElement('button');delB.className='pbtn pbtn-r';delB.style.marginRight='auto';delB.textContent='ביטול';
+      (function(pid2,aid2){delB.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(id,a.id);
+      row.appendChild(delB);
+    }
+    return row;
+  }
   if(upcoming.length){
-    aHtml+='<div style="font-size:10px;font-weight:700;color:var(--ac);text-transform:uppercase;padding:2px 0 4px;">עתידיים</div>';
-    upcoming.forEach(function(a){
-      var hasTreat2=(function(){var tr=(p.treatments||[]).find(function(t){return t.date===a.date;});return tr&&(tr.done||tr.found||tr.tcs||(tr.intakeData&&Object.values(tr.intakeData).some(function(v){return v&&v.trim();})));})();
-      var hasTreat=hasTreat2;
-      aHtml+='<div style="display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl);">'+
-        '<span style="font-size:11px;color:var(--tm);min-width:76px;">'+a.date+'</span>'+
-        '<span style="font-size:12px;font-weight:600;color:var(--ac);">'+a.time+'</span>'+
-        '<button class="pbtn pbtn-g" data-pid="'+id+'" data-aid="'+a.id+'">'+(hasTreat?'✓ תועד':'פתח טיפול')+'</button>'+
-        '<button class="pbtn pbtn-r" style="margin-right:auto;" data-aid="'+a.id+'" data-pid="'+id+'">ביטול</button></div>';
-    });
+    var upLbl=document.createElement('div');upLbl.style.cssText='font-size:10px;font-weight:700;color:var(--ac);text-transform:uppercase;padding:2px 0 4px;';upLbl.textContent='עתידיים';aCard.appendChild(upLbl);
+    upcoming.forEach(function(a){aCard.appendChild(makeApptRow(a,false));});
   }
   if(pastAppts.length){
-    aHtml+='<div style="font-size:10px;font-weight:700;color:var(--gr400);text-transform:uppercase;padding:'+(upcoming.length?'10px':'2px')+' 0 4px;">אחרונים</div>';
-    pastAppts.forEach(function(a){
-      var hasTreat2=(function(){var tr=(p.treatments||[]).find(function(t){return t.date===a.date;});return tr&&(tr.done||tr.found||tr.tcs||(tr.intakeData&&Object.values(tr.intakeData).some(function(v){return v&&v.trim();})));})();
-      var hasTreat=hasTreat2;
-      aHtml+='<div style="display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl);">'+
-        '<span style="font-size:11px;color:var(--gr400);min-width:76px;">'+a.date+'</span>'+
-        '<span style="font-size:12px;font-weight:600;color:var(--gr400);">'+a.time+'</span>'+
-        '<button class="pbtn pbtn-gray" data-pid="'+id+'" data-aid="'+a.id+'">'+(hasTreat?'✓ הצג':'רישום')+'</button></div>';
-    });
+    var pastLbl=document.createElement('div');pastLbl.style.cssText='font-size:10px;font-weight:700;color:var(--gr400);text-transform:uppercase;padding:'+(upcoming.length?'10px':'2px')+' 0 4px;';pastLbl.textContent='אחרונים';aCard.appendChild(pastLbl);
+    pastAppts.forEach(function(a){aCard.appendChild(makeApptRow(a,true));});
   }
-  if(!upcoming.length&&!pastAppts.length)aHtml+='<div style="color:var(--tm);font-size:12px;padding:6px 0;">אין תורים</div>';
-  aHtml+='<button class="pbtn pbtn-g" id="pf-new-appt" style="margin-top:8px;width:100%;padding:6px 0;">+ קבע תור חדש</button>';
-  aCard.innerHTML=aHtml;
-  aCard.querySelectorAll('button[data-pid][data-aid]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();
-      if(this.classList.contains('pbtn-r'))delAppt(this.dataset.aid,this.dataset.pid);
-      else openTreatFlow(this.dataset.pid,this.dataset.aid);
-    });
-  });
-  aCard.querySelector('#pf-new-appt').addEventListener('click',function(){openNewApptFor(id);});
+  if(!upcoming.length&&!pastAppts.length){var noA=document.createElement('div');noA.style.cssText='color:var(--tm);font-size:12px;padding:6px 0;';noA.textContent='אין תורים';aCard.appendChild(noA);}
+  var newApptBtn=document.createElement('button');newApptBtn.className='pbtn pbtn-g';newApptBtn.style.cssText='margin-top:8px;width:100%;padding:6px 0;';newApptBtn.textContent='+ קבע תור חדש';
+  newApptBtn.addEventListener('click',function(){openNewApptFor(id);});aCard.appendChild(newApptBtn);
   pfile.appendChild(aCard);
 
   // Treatment history — built with DOM to avoid event bubbling issues
@@ -1000,7 +1088,15 @@ function openPatient(id){
   tCardHead.appendChild(tTitle);tCardHead.appendChild(addTrBtn);
   tCard.appendChild(tCardHead);
   if(p.treatments&&p.treatments.length){
-    p.treatments.slice().reverse().forEach(function(t){
+    var sortedTreats=p.treatments.slice().reverse();
+    var SHOW_LIMIT=5;
+    var showAll=false;
+    function renderTreatList(){
+      // Remove existing treat items
+      var existingTents=tCard.querySelectorAll('.tent,.show-more-btn');
+      existingTents.forEach(function(el){el.remove();});
+      var toShow=showAll?sortedTreats:sortedTreats.slice(0,SHOW_LIMIT);
+      toShow.forEach(function(t){
       var tent=document.createElement('div');tent.className='tent';
       // Header row
       var ttop=document.createElement('div');ttop.className='ttop';
@@ -1035,7 +1131,18 @@ function openPatient(id){
         tent.appendChild(payBtn);
       })(t.num,id);
       tCard.appendChild(tent);
-    });
+      }); // end toShow.forEach
+      // Show more/less button
+      if(sortedTreats.length>SHOW_LIMIT){
+        var showMoreBtn=document.createElement('button');
+        showMoreBtn.className='show-more-btn';
+        showMoreBtn.style.cssText='width:100%;padding:8px;background:none;border:1px dashed var(--bd);border-radius:var(--rmd);font-family:Heebo,sans-serif;font-size:12px;color:var(--tm);cursor:pointer;margin-top:6px;';
+        showMoreBtn.textContent=showAll?'הצג פחות ↑':'הצג עוד '+(sortedTreats.length-SHOW_LIMIT)+' טיפולים ↓';
+        showMoreBtn.addEventListener('click',function(){showAll=!showAll;renderTreatList();});
+        tCard.appendChild(showMoreBtn);
+      }
+    } // end renderTreatList
+    renderTreatList();
   } else {
     var noTreat=document.createElement('div');noTreat.style.cssText='color:var(--tm);font-size:12px;padding:6px 0;';noTreat.textContent='אין טיפולים עדיין';
     tCard.appendChild(noTreat);
@@ -1057,143 +1164,45 @@ function openPatient(id){
 // ---- TREATMENT FLOW ----
 function openAddTreatmentManual(pid){
   var p=findP(String(pid));if(!p)return;
-  var numTreats=(p.treatments||[]).length;
-  var nextNum=numTreats+1;
-
-  // Build overlay with number picker
   var ov=document.createElement('div');
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:flex;align-items:flex-end;justify-content:center;';
-
   var sheet=document.createElement('div');
   sheet.style.cssText='background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px 18px 40px;width:100%;max-width:480px;';
-
-  var title=document.createElement('div');
-  title.style.cssText='font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;';
-  title.textContent='הוספת טיפול להיסטוריה';
-  sheet.appendChild(title);
-
-  var sub=document.createElement('div');
-  sub.style.cssText='font-size:13px;color:var(--tm);text-align:center;margin-bottom:18px;';
-  sub.textContent=p.name+' · '+numTreats+' טיפולים קיימים';
-  sheet.appendChild(sub);
-
-  // Treatment number picker
-  var numRow=document.createElement('div');
-  numRow.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:18px;justify-content:center;';
-  var numLabel=document.createElement('label');
-  numLabel.style.cssText='font-size:13px;font-weight:600;color:var(--tp);';
-  numLabel.textContent='מספר הטיפול:';
-  var numSel=document.createElement('select');
-  numSel.style.cssText='padding:8px 14px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:Heebo,sans-serif;font-size:14px;font-weight:600;background:var(--sf);color:var(--tp);outline:none;';
-  // Option: add as new (next number)
-  var opt0=document.createElement('option');
-  opt0.value=nextNum;opt0.textContent='טיפול '+nextNum+' (חדש)';
-  numSel.appendChild(opt0);
-  // Options: insert between existing
-  for(var i=1;i<=numTreats;i++){
-    var opt=document.createElement('option');
-    opt.value=i;opt.textContent='לפני טיפול '+i;
-    numSel.appendChild(opt);
-  }
-  numRow.appendChild(numLabel);numRow.appendChild(numSel);
-  sheet.appendChild(numRow);
-
-  // Date picker
-  var dateRow=document.createElement('div');
-  dateRow.style.cssText='margin-bottom:18px;';
-  var dateLbl=document.createElement('label');
-  dateLbl.style.cssText='font-size:12px;font-weight:700;color:var(--tm);display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;';
-  dateLbl.textContent='תאריך הטיפול';
-  var dateInp=document.createElement('input');
-  dateInp.type='date';dateInp.className='fi';dateInp.value=todayStr();
-  dateRow.appendChild(dateLbl);dateRow.appendChild(dateInp);
-  sheet.appendChild(dateRow);
-
-  // Buttons
-  var goBtn=document.createElement('button');
-  goBtn.className='btn bp';goBtn.textContent='המשך לרישום טיפול';
+  var title=document.createElement('div');title.style.cssText='font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;';title.textContent='הוספת טיפול להיסטוריה';sheet.appendChild(title);
+  var sub=document.createElement('div');sub.style.cssText='font-size:13px;color:var(--tm);text-align:center;margin-bottom:18px;';
+  sub.textContent=p.name+' · '+( p.treatments||[]).length+' טיפולים קיימים';sheet.appendChild(sub);
+  var dateLbl=document.createElement('label');dateLbl.style.cssText='font-size:12px;font-weight:700;color:var(--tm);display:block;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;';dateLbl.textContent='תאריך הטיפול (עד היום)';
+  var dateInp=document.createElement('input');dateInp.type='date';dateInp.className='fi';
+  dateInp.max=todayStr();
+  dateInp.value=todayStr();
+  sheet.appendChild(dateLbl);sheet.appendChild(dateInp);
+  var hint=document.createElement('div');hint.style.cssText='font-size:11px;color:var(--tm);margin-top:6px;margin-bottom:16px;';hint.textContent='המספור יתעדכן אוטומטית לפי סדר כרונולוגי';sheet.appendChild(hint);
+  var goBtn=document.createElement('button');goBtn.className='btn bp';goBtn.textContent='המשך לרישום טיפול';
   goBtn.addEventListener('click',function(){
-    var chosenNum=parseInt(numSel.value);
-    var chosenDate=dateInp.value||todayStr();
+    var chosenDate=dateInp.value;
     if(!chosenDate){alert('נא לבחור תאריך');return;}
+    if(chosenDate>todayStr()){alert('לא ניתן לרשום טיפול לתאריך עתידי');return;}
+    // Check if treatment already exists for this date
+    var existing=(p.treatments||[]).find(function(t){return t.date===chosenDate;});
+    if(existing){if(!confirm('כבר קיים טיפול ב-'+chosenDate+'. לערוך אותו?'))return;ov.remove();openEditTreatment(String(pid),existing.num);return;}
     ov.remove();
-    TF.pid=String(pid);TF.apptId=null;TF.editDate=chosenDate;TF.manualNum=chosenNum;
-    var pFresh=findP(String(pid));
-    if(!pFresh){alert('שגיאה: מטופל לא נמצא');return;}
-    buildTFManual(pFresh,chosenDate,chosenNum);
+    TF.pid=String(pid);TF.apptId=null;TF.editDate=chosenDate;
+    buildTF(findP(String(pid)),null,chosenDate,null);
     showScreen('treatment-flow');
   });
   sheet.appendChild(goBtn);
-
-  var cancelBtn=document.createElement('button');
-  cancelBtn.className='btn bs';cancelBtn.textContent='ביטול';
-  cancelBtn.addEventListener('click',function(){ov.remove();});
-  sheet.appendChild(cancelBtn);
-
-  ov.appendChild(sheet);
-  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  var cancelBtn=document.createElement('button');cancelBtn.className='btn bs';cancelBtn.textContent='ביטול';cancelBtn.addEventListener('click',function(){ov.remove();});sheet.appendChild(cancelBtn);
+  ov.appendChild(sheet);ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
   document.body.appendChild(ov);
-}
-
-function buildTFManual(p,tdate,manualNum){
-  // Like buildTF but with specific number
-  var allNums=(p.treatments||[]).map(function(t){return t.num;});
-  var existingT=(p.treatments||[]).find(function(t){return t.num===manualNum&&t.date===tdate;});
-  var isFirst=manualNum===1;
-  TF.editDate=tdate;
-
-  document.getElementById('tf-pt').textContent=p.name+(p.patType==='baby'?' 👶':'');
-  document.getElementById('tf-tm').textContent=tdate+' · הוספת טיפול '+manualNum;
-  document.getElementById('tf-back').onclick=function(){goBack();};
-
-  // Previous treatments (all that existed before this number)
-  var prevTreats=(p.treatments||[]).filter(function(t){return t.num<manualNum;}).sort(function(a,b){return b.num-a.num;});
-
-  var intakeEl=document.getElementById('tf-intake-body');
-  intakeEl.innerHTML='';
-
-  // Carousel for previous visits
-  if(prevTreats.length>0){
-    buildCarousel(intakeEl,p,prevTreats,tdate);
-  }
-
-  var skipBtn=document.createElement('button');skipBtn.className='btn bp';skipBtn.style.cssText='font-size:12px;margin-bottom:12px;';skipBtn.textContent='דלג לסיכום טיפול ←';
-  skipBtn.addEventListener('click',function(){tfSetTab('summary');});
-  intakeEl.appendChild(skipBtn);
-
-  var cfg=window.appCfg||defCfg();
-  var formType=p.patType==='baby'?'baby':'adult';
-  var formKey=isFirst?'intake':'followup';
-  var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
-  var iData=existingT?(existingT.intakeData||{}):{};
-
-  var secDiv=document.createElement('div');secDiv.className='tf-sec';
-  secDiv.innerHTML='<div class="tf-sec-ttl">'+(isFirst?'תשאול ראשוני':'תשאול המשך')+'</div>';
-  fields.forEach(function(f){
-    var val=iData[f.id]||'';
-    var fDiv=document.createElement('div');fDiv.className='if-field';
-    var lbl=document.createElement('label');lbl.className='if-label';lbl.textContent=f.label;fDiv.appendChild(lbl);
-    if(f.multi){var ta=document.createElement('textarea');ta.className='if-input';ta.id='if-'+f.id;ta.style.minHeight='60px';ta.textContent=val;fDiv.appendChild(ta);}
-    else{var inp=document.createElement('input');inp.className='if-input';inp.id='if-'+f.id;inp.type='text';inp.value=val;fDiv.appendChild(inp);}
-    secDiv.appendChild(fDiv);
-  });
-  intakeEl.appendChild(secDiv);
-
-  var contBtn=document.createElement('button');contBtn.className='btn bp';contBtn.textContent='המשך לסיכום →';
-  contBtn.addEventListener('click',function(){tfSetTab('summary');});
-  intakeEl.appendChild(contBtn);
-
-  buildSummaryForm(p,existingT);
-  tfSetTab('intake');
 }
 
 function openTreatFlow(pid,apptId){
   pid=String(pid);apptId=String(apptId);
-  var p=findP(pid);if(!p)return;
+  var p=findP(pid);if(!p){console.error('openTreatFlow: patient not found',pid);return;}
   var a=(window.apts||[]).find(function(x){return String(x.id)===apptId;});
   var tdate=a?a.date:todayStr();
   TF.pid=pid;TF.apptId=apptId;TF.editDate=null;
-  buildTF(p,a,tdate);showScreen('treatment-flow');
+  buildTF(p,a,tdate,null);showScreen('treatment-flow');
 }
 
 function openEditTreatment(pid,num){
@@ -1202,7 +1211,7 @@ function openEditTreatment(pid,num){
   var t=p.treatments.find(function(x){return x.num===num;});if(!t)return;
   var a=(window.apts||[]).find(function(x){return String(x.patientId)===pid&&x.date===t.date;});
   TF.pid=pid;TF.apptId=a?a.id:null;TF.editDate=t.date;
-  buildTF(p,a,t.date);showScreen('treatment-flow');
+  buildTF(p,a,t.date,t.num);showScreen('treatment-flow');
 }
 
 function buildCarousel(container,p,prevTreats){
@@ -1213,7 +1222,7 @@ function buildCarousel(container,p,prevTreats){
   var carousel=document.createElement('div');
   carousel.style.cssText='margin-bottom:14px;';
 
-  // Header with counter
+  // Header
   var carHead=document.createElement('div');
   carHead.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;';
   var carTitle=document.createElement('div');
@@ -1225,33 +1234,27 @@ function buildCarousel(container,p,prevTreats){
   carHead.appendChild(carTitle);carHead.appendChild(carCounter);
   carousel.appendChild(carHead);
 
-  // Viewport: scroll-based (most reliable cross-browser)
-  var viewport=document.createElement('div');
-  viewport.style.cssText='overflow-x:hidden;border-radius:var(--rmd);width:100%;scroll-behavior:smooth;';
+  // Slides array — show/hide approach (most reliable, no CSS math needed)
+  var slides=[];
+  var slideContainer=document.createElement('div');
+  slideContainer.style.cssText='border-radius:var(--rmd);';
 
-  // Track: flex, no-wrap, each slide is exactly viewport width
-  var track=document.createElement('div');
-  track.style.cssText='display:flex;flex-wrap:nowrap;';
-
-  var nSlides=prevTreats.length;
-  // Build slides
   prevTreats.forEach(function(t,i){
     var slide=document.createElement('div');
-    slide.style.cssText='flex:0 0 100%;background:var(--sf2);border:1px solid var(--bdl);border-radius:var(--rmd);padding:11px 13px;box-sizing:border-box;cursor:default;';
+    slide.style.cssText='background:var(--sf2);border:1px solid var(--bdl);border-radius:var(--rmd);padding:11px 13px;'+(i===0?'':'display:none;');
 
-    // Title
     var sHead=document.createElement('div');
     sHead.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--bdl);';
     var sTitle=document.createElement('div');
     sTitle.style.cssText='font-size:13px;font-weight:700;color:var(--ac);';
     sTitle.textContent='טיפול '+t.num+' · '+t.date;
     var sHint=document.createElement('div');
-    sHint.style.cssText='font-size:10px;color:var(--tm);';
-    sHint.textContent='לחץ לעריכה ✏️';
+    sHint.style.cssText='font-size:11px;color:var(--ac);font-weight:600;cursor:pointer;padding:2px 8px;background:var(--g50);border-radius:20px;';
+    sHint.textContent='✏️ עריכה';
+    (function(captT){sHint.addEventListener('click',function(e){e.stopPropagation();openEditTreatment(p.id,captT.num);});})(t);
     sHead.appendChild(sTitle);sHead.appendChild(sHint);
     slide.appendChild(sHead);
 
-    // Content
     var body=document.createElement('div');
     body.style.cssText='font-size:12px;color:var(--ts);line-height:1.7;';
     var has=false;
@@ -1260,29 +1263,17 @@ function buildCarousel(container,p,prevTreats){
     if(t.done){body.innerHTML+='<div><b>טיפול:</b> '+t.done+'</div>';has=true;}
     if(t.recommend){body.innerHTML+='<div><b>המלצה:</b> '+t.recommend+'</div>';has=true;}
     if(t.exercises){body.innerHTML+='<div><b>תרגילים:</b> '+t.exercises+'</div>';has=true;}
-    if(!has)body.innerHTML='<div style="color:var(--tm);font-style:italic;">אין תיעוד</div>';
+    if(!has)body.innerHTML='<div style="color:var(--gr400);font-style:italic;">אין תיעוד</div>';
     slide.appendChild(body);
-
-    // Only the edit hint opens treatment
-    (function(captT){
-      sHint.style.cursor='pointer';
-      sHint.style.color='var(--ac)';
-      sHint.style.fontWeight='600';
-      sHint.addEventListener('click',function(e){e.stopPropagation();openEditTreatment(p.id,captT.num);});
-      slide.style.cursor='default';
-    })(t);
-
-    track.appendChild(slide);
+    slideContainer.appendChild(slide);
+    slides.push(slide);
   });
+  carousel.appendChild(slideContainer);
 
-  viewport.appendChild(track);
-  carousel.appendChild(viewport);
-
-  // goTo — uses scrollLeft (reliable, no math needed)
+  // goTo: simple show/hide — works 100% of the time
   function goTo(n){
     carIdx=Math.max(0,Math.min(n,carTotal-1));
-    var w=viewport.offsetWidth||300;
-    viewport.scrollTo({left:carIdx*w,behavior:'smooth'});
+    slides.forEach(function(s,i){s.style.display=i===carIdx?'block':'none';});
     carCounter.textContent=(carIdx+1)+' / '+carTotal;
     if(dotsEl){
       dotsEl.childNodes.forEach(function(d,i){
@@ -1331,11 +1322,17 @@ function buildCarousel(container,p,prevTreats){
   container.appendChild(carousel);
 }
 
-function buildTF(p,a,tdate){
-  var existingT=(p.treatments||[]).find(function(t){return t.date===tdate;});
-  var tNum=existingT?existingT.num:(p.treatments||[]).length+1;
+function buildTF(p,a,tdate,treatNum){
+  // treatNum: if provided, find existingT by num (reliable after renumbering)
+  var existingT;
+  if(treatNum){
+    existingT=(p.treatments||[]).find(function(t){return t.num===treatNum;});
+  } else {
+    existingT=(p.treatments||[]).find(function(t){return t.date===tdate;});
+  }
+  var tNum=existingT?existingT.num:(((p.treatments||[]).length+1));
   var isEdit=TF.editDate!==null;
-  var isFirst=tNum===1;  // טיפול ראשון תמיד מקבל טופס תשאול ראשוני
+  var isFirst=tNum===1;
   document.getElementById('tf-pt').textContent=p.name+(p.patType==='baby'?' 👶':'');
   document.getElementById('tf-tm').textContent=(a?a.date+' · '+a.time:tdate)+' · '+(isEdit?'עריכת טיפול '+tNum:isFirst?'טיפול ראשון':'טיפול '+tNum);
 
@@ -1346,14 +1343,16 @@ function buildTF(p,a,tdate){
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var iData=existingT?(existingT.intakeData||{}):{};
 
-  // All previous treatments sorted newest→oldest
-  var prevTreats=(p.treatments||[]).filter(function(t){return t.date<tdate;}).sort(function(a2,b){return b.date.localeCompare(a2.date);});
+  // Show carousel only for the LAST treatment (highest num)
+  var maxNum=Math.max.apply(null,(p.treatments||[]).map(function(t){return t.num;}).concat([0]));
+  var isLastTreatment=tNum>maxNum||(existingT&&existingT.num===maxNum);
+  var prevTreats=isLastTreatment?(p.treatments||[]).filter(function(t){return t.num<tNum;}).sort(function(a2,b){return b.num-a2.num;}).slice(0,3):[];
 
   var intakeEl=document.getElementById('tf-intake-body');
   intakeEl.innerHTML='';
 
-  // Show previous visits carousel
-  buildCarousel(intakeEl,p,prevTreats,tdate);
+  // Show previous visits carousel only for latest treatment
+  if(prevTreats.length>0)buildCarousel(intakeEl,p,prevTreats);
 
   // Skip button
   var skipBtn=document.createElement('button');skipBtn.className='btn bp';skipBtn.style.cssText='font-size:12px;margin-bottom:12px;';skipBtn.textContent='דלג לסיכום טיפול ←';
@@ -1446,6 +1445,9 @@ function tfSetTab(tab){
   document.getElementById('tf-tab-summary').classList.toggle('active',tab==='summary');
   document.getElementById('tf-intake-body').classList.toggle('hidden',tab!=='intake');
   document.getElementById('tf-summary-body').classList.toggle('hidden',tab!=='summary');
+  // Scroll screen to top
+  var sc=document.getElementById('screen-treatment-flow');
+  if(sc)sc.scrollTop=0;
 }
 
 function tfGetIntakeData(){
@@ -1453,7 +1455,7 @@ function tfGetIntakeData(){
   var a=TF.apptId?(window.apts||[]).find(function(x){return String(x.id)===String(TF.apptId);}):null;
   var tdate=TF.editDate||(a?a.date:todayStr());
   var existingT=(p.treatments||[]).find(function(t){return t.date===tdate;});
-  var tNumGet=existingT?existingT.num:(p.treatments||[]).length+1;
+  var tNumGet=( existingT?existingT.num:(p.treatments||[]).length+1);
   var isFirst=tNumGet===1;
   var cfg=window.appCfg||defCfg();
   var formType=p.patType==='baby'?'baby':'adult';
@@ -1480,12 +1482,8 @@ async function tfSave(){
   var method=methodEl?methodEl.textContent:'מזומן';
   p.treatments=p.treatments||[];
   // For manual add: find by manualNum, else by date
-  var existingIdx;
-  if(TF.manualNum){
-    existingIdx=p.treatments.findIndex(function(t){return t.num===TF.manualNum;});
-  } else {
-    existingIdx=p.treatments.findIndex(function(t){return t.date===tdate;});
-  }
+  // Always find existing treatment by date
+  var existingIdx=p.treatments.findIndex(function(t){return t.date===tdate;});
   var hasPrev=existingIdx>0||(existingIdx<0&&p.treatments.length>0);
   var isSeries=p.treatType==='series'&&p.series;
   var price=(isSeries&&hasPrev)?Math.round(p.series.price/p.series.count):(p.price||350);
@@ -1495,10 +1493,17 @@ async function tfSave(){
   var formKey=tNumSave===1?'intake':'followup';
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var mainComplaint=fields.length&&intakeData[fields[0].id]?intakeData[fields[0].id]:'';
-  var tobj={num:existingIdx>=0?p.treatments[existingIdx].num:(TF.manualNum||p.treatments.length+1),date:tdate,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
-  if(existingIdx>=0)p.treatments[existingIdx]=tobj;
-  else{p.treatments.push(tobj);if(isSeries){p.series.used++;if(p.series.used>=p.series.count)p.series.active=false;}}
-  TF.manualNum=null;
+  var tobj={num:existingIdx>=0?p.treatments[existingIdx].num:(p.treatments.length+1),date:tdate,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
+  if(existingIdx>=0){
+    p.treatments[existingIdx]=tobj;
+  } else {
+    p.treatments.push(tobj);
+    if(isSeries&&!TF.editDate){p.series.used++;if(p.series.used>=p.series.count)p.series.active=false;}
+  }
+  // Always renumber by date order (chronological)
+  p.treatments.sort(function(a,b){return a.date.localeCompare(b.date);});
+  p.treatments.forEach(function(t,i){t.num=i+1;});
+  
   await window.fbSaveP(p);
   render();openPatient(TF.pid);
 }
@@ -1759,23 +1764,24 @@ async function addPatient(){
 function openGcal(){if(!lastAppt)return;var p=findP(lastAppt.patientId);var h=parseInt(lastAppt.time.split(':')[0]),mm=parseInt(lastAppt.time.split(':')[1]);var d=sToD(lastAppt.date);var pad=function(n){return String(n).padStart(2,'0');};var fmt=function(d2,h2,m2){return d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate())+'T'+pad(h2)+pad(m2)+'00';};var dur2=parseInt((window.appCfg||{}).duration||60);var em=h*60+mm+dur2;window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('טיפול — '+(p?p.name:''))+'&dates='+fmt(d,h,mm)+'/'+fmt(d,Math.floor(em/60),em%60)+'&details='+encodeURIComponent(p?p.problem:''),'_blank');}
 
 // ---- SCREEN NAVIGATION ----
-function showScreen(name){
-  var prev=document.querySelector('.screen.active');
-  var prevId=prev?prev.id.replace('screen-',''):null;
-  if(prevId&&prevId!==name)navHistory.push(prevId);
+function showScreen(name,skipHistory){
+  if(!skipHistory){
+    var prev=document.querySelector('.screen.active');
+    var prevId=prev?prev.id.replace('screen-',''):null;
+    if(prevId&&prevId!==name)navHistory.push(prevId);
+  }
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('active');});
-  var s=document.getElementById('screen-'+name);if(s)s.classList.add('active');
+  var s=document.getElementById('screen-'+name);if(s){s.classList.add('active');s.scrollTop=0;}
   var navMap={calendar:'nav-cal',patients:'nav-pts',debts:'nav-dbt',settings:'nav-set'};
   if(navMap[name]){var navBtn=document.getElementById(navMap[name]);if(navBtn)navBtn.classList.add('active');}
-  // Nav always visible
   var nav=document.querySelector('.bnav');if(nav)nav.style.display='flex';
   if(name==='calendar'){document.getElementById('daypanel').style.display=calView==='month'?'block':'none';renderCal();}
   if(name==='patients')renderPatients();
   if(name==='settings'){renderSerTypes();applySettings();}
   if(name==='new-patient'){var types3=window.appCfg.seriesTypes||[];var serSel=document.getElementById('np-ser-type');if(serSel)serSel.innerHTML=types3.map(function(x){return '<option value="'+x.id+'">'+x.name+'</option>';}).join('');}
 }
-function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(prev);}else showScreen('calendar');}
+function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(prev,true);}else showScreen('calendar',true);}
 
 // ---- EVENT WIRING ----
 document.addEventListener('DOMContentLoaded',function(){
