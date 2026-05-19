@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- BUILD: 2026-05-17 14:02:18 v3.4 -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה</title>
+<title>קליניקה v4.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -27,54 +26,73 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-size:15px;direction:rtl}
 #app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--bg)}
+/* Header */
 .hdr{background:linear-gradient(135deg,var(--g600),var(--g500) 60%,var(--t500));padding:12px 15px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .hlogo{display:flex;align-items:center;gap:9px}
 .hicon{width:33px;height:33px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.htitle{color:#fff;font-size:16px;font-weight:700}.hsub{color:rgba(255,255,255,0.75);font-size:11px}
+.htitle{color:#fff;font-size:16px;font-weight:700}
+.hsub{color:rgba(255,255,255,0.75);font-size:11px}
 .hacts{display:flex;gap:5px}
 .hb{background:rgba(255,255,255,0.18);border:none;border-radius:var(--rsm);padding:6px 9px;color:#fff;font-size:12px;font-family:'Heebo',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500}
 .hb svg{width:13px;height:13px}
+/* Status bar */
 .stbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:5px 15px;display:flex;align-items:center;gap:8px;font-size:12px;flex-shrink:0}
 .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sdot.gr{background:#22c55e}.sdot.ye{background:#f59e0b}.sdot.rd{background:#ef4444}
+/* Quick bar */
 .qbar{background:var(--sf);border-bottom:1px solid var(--bdl);padding:8px 13px;display:flex;gap:7px;flex-shrink:0}
 .qb{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 5px;border-radius:var(--rmd);border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600}
-.qbp{background:var(--ac);color:#fff}.qbs{background:var(--b50);color:var(--b600);border:1px solid var(--b100)}
+.qbp{background:var(--ac);color:#fff}
+.qbs{background:var(--b50);color:var(--b600);border:1px solid var(--b100)}
 .qb svg{width:14px;height:14px}
+/* Alert bar */
 .abar{flex-shrink:0}
 .arow{padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:12px;border-bottom:1px solid}
 .arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
 .arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
 .arow svg{width:14px;height:14px;flex-shrink:0}
 .alink{margin-right:auto;font-weight:600;text-decoration:underline;cursor:pointer}
+/* Screens */
 .screens{flex:1;overflow:hidden;position:relative}
 .screen{position:absolute;inset:0;overflow-y:auto;display:none;padding:11px;padding-bottom:70px}
 .screen.active{display:block}
+/* Bottom nav */
 .bnav{background:var(--sf);border-top:1px solid var(--bd);display:flex;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 3px;background:none;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:10px;color:var(--tm)}
-.ni.active{color:var(--ac)}.ni svg{width:20px;height:20px}
+.ni.active{color:var(--ac)}
+.ni svg{width:20px;height:20px}
+/* Cards */
 .card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);padding:13px;margin-bottom:9px;box-shadow:var(--sh)}
 .ct{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:9px}
+/* View tabs */
 .vtabs{display:flex;background:var(--sf2);border-radius:var(--rsm);padding:3px;margin-bottom:11px;gap:2px}
 .vt{flex:1;padding:6px 4px;border:none;border-radius:6px;background:none;font-family:'Heebo',sans-serif;font-size:12px;font-weight:500;color:var(--tm);cursor:pointer}
 .vt.active{background:#fff;color:var(--ac);font-weight:700;box-shadow:var(--sh)}
+/* Calendar */
 .calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .calt{font-size:16px;font-weight:700;color:var(--tp);flex:1;text-align:center}
-.caln{background:var(--g50);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 13px;cursor:pointer;font-size:18px;color:var(--ac);line-height:1}
+.caln{background:var(--g50);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 13px;cursor:pointer;font-size:18px;color:var(--ac);line-height:1;font-family:'Heebo',sans-serif}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
 .mdn{text-align:center;font-size:10px;font-weight:700;color:var(--tm);padding:2px 0 6px}
 .mday{min-height:42px;border-radius:var(--rsm);padding:2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
-.mday.other .dn{color:var(--gr400)}.mday.today .dn{background:var(--ac);color:#fff;border-radius:50%}.mday.sel{background:var(--g50)}
+.mday.other .dn{color:var(--gr400)}
+.mday.today .dn{background:var(--ac);color:#fff;border-radius:50%}
+.mday.sel{background:var(--g50)}
 .dn{font-size:12px;font-weight:500;color:var(--tp);width:27px;height:27px;display:flex;align-items:center;justify-content:center}
-.ddots{display:flex;gap:2px}.dd{width:4px;height:4px;border-radius:50%}.dd.g{background:var(--ac)}.dd.r{background:var(--r500)}
+.ddots{display:flex;gap:2px}
+.dd{width:4px;height:4px;border-radius:50%}
+.dd.g{background:var(--ac)}.dd.r{background:var(--r500)}
+/* Day panel */
 .daypanel{border-top:1px solid var(--bdl);margin-top:9px;padding-top:9px}
 .dph{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .dpt{font-size:13px;font-weight:700;color:var(--tp)}
 .dpadd{background:var(--ac);color:#fff;border:none;border-radius:20px;padding:4px 11px;font-family:'Heebo',sans-serif;font-size:11px;font-weight:600;cursor:pointer}
+/* Appointment items */
 .aitem{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
 .aitem:last-child{border-bottom:none}
 .atb{background:var(--sf2);border-radius:var(--rsm);padding:4px 7px;text-align:center;min-width:44px;flex-shrink:0}
 .ath{font-size:13px;font-weight:700;color:var(--ac)}
+/* Week view */
 .wtl{height:48px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
 .wcell{height:48px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer}
 .wappt{height:100%;border-radius:4px;padding:2px 3px;font-size:9px;font-weight:600;display:flex;align-items:center;overflow:hidden;pointer-events:none}
@@ -82,40 +100,59 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
 .wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
 .wpu{background:#f3e8ff;color:#6b21a8;border-right:3px solid #a855f7}
+/* Search */
 .swrap{position:relative;margin-bottom:9px}
 .swrap svg{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--tm)}
 .si{width:100%;padding:9px 36px 9px 11px;border:1px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none}
 .si:focus{border-color:var(--ac)}
+/* Patient list */
 .pi{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdl);cursor:pointer}
 .pi:last-child{border-bottom:none}
 .pav{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
-.avg{background:var(--g100);color:var(--g700)}.avb{background:var(--b100);color:var(--b600)}
-.avt{background:var(--t100);color:var(--t500)}.ava{background:var(--a100);color:var(--a700)}.avp{background:#f3e8ff;color:#6b21a8}
-.pb{flex:1;min-width:0}.pn{font-size:14px;font-weight:600}
+.avg{background:var(--g100);color:var(--g700)}
+.avb{background:var(--b100);color:var(--b600)}
+.avt{background:var(--t100);color:var(--t500)}
+.ava{background:var(--a100);color:var(--a700)}
+.avp{background:#f3e8ff;color:#6b21a8}
+.pb{flex:1;min-width:0}
+.pn{font-size:14px;font-weight:600}
 .ps{font-size:11px;color:var(--tm);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+/* Badges */
 .badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px}
-.br{background:var(--r50);color:var(--r700)}.bg{background:var(--g100);color:var(--g700)}.bb{background:var(--b50);color:var(--b600)}
+.br{background:var(--r50);color:var(--r700)}
+.bg{background:var(--g100);color:var(--g700)}
+.bb{background:var(--b50);color:var(--b600)}
+/* Patient file */
 .pfh{display:flex;align-items:center;gap:11px;margin-bottom:13px}
 .pfav{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
-.pfn{font-size:18px;font-weight:700}.pfs{font-size:12px;color:var(--tm);margin-top:1px}
+.pfn{font-size:18px;font-weight:700}
+.pfs{font-size:12px;color:var(--tm);margin-top:1px}
 .ir{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdl)}
-.ir:last-child{border-bottom:none}.il{font-size:12px;color:var(--tm)}.iv{font-size:12px;font-weight:600}
+.ir:last-child{border-bottom:none}
+.il{font-size:12px;color:var(--tm)}
+.iv{font-size:12px;font-weight:600}
 .ptrack{height:5px;background:var(--gr100);border-radius:3px;overflow:hidden;margin-top:4px}
 .pfill{height:100%;background:linear-gradient(90deg,var(--g400),var(--t400));border-radius:3px}
-.tent{padding:10px 0;border-bottom:1px solid var(--bdl)}.tent:last-child{border-bottom:none}
+/* Treatment history */
+.tent{padding:10px 0;border-bottom:1px solid var(--bdl)}
+.tent:last-child{border-bottom:none}
 .ttop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:4px;flex-wrap:wrap}
 .tnum{font-size:12px;font-weight:700;color:var(--ac)}
-.tnotes{font-size:12px;color:var(--ts);line-height:1.6}.tnotes b{font-weight:600;color:var(--tp)}
+.tnotes{font-size:12px;color:var(--ts);line-height:1.6}
+.tnotes b{font-weight:600;color:var(--tp)}
 .ser-card{background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;margin-bottom:7px}
+/* Forms */
 .fm{margin-bottom:11px}
 .fl{font-size:11px;font-weight:700;color:var(--tm);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.4px}
 .fi,.fsl,.ftx{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:13px;background:var(--sf);color:var(--tp);outline:none;direction:rtl}
 .fi:focus,.fsl:focus,.ftx:focus{border-color:var(--ac)}
 .ftx{min-height:70px;resize:vertical}
+/* Chips */
 .chips{display:flex;gap:5px;flex-wrap:wrap}
 .chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
 .chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+/* Buttons */
 .btn{width:100%;padding:11px;border-radius:var(--rmd);border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px}
 .bp{background:linear-gradient(135deg,var(--g500),var(--g600));color:#fff}
 .bs{background:var(--sf2);color:var(--tp);border:1px solid var(--bd);margin-top:4px}
@@ -124,14 +161,18 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .bgoog{background:#fff;color:#444;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:9px;font-size:14px}
 .bbtn{display:flex;align-items:center;gap:5px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ac);cursor:pointer;padding:0 0 11px;font-weight:600}
 .bbtn svg{width:16px;height:16px}
+/* Stats */
 .srow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
 .sbox{background:var(--sf);border-radius:var(--rmd);padding:11px;border:1px solid var(--bdl)}
 .slbl{font-size:10px;color:var(--tm);font-weight:700;text-transform:uppercase;letter-spacing:0.4px}
-.sval{font-size:22px;font-weight:700;color:var(--tp);margin-top:3px}.sval.red{color:var(--r500)}
+.sval{font-size:22px;font-weight:700;color:var(--tp);margin-top:3px}
+.sval.red{color:var(--r500)}
+/* Settings */
 .set-group{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh)}
 .set-group-hdr{font-size:13px;font-weight:700;color:var(--tp);padding:11px 13px 9px;border-bottom:1px solid var(--bdl);background:var(--sf2)}
 .set-item{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--bdl)}
-.set-item:last-child{border-bottom:none}.set-item-lbl{font-size:13px;color:var(--tp)}
+.set-item:last-child{border-bottom:none}
+.set-item-lbl{font-size:13px;color:var(--tp)}
 .set-sel{padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:12px;background:var(--sf);color:var(--tp);outline:none}
 .set-sel:focus{border-color:var(--ac)}
 .day-sched{border:1px solid var(--bdl);border-radius:var(--rmd);overflow:hidden;margin:0 13px 13px}
@@ -158,7 +199,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .form-field-item input:focus{border-color:var(--ac)}
 /* Treatment flow */
 .tf-hdr{background:linear-gradient(135deg,var(--g600),var(--g500));padding:13px 15px;color:#fff}
-.tf-pt{font-size:17px;font-weight:700}.tf-tm{font-size:12px;opacity:0.8;margin-top:2px}
+.tf-pt{font-size:17px;font-weight:700}
+.tf-tm{font-size:12px;opacity:0.8;margin-top:2px}
 .tf-tabs{display:flex;border-bottom:1px solid var(--bdl)}
 .tf-tab{flex:1;padding:10px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;border-bottom:2px solid transparent}
 .tf-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
@@ -177,15 +219,16 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .sheet{background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:20px 17px 36px;width:100%;max-width:480px}
 .sht{font-size:15px;font-weight:700;text-align:center;margin-bottom:6px}
 .shs{font-size:13px;color:var(--tm);text-align:center;margin-bottom:16px;white-space:pre-line}
-.hidden{display:none!important}
-::-webkit-scrollbar{width:0}
-/* Action buttons inside patient file */
+/* Patient action buttons */
 .pbtn{border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:'Heebo',sans-serif;font-weight:600}
 .pbtn-g{background:var(--g50);border:1px solid var(--g200);color:var(--g700)}
 .pbtn-r{background:var(--r50);color:var(--r700)}
 .pbtn-gray{background:var(--sf2);border:1px solid var(--bdl);color:var(--tm)}
 .pbtn-ac{background:none;border:1.5px solid var(--ac);color:var(--ac);padding:4px 12px;border-radius:20px;font-size:11px;font-family:'Heebo',sans-serif;cursor:pointer}
 .pbtn-undo{background:none;border:1.5px solid var(--r500);color:var(--r500);padding:4px 12px;border-radius:20px;font-size:10px;font-family:'Heebo',sans-serif;cursor:pointer}
+.show-more-btn{width:100%;padding:8px;background:none;border:1px dashed var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:12px;color:var(--tm);cursor:pointer;margin-top:6px}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:0}
 </style>
 </head>
 <body>
@@ -194,23 +237,23 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v4.3</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
-  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="if(window._doSignIn)window._doSignIn();else alert('טוען...');">
+  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     כניסה עם חשבון גוגל
   </button>
   <div style="margin-top:12px;color:var(--tm);font-size:11px;">— או —</div>
-  <button id="btn-demo" class="btn bs" style="width:100%;max-width:280px;margin-top:8px;font-size:13px;" onclick="if(window._enterDemo)window._enterDemo();">🧪 כניסת דמו (בדיקה)</button>
+  <button id="btn-demo" class="btn bs" style="width:100%;max-width:280px;margin-top:8px;font-size:13px;" onclick="try{if(window._enterDemo)window._enterDemo();else alert('טוען...');}catch(e){alert(e.message);}">🧪 כניסת דמו (בדיקה)</button>
   <div id="lerr" style="color:var(--r500);font-size:12px;margin-top:12px;display:none;"></div>
 </div>
 
-<!-- Main -->
+<!-- Main App -->
 <div id="mview" class="hidden" style="display:flex;flex-direction:column;height:100%;">
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v3.4</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v4.3</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -227,6 +270,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="abar" id="abar"></div>
 
   <div class="screens">
+    <!-- Calendar -->
     <div class="screen active" id="screen-calendar">
       <div class="card">
         <div class="vtabs">
@@ -247,6 +291,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Patients -->
     <div class="screen" id="screen-patients">
       <div class="swrap">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -255,6 +300,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div class="card" style="padding:4px 13px;"><div id="plist"></div></div>
     </div>
 
+    <!-- Debts -->
     <div class="screen" id="screen-debts">
       <div class="srow">
         <div class="sbox"><div class="slbl">סה"כ חובות</div><div class="sval red" id="stat-d">₪0</div></div>
@@ -263,6 +309,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div class="card" style="padding:4px 13px;"><div id="dlist"></div></div>
     </div>
 
+    <!-- Settings -->
     <div class="screen" id="screen-settings">
       <div class="set-group">
         <div class="set-group-hdr">⚙️ כללי</div>
@@ -300,6 +347,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Add Series Type -->
     <div class="screen" id="screen-add-series-type">
       <button class="bbtn" id="back-add-ser"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -311,6 +359,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Edit Form -->
     <div class="screen" id="screen-edit-form">
       <button class="bbtn" id="back-edit-form"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -321,11 +370,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Patient File -->
     <div class="screen" id="screen-patient-file">
       <button class="bbtn" id="back-pfile"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div id="pfile"></div>
     </div>
 
+    <!-- New Patient -->
     <div class="screen" id="screen-new-patient">
       <button class="bbtn" id="back-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -346,6 +397,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Edit Patient -->
     <div class="screen" id="screen-edit-patient">
       <button class="bbtn" id="back-editpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה לתיק</button>
       <div class="card">
@@ -361,6 +413,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- New Appointment -->
     <div class="screen" id="screen-new-appointment">
       <button class="bbtn" id="back-appt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
@@ -375,6 +428,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       </div>
     </div>
 
+    <!-- Treatment Flow -->
     <div class="screen" id="screen-treatment-flow">
       <button class="bbtn" id="back-tf"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div style="background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);overflow:hidden;box-shadow:var(--sh);">
@@ -400,6 +454,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 </div>
 </div>
 
+<!-- Delete overlay -->
 <div class="overlay hidden" id="del-ov">
   <div class="sheet"><div class="sht">מחיקת מטופל</div><div class="shs" id="del-sub"></div>
   <button class="btn bd2" id="btn-confirm-del">כן, מחק</button>
@@ -410,7 +465,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 var deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;var b=document.getElementById('pwa-install-btn');if(b)b.style.display='block';});
 </script>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -457,7 +511,7 @@ onAuthStateChanged(auth,async function(user){
     }
     uid=user.uid;
     document.getElementById('lview').classList.add('hidden');
-    var mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
+    var mv=document.getElementById('mview');mv.classList.remove('hidden');mv.classList.add('visible');
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
     try{var s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?Object.assign(defCfg(),s.data()):defCfg();}catch(e){window.appCfg=defCfg();}
@@ -465,14 +519,14 @@ onAuthStateChanged(auth,async function(user){
     if(unsubP)unsubP();if(unsubA)unsubA();
     var pr=false,ar=false;
     var go=function(){if(pr&&ar){render();setSt('gr','מסונכרן ✓');}};
-    unsubP=onSnapshot(collection(db,'users',uid,'patients'),function(s){window.pts=s.docs.map(function(d){return d.data();});pr=true;go();},function(){pr=true;go();setSt('rd','שגיאת חיבור');});
-    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),function(s){window.apts=s.docs.map(function(d){return d.data();});ar=true;go();},function(){ar=true;go();setSt('rd','שגיאת חיבור');});
+    unsubP=onSnapshot(collection(db,'users',uid,'patients'),function(s){window.pts=s.docs.map(function(d){return d.data();});pr=true;go();},function(e){console.error('Firestore patients error:',e);pr=true;window.pts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
+    unsubA=onSnapshot(collection(db,'users',uid,'appointments'),function(s){window.apts=s.docs.map(function(d){return d.data();});ar=true;go();},function(e){console.error('Firestore appointments error:',e);ar=true;window.apts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
+    // Timeout fallback — if no response after 8 seconds, show error
+    setTimeout(function(){if(!pr||!ar){pr=true;ar=true;window.pts=window.pts||[];window.apts=window.apts||[];go();setSt('rd','פסק זמן — בדוק חיבור');}},8000);
   } else {uid=null;document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');}
 });
 </script>
-
 <script>
-'use strict';
 window.pts=[];window.apts=[];
 var AVC=['avg','avb','avt','ava'];
 var HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
@@ -581,7 +635,7 @@ window._enterDemo=function(){
   window.fbDelA=function(id){window.apts=window.apts.filter(function(x){return String(x.id)!==String(id);});return Promise.resolve();};
   window.fbSaveCfg=function(c){window.appCfg=c;return Promise.resolve();};
   document.getElementById('lview').classList.add('hidden');
-  var mv=document.getElementById('mview');mv.classList.remove('hidden');mv.style.display='flex';
+  var mv=document.getElementById('mview');mv.classList.remove('hidden');mv.classList.add('visible');
   document.getElementById('uname').textContent='מצב דמו 🧪';
   document.getElementById('sdot').className='sdot ye';
   document.getElementById('stxt').textContent='דמו — נתונים לא נשמרים';
@@ -622,6 +676,19 @@ async function loadSample(){
   ];
   for(var i=0;i<SP.length;i++)await window.fbSaveP(SP[i]);
   for(var j=0;j<SA.length;j++)await window.fbSaveA(SA[j]);
+  // Add patient with 7 treatments for testing
+  var fD7=function(o){var d=new Date(td.getFullYear(),td.getMonth(),td.getDate()+o);return dstr(d);};
+  var p7={id:'s7',name:'יעל כהן',phone:'0541234567',age:'35',problem:'כאב גב תחתון כרוני',price:350,color:2,patType:'adult',treatType:'single',series:null,treatments:[
+    {num:1,date:fD7(-60),formKey:'intake',mainComplaint:'כאב גב תחתון',found:'מתח L4-L5',done:'שחרור מיופשיאלי',recommend:'תרגילים',exercises:'מתיחות',paid:true,amount:350,method:'מזומן',intakeData:{f1:'כאב גב תחתון',f7:'8'}},
+    {num:2,date:fD7(-52),formKey:'followup',mainComplaint:'שיפור קל',found:'עדיין מתח',done:'מניפולציה עדינה',recommend:'להמשיך תרגילים',exercises:'',paid:true,amount:350,method:'מזומן',intakeData:{fu1:'שיפור קל',fu2:'6'}},
+    {num:3,date:fD7(-44),formKey:'followup',mainComplaint:'שיפור נוסף',found:'שיפור בטווח תנועה',done:'עבודה על אגן',recommend:'כרית לומברית',exercises:'',paid:true,amount:350,method:'העברה',intakeData:{fu1:'שיפור נוסף',fu2:'4'}},
+    {num:4,date:fD7(-36),formKey:'followup',mainComplaint:'כמעט תקין',found:'נוקשות קלה',done:'עבודה רקמות',recommend:'שחייה',exercises:'חיזוק בטן',paid:true,amount:350,method:'העברה',intakeData:{fu1:'כמעט תקין',fu2:'3'}},
+    {num:5,date:fD7(-28),formKey:'followup',mainComplaint:'תקין ברוב',found:'תקין',done:'קרניו-סקרל',recommend:'המשך שחייה',exercises:'',paid:false,amount:350,method:'',intakeData:{fu1:'תקין ברוב',fu2:'2'}},
+    {num:6,date:fD7(-14),formKey:'followup',mainComplaint:'הישנות קלה',found:'מתח קל',done:'טיפול משולב',recommend:'עמידה נכונה',exercises:'חיזוק גב',paid:false,amount:350,method:'',intakeData:{fu1:'הישנות קלה',fu2:'5'}},
+    {num:7,date:fD7(-7),formKey:'followup',mainComplaint:'שיפור',found:'שיפור',done:'שחרור',recommend:'תרגול יומי',exercises:'מתיחות יום',paid:false,amount:350,method:'',intakeData:{fu1:'שיפור',fu2:'3'}}
+  ]};
+  await window.fbSaveP(p7);
+  await window.fbSaveA({id:'a9',patientId:'s7',date:fD7(3),time:'10:00',notes:''});
 }
 
 // ---- RENDER ----
@@ -737,7 +804,7 @@ function renderWeek(){
   var h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:40px repeat(7,1fr);margin-bottom:2px;"><div></div>';
   days.forEach(function(d){
     var ds=dstr(d),isT=ds===ts;
-    h+='<div style="text-align:center;padding:2px 1px;cursor:pointer;" data-ds="'+ds+'" onclick="selDate=sToD(this.dataset.ds);renderWeekDayPanel();document.getElementById('week-daypanel').style.display='block';"><div style="font-size:9px;font-weight:700;color:'+(isT?'var(--ac)':'var(--tm)')+';">'+DS[d.getDay()]+'</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;'+(isT?'background:var(--ac);color:#fff;':'')+'">'+d.getDate()+'</div></div>';
+        h+='<div style="text-align:center;padding:2px 1px;cursor:pointer;" data-wds="'+ds+'"><div style="font-size:9px;font-weight:700;color:'+(isT?'var(--ac)':'var(--tm)')+';">'+DS[d.getDay()]+'</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;'+(isT?'background:var(--ac);color:#fff;':'')+'">'+d.getDate()+'</div></div>';
   });
   h+='</div><div style="display:grid;grid-template-columns:40px repeat(7,1fr);">';
   hrs.forEach(function(hr){
@@ -750,7 +817,7 @@ function renderWeek(){
         var cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
         h+='<div class="wcell" data-pid="'+appt.patientId+'" data-aid="'+appt.id+'"><div class="wappt '+cls+'">'+(p?p.name.split(' ')[0]:'')+'</div></div>';
       } else if(!avail||isPast){
-        h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'" style="background:var(--sf2);opacity:0.5;cursor:pointer;" onclick="switchToDayView(\''+ds+'\')" ></div>';
+        h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'" style="background:var(--sf2);opacity:0.4;cursor:pointer;"></div>';
       } else {
         h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'"></div>';
       }
@@ -758,6 +825,16 @@ function renderWeek(){
   });
   var cb=document.getElementById('calbody');
   cb.innerHTML=h+'</div></div>';
+  // Wire day header clicks
+  cb.querySelectorAll('[data-wds]').forEach(function(el){
+    el.addEventListener('click',function(){
+      selDate=sToD(this.dataset.wds);
+      var wdp=document.getElementById('week-daypanel');
+      wdp.innerHTML=''; // clear immediately
+      wdp.style.display='block';
+      renderWeekDayPanel();
+    });
+  });
   cb.querySelectorAll('.wcell[data-pid]').forEach(function(el){
     (function(pid,aid){
       el.addEventListener('click',function(e){openPatient(pid);});
@@ -779,8 +856,8 @@ function renderWeek(){
 function selectWeekDay(ds,hr){
   selDate=sToD(ds);
   renderWeekDayPanel();
-  if(hr){
-    // If empty slot clicked, open new appt
+  // Only open new appt if future date AND valid slot
+  if(hr&&ds>=todayStr()){
     var slots=getSlots(ds);
     if(slots.length&&slots.includes(hr)){openNewApptAt(ds,hr);}
   }
@@ -829,7 +906,7 @@ function renderWeekDayPanel(){
     row.appendChild(tfBtn);
     if(!isApptPast){var db=document.createElement('button');db.className='pbtn pbtn-r';db.textContent='✕';db.title='ביטול תור';
       (function(pid2,aid2){db.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(a.patientId,a.id);row.appendChild(db);}
-    row.addEventListener('click',function(){openTreatFlow(a.patientId,a.id);});
+    (function(pid2,aid2){row.addEventListener('click',function(e){if(e.target.tagName==='BUTTON')return;openTreatFlow(pid2,aid2);});})(a.patientId,a.id);
     weekDp.appendChild(row);
   });
 }
@@ -1052,7 +1129,9 @@ function openPatient(id){
     var doc=isDocumented(a.date);
     var tfBtn=document.createElement('button');
     tfBtn.className='pbtn '+(isPastRow?'pbtn-gray':'pbtn-g');
-    tfBtn.textContent=doc?(isPastRow?'✓ הצג':'✓ תועד'):(isPastRow?'רישום':'פתח טיפול');
+    // Highlight undocumented past appointments
+    if(isPastRow&&!doc){tfBtn.style.background='var(--r50)';tfBtn.style.color='var(--r700)';tfBtn.style.border='1px solid var(--r100)';}
+    tfBtn.textContent=doc?(isPastRow?'✓ הצג':'✓ תועד'):(isPastRow?'⚠ לתיעוד':'פתח טיפול');
     (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(id,a.id);
     row.appendChild(dateS);row.appendChild(timeS);row.appendChild(tfBtn);
     if(!isPastRow){
@@ -1164,7 +1243,10 @@ function openPatient(id){
 // ---- TREATMENT FLOW ----
 function openAddTreatmentManual(pid){
   var p=findP(String(pid));if(!p)return;
+  // Remove any existing overlay first
+  var old=document.getElementById('add-treat-overlay');if(old)old.remove();
   var ov=document.createElement('div');
+  ov.id='add-treat-overlay';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:flex;align-items:flex-end;justify-content:center;';
   var sheet=document.createElement('div');
   sheet.style.cssText='background:var(--sf);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px 18px 40px;width:100%;max-width:480px;';
@@ -1198,7 +1280,7 @@ function openAddTreatmentManual(pid){
 
 function openTreatFlow(pid,apptId){
   pid=String(pid);apptId=String(apptId);
-  var p=findP(pid);if(!p){console.error('openTreatFlow: patient not found',pid);return;}
+  var p=findP(pid);if(!p){alert('שגיאה: מטופל לא נמצא ('+pid+')');return;}
   var a=(window.apts||[]).find(function(x){return String(x.id)===apptId;});
   var tdate=a?a.date:todayStr();
   TF.pid=pid;TF.apptId=apptId;TF.editDate=null;
@@ -1207,8 +1289,10 @@ function openTreatFlow(pid,apptId){
 
 function openEditTreatment(pid,num){
   pid=String(pid);num=parseInt(num);
-  var p=findP(pid);if(!p)return;
-  var t=p.treatments.find(function(x){return x.num===num;});if(!t)return;
+  var p=findP(pid);
+  if(!p){alert('שגיאה: מטופל לא נמצא ('+pid+')');return;}
+  var t=p.treatments.find(function(x){return x.num===num;});
+  if(!t){alert('שגיאה: טיפול '+num+' לא נמצא. טיפולים קיימים: '+p.treatments.map(function(x){return x.num;}).join(','));return;}
   var a=(window.apts||[]).find(function(x){return String(x.patientId)===pid&&x.date===t.date;});
   TF.pid=pid;TF.apptId=a?a.id:null;TF.editDate=t.date;
   buildTF(p,a,t.date,t.num);showScreen('treatment-flow');
@@ -1249,7 +1333,7 @@ function buildCarousel(container,p,prevTreats){
     sTitle.style.cssText='font-size:13px;font-weight:700;color:var(--ac);';
     sTitle.textContent='טיפול '+t.num+' · '+t.date;
     var sHint=document.createElement('div');
-    sHint.style.cssText='font-size:11px;color:var(--ac);font-weight:600;cursor:pointer;padding:2px 8px;background:var(--g50);border-radius:20px;';
+    sHint.style.cssText='font-size:12px;color:var(--ac);font-weight:700;cursor:pointer;padding:4px 12px;background:var(--g100);border-radius:20px;border:1px solid var(--g200);';
     sHint.textContent='✏️ עריכה';
     (function(captT){sHint.addEventListener('click',function(e){e.stopPropagation();openEditTreatment(p.id,captT.num);});})(t);
     sHead.appendChild(sTitle);sHead.appendChild(sHint);
@@ -1310,11 +1394,11 @@ function buildCarousel(container,p,prevTreats){
     arrows.appendChild(prevArrow);arrows.appendChild(nextArrow);
     carousel.appendChild(arrows);
 
-    // Touch swipe
+    // Touch swipe on slide container
     var tx0=0;
-    viewport.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX;},{passive:true});
-    viewport.addEventListener('touchend',function(e){
-      var dx=e.changedTouches[0].clientX-tx0; // positive = swiped right = go to newer (lower idx)
+    slideContainer.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX;},{passive:true});
+    slideContainer.addEventListener('touchend',function(e){
+      var dx=e.changedTouches[0].clientX-tx0;
       if(Math.abs(dx)>35)goTo(dx>0?carIdx-1:carIdx+1);
     },{passive:true});
   }
@@ -1336,10 +1420,10 @@ function buildTF(p,a,tdate,treatNum){
   document.getElementById('tf-pt').textContent=p.name+(p.patType==='baby'?' 👶':'');
   document.getElementById('tf-tm').textContent=(a?a.date+' · '+a.time:tdate)+' · '+(isEdit?'עריכת טיפול '+tNum:isFirst?'טיפול ראשון':'טיפול '+tNum);
 
-  // Intake form
+  // Intake form - use stored formKey if exists (survives renumbering)
   var cfg=window.appCfg||defCfg();
   var formType=p.patType==='baby'?'baby':'adult';
-  var formKey=isFirst?'intake':'followup';
+  var formKey=existingT&&existingT.formKey?existingT.formKey:(isFirst?'intake':'followup');
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var iData=existingT?(existingT.intakeData||{}):{};
 
@@ -1455,11 +1539,11 @@ function tfGetIntakeData(){
   var a=TF.apptId?(window.apts||[]).find(function(x){return String(x.id)===String(TF.apptId);}):null;
   var tdate=TF.editDate||(a?a.date:todayStr());
   var existingT=(p.treatments||[]).find(function(t){return t.date===tdate;});
-  var tNumGet=( existingT?existingT.num:(p.treatments||[]).length+1);
+  var tNumGet=(existingT?existingT.num:(p.treatments||[]).length+1);
   var isFirst=tNumGet===1;
   var cfg=window.appCfg||defCfg();
   var formType=p.patType==='baby'?'baby':'adult';
-  var formKey=isFirst?'intake':'followup';
+  var formKey=existingT&&existingT.formKey?existingT.formKey:(isFirst?'intake':'followup');
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var data={};
   fields.forEach(function(f){var el=document.getElementById('if-'+f.id);if(el)data[f.id]=el.value;});
@@ -1493,7 +1577,7 @@ async function tfSave(){
   var formKey=tNumSave===1?'intake':'followup';
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var mainComplaint=fields.length&&intakeData[fields[0].id]?intakeData[fields[0].id]:'';
-  var tobj={num:existingIdx>=0?p.treatments[existingIdx].num:(p.treatments.length+1),date:tdate,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
+  var tobj={num:existingIdx>=0?p.treatments[existingIdx].num:(p.treatments.length+1),date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
   if(existingIdx>=0){
     p.treatments[existingIdx]=tobj;
   } else {
@@ -1528,17 +1612,29 @@ function renderDebts(){
   });
 }
 
-async function mkPaid(pid,num){num=parseInt(num);var p=findP(pid);if(!p)return;var t=p.treatments.find(function(x){return x.num===num;});if(t){t.paid=true;t.method=t.method||'מזומן';}await window.fbSaveP(p);openPatient(pid);renderAlerts();}
+async function mkPaid(pid,num){
+  num=parseInt(num);var p=findP(pid);if(!p)return;
+  var t=p.treatments.find(function(x){return x.num===num;});
+  if(t){t.paid=true;t.method=t.method||'מזומן';}
+  var sc=document.getElementById('screen-patient-file');
+  var sv=sc?sc.scrollTop:0;
+  await window.fbSaveP(p);
+  openPatient(pid);
+  renderAlerts();
+  if(sc)sc.scrollTop=sv;
+}
 async function undoPaid(pid,num){
   num=parseInt(num);pid=String(pid);
-  var p=findP(pid);
-  if(!p)return;
+  var p=findP(pid);if(!p)return;
   var t=p.treatments.find(function(x){return x.num===num;});
   if(!t)return;
   t.paid=false;t.method='';
+  var sc=document.getElementById('screen-patient-file');
+  var sv=sc?sc.scrollTop:0;
   await window.fbSaveP(p);
   render();
   openPatient(pid);
+  if(sc)sc.scrollTop=sv;
 }
 async function delAppt(aid,pid){
   if(!confirm('לבטל את התור?'))return;
@@ -1772,11 +1868,20 @@ function showScreen(name,skipHistory){
   }
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('active');});
-  var s=document.getElementById('screen-'+name);if(s){s.classList.add('active');s.scrollTop=0;}
+  var s=document.getElementById('screen-'+name);
+  if(s){
+    var alreadyActive=s.classList.contains('active');
+    s.classList.add('active');
+    if(!alreadyActive)s.scrollTop=0; // only reset scroll when navigating TO screen
+  }
   var navMap={calendar:'nav-cal',patients:'nav-pts',debts:'nav-dbt',settings:'nav-set'};
   if(navMap[name]){var navBtn=document.getElementById(navMap[name]);if(navBtn)navBtn.classList.add('active');}
   var nav=document.querySelector('.bnav');if(nav)nav.style.display='flex';
-  if(name==='calendar'){document.getElementById('daypanel').style.display=calView==='month'?'block':'none';renderCal();}
+  if(name==='calendar'){
+    document.getElementById('daypanel').style.display=calView==='month'?'block':'none';
+    document.getElementById('week-daypanel').style.display=calView==='week'?'block':'none';
+    renderCal();
+  }
   if(name==='patients')renderPatients();
   if(name==='settings'){renderSerTypes();applySettings();}
   if(name==='new-patient'){var types3=window.appCfg.seriesTypes||[];var serSel=document.getElementById('np-ser-type');if(serSel)serSel.innerHTML=types3.map(function(x){return '<option value="'+x.id+'">'+x.name+'</option>';}).join('');}
@@ -1786,7 +1891,11 @@ function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(p
 // ---- EVENT WIRING ----
 document.addEventListener('DOMContentLoaded',function(){
   // Navigation
-  document.getElementById('nav-cal').onclick=function(){navHistory=[];showScreen('calendar');};
+  document.getElementById('nav-cal').onclick=function(){
+    navHistory=[];
+    selDate=ltoday();navDate=ltoday();
+    showScreen('calendar');
+  };
   document.getElementById('nav-pts').onclick=function(){navHistory=[];showScreen('patients');};
   document.getElementById('nav-dbt').onclick=function(){navHistory=[];showScreen('debts');};
   document.getElementById('nav-set').onclick=function(){navHistory=[];showScreen('settings');};
