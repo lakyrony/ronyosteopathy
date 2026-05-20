@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v4.3</title>
+<title>קליניקה v5.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -228,7 +228,152 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .pbtn-undo{background:none;border:1.5px solid var(--r500);color:var(--r500);padding:4px 12px;border-radius:20px;font-size:10px;font-family:'Heebo',sans-serif;cursor:pointer}
 .show-more-btn{width:100%;padding:8px;background:none;border:1px dashed var(--bd);border-radius:var(--rmd);font-family:'Heebo',sans-serif;font-size:12px;color:var(--tm);cursor:pointer;margin-top:6px}
 .hidden{display:none!important}
+#mview{display:flex;flex-direction:column;height:100%;overflow:hidden}
+#mview.hidden{display:none!important}
 ::-webkit-scrollbar{width:0}
+@media(min-width:900px){
+  html,body{overflow:hidden}
+  #app{max-width:100%!important}
+  #mview{
+    display:grid!important;
+    grid-template-columns:1fr 200px!important;
+    grid-template-rows:auto auto auto auto 1fr!important;
+    height:100vh!important;
+    overflow:hidden!important;
+  }
+  .hdr{grid-column:1;grid-row:1;padding:12px 24px}
+  .stbar{grid-column:1;grid-row:2;padding:5px 24px}
+  .qbar{grid-column:1;grid-row:3;padding:8px 24px;gap:12px}
+  .qbar .qb{flex:none;padding:9px 20px}
+  .abar{grid-column:1;grid-row:4}
+  .abar .arow{padding:7px 24px}
+  .screens{
+    grid-column:1;
+    grid-row:5;
+    overflow:hidden!important;
+    position:relative!important;
+    min-height:0!important;
+  }
+  .screen{padding:20px 28px!important;padding-bottom:20px!important}
+  .bnav{
+    grid-column:2!important;
+    grid-row:1/6!important;
+    position:relative!important;
+    left:auto!important;
+    bottom:auto!important;
+    transform:none!important;
+    width:200px!important;
+    max-width:200px!important;
+    height:100%!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    border-top:none!important;
+    border-left:1px solid var(--bdl)!important;
+    padding:16px 0 0!important;
+    overflow-y:auto!important;
+  }
+  .bnav::before{
+    content:'🌿  קליניקה';
+    display:block;
+    padding:0 18px 16px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--g700);
+    border-bottom:1px solid var(--bdl);
+    margin-bottom:8px;
+  }
+  .ni{
+    flex:none!important;
+    flex-direction:row!important;
+    justify-content:flex-start!important;
+    padding:12px 18px!important;
+    gap:10px!important;
+    font-size:13px!important;
+    font-weight:500!important;
+    border-left:3px solid transparent!important;
+    border-radius:0!important;
+    width:100%!important;
+    color:var(--ts)!important;
+  }
+  .ni.active{
+    color:var(--ac)!important;
+    border-left-color:var(--ac)!important;
+    background:var(--g50)!important;
+    font-weight:700!important;
+  }
+  .ni:hover:not(.active){background:var(--sf2)}
+  .ni svg{width:18px!important;height:18px!important}
+  /* Typography scale-up */
+  body{font-size:16px}
+  .pn{font-size:15px}
+  .htitle{font-size:17px}
+  .calt{font-size:18px;font-weight:700}
+  .mdn{font-size:11px}
+  .dn{width:34px;height:34px;font-size:14px}
+  .ct{font-size:12px;letter-spacing:0.7px}
+
+  /* Cards */
+  .card{padding:18px 22px;margin-bottom:12px;border-radius:16px}
+
+  /* Calendar */
+  .mday{min-height:72px}
+  .mgrid{gap:4px}
+  .caln{padding:7px 18px;font-size:20px}
+
+  /* Day panel appointments */
+  .ath{font-size:15px}
+  .atb{padding:6px 10px;min-width:54px}
+
+  /* Patient list */
+  .pi{padding:13px 4px}
+
+  /* Quick bar */
+  .qb{font-size:13px;padding:10px 22px}
+
+  /* Alert bar */
+  .arow{font-size:13px}
+
+  /* Back button */
+  .bbtn{font-size:14px}
+
+  /* Info rows in patient file */
+  .il{font-size:13px}
+  .iv{font-size:13px}
+  .pfn{font-size:20px}
+  .pfs{font-size:13px}
+  .tnum{font-size:13px}
+  .tnotes{font-size:13px;line-height:1.7}
+
+  /* Treatment flow */
+  .if-label{font-size:13px}
+  .if-input{font-size:14px;padding:9px 12px}
+  .tf-pt{font-size:19px}
+  .tf-tab{font-size:13px;padding:12px}
+
+  /* Buttons */
+  .btn{font-size:15px;padding:13px}
+  .pbtn{font-size:12px;padding:4px 11px}
+
+  /* Settings */
+  .set-group{max-width:680px}
+  .set-group-hdr{font-size:14px;padding:13px 16px}
+  .set-item{padding:11px 16px}
+  .set-item-lbl{font-size:14px}
+
+  /* Stats */
+  .sval{font-size:28px}
+  .slbl{font-size:11px}
+  .srow{grid-template-columns:1fr 1fr 1fr 1fr}
+
+  /* Nav sidebar font */
+  .bnav::before{font-size:16px;padding:0 20px 18px}
+
+  /* Forms */
+  .fi,.fsl,.ftx{font-size:14px;padding:10px 14px}
+  .fl{font-size:12px}
+  .fm{margin-bottom:14px}
+}
 </style>
 </head>
 <body>
@@ -237,7 +382,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v4.3</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v5.7</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -249,7 +394,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 </div>
 
 <!-- Main App -->
-<div id="mview" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+<div id="mview" class="hidden">
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
@@ -467,7 +612,7 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();def
 </script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,browserLocalPersistence,setPersistence,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
 var fb=initializeApp(FC);var auth=getAuth(fb);var db=getFirestore(fb);var prov=new GoogleAuthProvider();
@@ -475,15 +620,35 @@ var uid=null,unsubP=null,unsubA=null;
 function setSt(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
 
 // btn-signin wired in DOMContentLoaded below
+var isIosSafari=/iphone|ipad|ipod/i.test(navigator.userAgent)&&/safari/i.test(navigator.userAgent)&&!/chrome/i.test(navigator.userAgent);
+
 window._doSignIn=async function(){
   try{
-    await signInWithPopup(auth,prov);
+    // Use local persistence for better iOS compatibility
+    await setPersistence(auth,browserLocalPersistence);
+    if(isIosSafari){
+      // iOS Safari: use redirect (popup blocked)
+      await signInWithRedirect(auth,prov);
+    } else {
+      await signInWithPopup(auth,prov);
+    }
   }catch(e){
     var el=document.getElementById('lerr');
     if(el){el.textContent='שגיאה: '+e.message;el.style.display='block';}
     console.error('Sign in error:',e);
   }
 };
+
+// Handle redirect result on page load (for iOS Safari after redirect)
+getRedirectResult(auth).then(function(result){
+  if(result&&result.user)console.log('Redirect login success:',result.user.email);
+}).catch(function(e){
+  if(e.code!=='auth/no-current-user'){
+    var el=document.getElementById('lerr');
+    if(el){el.textContent='שגיאה בכניסה: '+e.message;el.style.display='block';}
+    console.error('Redirect result error:',e);
+  }
+});
 
 window.doSignOut=async function(){
   if(unsubP)unsubP();if(unsubA)unsubA();
@@ -498,6 +663,16 @@ window.fbDelP=async function(id){if(!uid)return;await deleteDoc(doc(db,'users',u
 window.fbSaveA=async function(a){if(!uid)return;await setDoc(doc(db,'users',uid,'appointments',String(a.id)),a);};
 window.fbDelA=async function(id){if(!uid)return;await deleteDoc(doc(db,'users',uid,'appointments',String(id)));};
 window.fbSaveCfg=async function(c){if(!uid)return;await setDoc(doc(db,'users',uid,'config','main'),c);};
+
+// Handle redirect result (for Safari)
+getRedirectResult(auth).then(function(result){
+  if(result&&result.user)console.log('Redirect sign in success');
+}).catch(function(e){
+  if(e.code!=='auth/no-auth-event'){
+    var el=document.getElementById('lerr');
+    if(el){el.textContent='שגיאה: '+e.message;el.style.display='block';}
+  }
+});
 
 onAuthStateChanged(auth,async function(user){
   if(user){
@@ -518,6 +693,7 @@ onAuthStateChanged(auth,async function(user){
     applySettings();
     if(unsubP)unsubP();if(unsubA)unsubA();
     var pr=false,ar=false;
+    isDemoMode=false; // real Firebase — never load sample data
     var go=function(){if(pr&&ar){render();setSt('gr','מסונכרן ✓');}};
     unsubP=onSnapshot(collection(db,'users',uid,'patients'),function(s){window.pts=s.docs.map(function(d){return d.data();});pr=true;go();},function(e){console.error('Firestore patients error:',e);pr=true;window.pts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
     unsubA=onSnapshot(collection(db,'users',uid,'appointments'),function(s){window.apts=s.docs.map(function(d){return d.data();});ar=true;go();},function(e){console.error('Firestore appointments error:',e);ar=true;window.apts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
@@ -627,6 +803,7 @@ function getSlots(ds){
 // ---- DEMO MODE ----
 window._enterDemo=function(){
   try{
+  isDemoMode=true;
   window.pts=[];window.apts=[];window.appCfg=defCfg();
   // Override Firebase functions with local storage
   window.fbSaveP=function(p){var i=window.pts.findIndex(function(x){return String(x.id)===String(p.id);});if(i>=0)window.pts[i]=p;else window.pts.push(p);return Promise.resolve();};
@@ -641,6 +818,7 @@ window._enterDemo=function(){
   document.getElementById('stxt').textContent='דמו — נתונים לא נשמרים';
   applySettings();
   loadSample().then(function(){render();});
+  
   }catch(err){alert('שגיאה: '+err.message);console.error(err);}
 };
 
@@ -692,8 +870,10 @@ async function loadSample(){
 }
 
 // ---- RENDER ----
+var isDemoMode=false;
 function render(){
-  if(!sampleLoaded&&window.pts.length===0)loadSample().then(function(){render();});
+  // loadSample only in demo mode — NEVER in real Firebase mode
+  if(isDemoMode&&!sampleLoaded&&window.pts.length===0)loadSample().then(function(){render();});
   renderCal();renderPatients();renderDebts();renderAlerts();
 }
 
