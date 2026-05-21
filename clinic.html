@@ -11,16 +11,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g50:#f0faf4;--g100:#d6f0e0;--g200:#a8dcbe;--g400:#4caf7d;--g500:#2e9460;--g600:#1e7a4a;--g700:#145c37;
-  --b50:#eef6fb;--b100:#cde5f5;--b400:#4a9fd4;--b600:#1a6fa3;
-  --t100:#c5f0e6;--t400:#26b08a;--t500:#1a9070;
-  --a50:#fef9ec;--a100:#fdedc5;--a500:#e6a817;--a700:#9a6e00;
+  --g50:#f5f0e8;--g100:#e8ddc8;--g200:#ccbca0;--g400:#8a7255;--g500:#6b5a3e;--g600:#52442e;--g700:#3a2e1c;
+  --b50:#f0ede6;--b100:#ddd5c2;--b400:#8a7a58;--b600:#5a4a30;
+  --t100:#e5ddd0;--t400:#8a7a5a;--t500:#6a5a3a;
+  --a50:#fef8ee;--a100:#fdecd0;--a500:#e6a020;--a700:#9a6800;
   --r50:#fef2f2;--r100:#fdd5d5;--r500:#e53e3e;--r700:#9b1c1c;
-  --gr100:#eef1ee;--gr400:#8a9a8a;
-  --bg:#f4f8f5;--sf:#fff;--sf2:#f0f6f2;--bd:#d4e6d8;--bdl:#e8f2ea;
-  --tp:#1a2e1a;--ts:#4a6a4a;--tm:#7a9a7a;--ac:#2e9460;
+  --gr100:#eeeae4;--gr400:#9a9088;
+  --bg:#f0ebe2;--sf:#fff;--sf2:#f7f2eb;--bd:#ddd5c5;--bdl:#e8e2d8;
+  --tp:#1c1510;--ts:#5a4e42;--tm:#9a8878;--ac:#6b5a3e;
   --rsm:8px;--rmd:12px;--rlg:18px;--rxl:24px;
-  --sh:0 1px 3px rgba(30,80,30,0.08);
+  --sh:0 1px 3px rgba(60,40,20,0.10);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -47,6 +47,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .qb svg{width:14px;height:14px}
 /* Alert bar */
 .abar{flex-shrink:0}
+/* Alerts panel — transparent on mobile (abar flows inline as before) */
+#alerts-panel{display:contents}
+.ap-group{display:contents}
+.ap-head,.ap-sub,.ap-empty{display:none}
 .arow{padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:12px;border-bottom:1px solid}
 .arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
 .arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
@@ -117,6 +121,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .pb{flex:1;min-width:0}
 .pn{font-size:14px;font-weight:600}
 .ps{font-size:11px;color:var(--tm);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-date{font-size:10px;color:var(--tm)}
 .pr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
 /* Badges */
 .badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px}
@@ -169,6 +174,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .sval.red{color:var(--r500)}
 /* Settings */
 .set-group{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh)}
+.set-col{display:contents}
 .set-group-hdr{font-size:13px;font-weight:700;color:var(--tp);padding:11px 13px 9px;border-bottom:1px solid var(--bdl);background:var(--sf2)}
 .set-item{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--bdl)}
 .set-item:last-child{border-bottom:none}
@@ -231,53 +237,123 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 #mview{display:flex;flex-direction:column;height:100%;overflow:hidden}
 #mview.hidden{display:none!important}
 ::-webkit-scrollbar{width:0}
+@keyframes slIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.car-slide-in{animation:slIn 0.22s ease-out}
 @media(min-width:900px){
   html,body{overflow:hidden}
   #app{max-width:100%!important}
   #mview{
     display:grid!important;
-    grid-template-columns:1fr 200px!important;
-    grid-template-rows:auto auto auto auto 1fr!important;
+    grid-template-columns:250px 1fr 300px!important;
+    grid-template-rows:auto auto 1fr!important;
     height:100vh!important;
     overflow:hidden!important;
   }
-  .hdr{grid-column:1;grid-row:1;padding:12px 24px}
-  .stbar{grid-column:1;grid-row:2;padding:5px 24px}
-  .qbar{grid-column:1;grid-row:3;padding:8px 24px;gap:12px}
-  .qbar .qb{flex:none;padding:9px 20px}
-  .abar{grid-column:1;grid-row:4}
-  .abar .arow{padding:7px 24px}
+  .hdr{grid-column:1/4;grid-row:1;padding:14px 28px}
+  .hb{font-size:13px!important;padding:8px 14px!important}
+  .hb svg{width:15px!important;height:15px!important}
+  .htitle{font-size:19px!important}
+  .hsub{font-size:12px!important}
+  .stbar{display:none!important}
+  .qbar{
+    grid-column:1!important;grid-row:2!important;
+    padding:12px!important;gap:8px!important;
+    flex-direction:column!important;
+    border-right:1px solid var(--bdl)!important;
+    border-bottom:1px solid var(--bdl)!important;
+  }
+  .qbar .qb{flex:none!important;justify-content:flex-start!important;padding:11px 16px!important;font-size:13px!important}
+  /* Left alerts panel — distinct column, like the right nav */
+  #alerts-panel{
+    grid-column:3!important;grid-row:2/4!important;
+    display:flex!important;flex-direction:column!important;
+    gap:20px;
+    background:var(--sf2);
+    border-left:1px solid var(--bd);
+    padding:18px 16px;
+    overflow-y:auto;
+  }
+  .ap-head{
+    display:block;
+    font-size:15px;font-weight:700;color:var(--g700);
+    padding-bottom:12px;border-bottom:1px solid var(--bd);
+  }
+  .ap-group{display:flex;flex-direction:column;gap:8px}
+  .ap-sub{
+    display:block;
+    font-size:11px;font-weight:700;color:var(--tm);
+    letter-spacing:0.5px;
+  }
+  .ap-empty{
+    font-size:12px;color:var(--tm);
+    background:var(--sf);border:1px dashed var(--bd);
+    border-radius:10px;padding:12px 14px;text-align:center;
+  }
+  .ap-empty.ap-show{display:block}
+  #ap-pat-group{display:none}
+  #ap-pat-group.ap-show{display:flex;flex-direction:column;gap:8px}
+  .abar{
+    position:static!important;
+    border-radius:10px!important;
+    overflow:hidden!important;
+    border:1px solid var(--bdl)!important;
+    grid-column:unset!important;grid-row:unset!important;
+  }
+  .abar .arow{padding:11px 14px;font-size:12.5px}
+  .abar .arow:first-child{border-radius:10px 10px 0 0}
+  .abar .arow:last-child{border-radius:0 0 10px 10px;border-bottom:none}
+  #fpat{
+    position:static;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--r100);
+  }
+  #fpat .fpat-row{
+    background:var(--r50);padding:11px 14px;
+    display:flex;align-items:center;gap:8px;
+    font-size:12.5px;color:var(--r700);
+    border-bottom:1px solid var(--r100);
+  }
+  #fpat .fpat-row:last-child{border-bottom:none}
+  #fpat .fpat-row button{
+    margin-right:auto;background:var(--r500);color:#fff;border:none;
+    padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
+    cursor:pointer;font-family:'Heebo',sans-serif;flex-shrink:0;
+  }
+  /* Hide inline patient alerts in desktop — they show in fpat instead */
+  .desktop-hidden{display:none!important}
   .screens{
-    grid-column:1;
-    grid-row:5;
+    grid-column:2!important;
+    grid-row:2/4!important;
     overflow:hidden!important;
     position:relative!important;
     min-height:0!important;
   }
-  .screen{padding:20px 28px!important;padding-bottom:20px!important}
+  .screen{padding:20px 28px!important;padding-bottom:20px!important;max-width:900px;margin-left:auto;margin-right:auto}
   .bnav{
-    grid-column:2!important;
-    grid-row:1/6!important;
+    grid-column:1!important;
+    grid-row:3!important;
     position:relative!important;
     left:auto!important;
     bottom:auto!important;
     transform:none!important;
-    width:200px!important;
-    max-width:200px!important;
+    width:250px!important;
+    max-width:250px!important;
     height:100%!important;
     flex-direction:column!important;
     justify-content:flex-start!important;
     align-items:stretch!important;
     border-top:none!important;
     border-left:1px solid var(--bdl)!important;
+    border-right:none!important;
     padding:16px 0 0!important;
     overflow-y:auto!important;
   }
   .bnav::before{
     content:'🌿  קליניקה';
     display:block;
-    padding:0 18px 16px;
-    font-size:15px;
+    padding:0 22px 18px;
+    font-size:17px;
     font-weight:700;
     color:var(--g700);
     border-bottom:1px solid var(--bdl);
@@ -287,23 +363,24 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     flex:none!important;
     flex-direction:row!important;
     justify-content:flex-start!important;
-    padding:12px 18px!important;
-    gap:10px!important;
-    font-size:13px!important;
+    padding:14px 22px!important;
+    gap:12px!important;
+    font-size:15px!important;
     font-weight:500!important;
-    border-left:3px solid transparent!important;
+    border-right:3px solid transparent!important;
+    border-left:none!important;
     border-radius:0!important;
     width:100%!important;
     color:var(--ts)!important;
   }
   .ni.active{
     color:var(--ac)!important;
-    border-left-color:var(--ac)!important;
+    border-right-color:var(--ac)!important;
     background:var(--g50)!important;
     font-weight:700!important;
   }
   .ni:hover:not(.active){background:var(--sf2)}
-  .ni svg{width:18px!important;height:18px!important}
+  .ni svg{width:21px!important;height:21px!important}
   /* Typography scale-up */
   body{font-size:16px}
   .pn{font-size:15px}
@@ -317,8 +394,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .card{padding:18px 22px;margin-bottom:12px;border-radius:16px}
 
   /* Calendar */
-  .mday{min-height:72px}
-  .mgrid{gap:4px}
+  .mday{min-height:54px}
+  .mgrid{gap:3px}
   .caln{padding:7px 18px;font-size:20px}
 
   /* Day panel appointments */
@@ -326,7 +403,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .atb{padding:6px 10px;min-width:54px}
 
   /* Patient list */
-  .pi{padding:13px 4px}
+  .pi{padding:14px 6px}
+  .pn{font-size:16px}
+  .ps{font-size:13.5px}
+  .pr .badge{font-size:12px;padding:4px 11px}
+  .ps-date{font-size:12.5px}
+  .pr{gap:5px}
 
   /* Quick bar */
   .qb{font-size:13px;padding:10px 22px}
@@ -338,8 +420,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .bbtn{font-size:14px}
 
   /* Info rows in patient file */
-  .il{font-size:13px}
+  .il{font-size:13px;width:130px;flex-shrink:0}
   .iv{font-size:13px}
+  .ir{justify-content:flex-start;gap:16px}
   .pfn{font-size:20px}
   .pfs{font-size:13px}
   .tnum{font-size:13px}
@@ -355,11 +438,15 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .btn{font-size:15px;padding:13px}
   .pbtn{font-size:12px;padding:4px 11px}
 
-  /* Settings */
-  .set-group{max-width:680px}
+  /* Settings — two balanced columns */
+  #screen-settings{max-width:900px!important}
+  #screen-settings.active{display:flex;gap:16px;align-items:flex-start}
+  .set-col{flex:1;display:flex;flex-direction:column;min-width:0}
+  #screen-settings .set-group{max-width:none;width:100%}
   .set-group-hdr{font-size:14px;padding:13px 16px}
   .set-item{padding:11px 16px}
   .set-item-lbl{font-size:14px}
+  .msg-tpl{min-height:64px;font-size:13px}
 
   /* Stats */
   .sval{font-size:28px}
@@ -373,6 +460,17 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .fi,.fsl,.ftx{font-size:14px;padding:10px 14px}
   .fl{font-size:12px}
   .fm{margin-bottom:14px}
+
+  /* Patient file — two-column layout (history on the left) */
+  #screen-patient-file{max-width:1060px!important}
+  #pfile{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    align-items:start;
+  }
+  #pfile>.card{grid-column:1;margin-bottom:0}
+  #pfile>.card.pf-history{grid-column:2;grid-row:1/span 50;margin-bottom:0}
 }
 </style>
 </head>
@@ -412,7 +510,18 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     <button class="qb qbp" id="qb-appt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>קביעת תור חדש</button>
     <button class="qb qbs" id="qb-pt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל חדש</button>
   </div>
-  <div class="abar" id="abar"></div>
+  <aside id="alerts-panel">
+    <div class="ap-head">התראות</div>
+    <div class="ap-group">
+      <div class="ap-sub">כלל המטופלים</div>
+      <div class="abar" id="abar"></div>
+      <div class="ap-empty" id="abar-empty">אין התראות כלליות ✓</div>
+    </div>
+    <div class="ap-group" id="ap-pat-group">
+      <div class="ap-sub">המטופל הנוכחי</div>
+      <div id="fpat"></div>
+    </div>
+  </aside>
 
   <div class="screens">
     <!-- Calendar -->
@@ -456,38 +565,66 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- Settings -->
     <div class="screen" id="screen-settings">
-      <div class="set-group">
-        <div class="set-group-hdr">⚙️ כללי</div>
-        <div class="set-item"><div class="set-item-lbl">מחיר ברירת מחדל (₪)</div>
-          <input type="number" inputmode="numeric" id="set-price" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+      <div class="set-col">
+        <div class="set-group">
+          <div class="set-group-hdr">⚙️ כללי</div>
+          <div class="set-item"><div class="set-item-lbl">מחיר ברירת מחדל (₪)</div>
+            <input type="number" inputmode="numeric" id="set-price" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
+            <select class="set-sel" id="set-dur"><option value="30">30 דק׳</option><option value="45">45 דק׳</option><option value="60" selected>60 דק׳</option><option value="75">75 דק׳</option><option value="90">90 דק׳</option><option value="120">120 דק׳</option></select>
+          </div>
         </div>
-        <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
-          <select class="set-sel" id="set-dur"><option value="30">30 דק׳</option><option value="45">45 דק׳</option><option value="60" selected>60 דק׳</option><option value="75">75 דק׳</option><option value="90">90 דק׳</option><option value="120">120 דק׳</option></select>
+        <div class="set-group">
+          <div class="set-group-hdr">🔁 סוגי סדרות</div>
+          <div id="ser-types-list"></div>
+          <div style="padding:8px 13px 13px;"><button class="btn bs" id="btn-add-ser-type" style="margin-top:0;">+ הוסף סדרה</button></div>
+        </div>
+        <div class="set-group">
+          <div class="set-group-hdr">📋 טפסי תשאול</div>
+          <button class="set-form-btn" data-type="adult" data-form="intake">👤 טופס ראשוני — מבוגר <span style="color:var(--ac)">›</span></button>
+          <button class="set-form-btn" data-type="adult" data-form="followup">👤 טופס המשך — מבוגר <span style="color:var(--ac)">›</span></button>
+          <button class="set-form-btn" data-type="baby" data-form="intake">👶 טופס ראשוני — תינוק <span style="color:var(--ac)">›</span></button>
+          <button class="set-form-btn" data-type="baby" data-form="followup">👶 טופס המשך — תינוק <span style="color:var(--ac)">›</span></button>
+        </div>
+        <div class="set-group">
+          <div class="set-group-hdr">🛠 כלים</div>
+          <div style="padding:8px 13px 13px;display:flex;flex-direction:column;gap:7px;">
+            <button class="btn bs" id="btn-clean-appts" style="margin-top:0;">🧹 הסר תורים ללא מטופל</button>
+            <button class="btn bs" id="pwa-install-btn" style="display:none;">📲 הוסף למסך הבית</button>
+            <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ שיתוף ↗ ← "הוסף למסך הבית"</div>
+            <div id="autosave-msg" style="text-align:center;font-size:12px;color:var(--ac);opacity:0;transition:opacity 0.3s;">✓ נשמר</div>
+          </div>
         </div>
       </div>
-      <div class="set-group">
-        <div class="set-group-hdr">📅 לוח שעות שבועי</div>
-        <div class="day-sched" id="day-sched"></div>
-      </div>
-      <div class="set-group">
-        <div class="set-group-hdr">🔁 סוגי סדרות</div>
-        <div id="ser-types-list"></div>
-        <div style="padding:8px 13px 13px;"><button class="btn bs" id="btn-add-ser-type" style="margin-top:0;">+ הוסף סדרה</button></div>
-      </div>
-      <div class="set-group">
-        <div class="set-group-hdr">📋 טפסי תשאול</div>
-        <button class="set-form-btn" data-type="adult" data-form="intake">👤 טופס ראשוני — מבוגר <span style="color:var(--ac)">›</span></button>
-        <button class="set-form-btn" data-type="adult" data-form="followup">👤 טופס המשך — מבוגר <span style="color:var(--ac)">›</span></button>
-        <button class="set-form-btn" data-type="baby" data-form="intake">👶 טופס ראשוני — תינוק <span style="color:var(--ac)">›</span></button>
-        <button class="set-form-btn" data-type="baby" data-form="followup">👶 טופס המשך — תינוק <span style="color:var(--ac)">›</span></button>
-      </div>
-      <div class="set-group">
-        <div class="set-group-hdr">🛠 כלים</div>
-        <div style="padding:8px 13px 13px;display:flex;flex-direction:column;gap:7px;">
-          <button class="btn bs" id="btn-clean-appts" style="margin-top:0;">🧹 הסר תורים ללא מטופל</button>
-          <button class="btn bs" id="pwa-install-btn" style="display:none;">📲 הוסף למסך הבית</button>
-          <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ שיתוף ↗ ← "הוסף למסך הבית"</div>
-          <div id="autosave-msg" style="text-align:center;font-size:12px;color:var(--ac);opacity:0;transition:opacity 0.3s;">✓ נשמר</div>
+      <div class="set-col">
+        <div class="set-group">
+          <div class="set-group-hdr">📅 לוח שעות שבועי</div>
+          <div class="day-sched" id="day-sched"></div>
+        </div>
+        <div class="set-group">
+          <div class="set-group-hdr">💬 הודעות ובוט וואטסאפ</div>
+          <div class="set-item"><div class="set-item-lbl">הפעלת בוט וואטסאפ</div>
+            <button class="day-tog off" id="set-bot-enabled" type="button"></button>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">שליחה אוטומטית</div>
+            <button class="day-tog off" id="set-bot-autosend" type="button"></button>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">מספר וואטסאפ עסקי</div>
+            <input type="tel" id="set-bot-phone" placeholder="0501234567" style="width:130px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;direction:ltr;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">שליחת תזכורת לפני (שעות)</div>
+            <input type="number" inputmode="numeric" id="set-reminder-hours" min="1" max="168" value="24" style="width:70px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div style="padding:12px 13px;display:flex;flex-direction:column;gap:12px;">
+            <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:9px 11px;font-size:11px;color:var(--g700);line-height:1.6;">
+              💡 ניתן להשתמש במשתנים: <b>{שם}</b> · <b>{תאריך}</b> · <b>{שעה}</b> · <b>{סכום}</b> — הבוט ימלא אותם אוטומטית לפי המטופל.
+            </div>
+            <div><label class="fl">תזכורת לתור</label><textarea class="ftx msg-tpl" id="msg-reminder" onchange="autoSave()"></textarea></div>
+            <div><label class="fl">תזכורת תשלום</label><textarea class="ftx msg-tpl" id="msg-payment" onchange="autoSave()"></textarea></div>
+            <div><label class="fl">סיכום לאחר טיפול</label><textarea class="ftx msg-tpl" id="msg-followup" onchange="autoSave()"></textarea></div>
+            <div><label class="fl">בדיקת הרגשה לאחר טיפול</label><textarea class="ftx msg-tpl" id="msg-wellbeing" onchange="autoSave()"></textarea></div>
+          </div>
         </div>
       </div>
     </div>
@@ -757,7 +894,14 @@ function defCfg(){
     },
     seriesTypes:[{id:'st1',name:'סדרת בסיס',count:5,price:1500},{id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}],
     forms:{adult:{intake:DEF_FORMS.adult.intake,followup:DEF_FORMS.adult.followup},
-           baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup}}
+           baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup}},
+    bot:{enabled:false,phone:'',reminderHours:24,autoSend:false},
+    messages:{
+      reminder:'שלום {שם} 🌿\nתזכורת לתור שלך ב-{תאריך} בשעה {שעה}.\nנתראה!',
+      payment:'שלום {שם},\nרצינו להזכיר בעדינות על יתרת תשלום פתוחה בסך {סכום}₪.\nתודה רבה 🙏',
+      followup:'שלום {שם},\nתודה שהגעת לטיפול היום. מקווה שתרגיש/י טוב יותר.\nלכל שאלה אני כאן 🌿',
+      wellbeing:'שלום {שם},\nעבר יום מאז הטיפול — איך את/ה מרגיש/ה?\nאשמח לשמוע ולדעת אם יש שיפור 🌿'
+    }
   };
 }
 window.appCfg=defCfg();
@@ -906,6 +1050,8 @@ function renderAlerts(){
     window._rems=rems;
   }
   bar.innerHTML=rows.join('');
+  var emptyEl=document.getElementById('abar-empty');
+  if(emptyEl)emptyEl.classList.toggle('ap-show',rows.length===0);
   // Event listeners on alerts
   bar.querySelectorAll('[data-nav]').forEach(function(el){
     el.addEventListener('click',function(){showScreen(this.dataset.nav);});
@@ -1081,6 +1227,7 @@ function renderWeekDayPanel(){
     nameA.appendChild(nm);
     (function(pid2){nameA.addEventListener('click',function(e){e.stopPropagation();openPatient(pid2);});})(a.patientId);
     row.appendChild(nameA);
+    if(hd){var hdb=document.createElement('span');hdb.className='badge br';hdb.style.cssText='flex-shrink:0;margin-left:4px;font-size:10px;';hdb.textContent='חוב';row.appendChild(hdb);}
     var tfBtn=document.createElement('button');tfBtn.className='pbtn '+(isApptPast?'pbtn-gray':'pbtn-g');tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';tfBtn.style.cssText='flex-shrink:0;white-space:nowrap;';
     (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(a.patientId,a.id);
     row.appendChild(tfBtn);
@@ -1216,7 +1363,7 @@ function renderPatients(filter){
     var div=document.createElement('div');div.className='pi';
     div.innerHTML='<div class="pav '+avCls(p)+'" style="'+avSz(40)+'">'+p.name.charAt(0)+'</div>'+
       '<div class="pb"><div class="pn">'+p.name+(isBaby?' 👶':'')+'</div><div class="ps">'+(p.problem||'')+(p.phone?' · '+p.phone:'')+'</div></div>'+
-      '<div class="pr">'+(hd?'<span class="badge br">חוב</span>':'')+(hasSer?'<span class="badge bg">'+p.series.name+' '+p.series.used+'/'+p.series.count+'</span>':'')+(last?'<span style="font-size:10px;color:var(--tm);">'+last+'</span>':'')+'</div>';
+      '<div class="pr">'+(hd?'<span class="badge br">חוב</span>':'')+(hasSer?'<span class="badge bg">'+p.series.name+' '+p.series.used+'/'+p.series.count+'</span>':'')+(last?'<span class="ps-date">'+last+'</span>':'')+'</div>';
     div.addEventListener('click',function(){openPatient(p.id);});
     list.appendChild(div);
   });
@@ -1259,12 +1406,24 @@ function openPatient(id){
     if(a.date===ts&&nowM<(ah*60+am2+dur+30))return false;
     return !(p.treatments||[]).some(function(t){return t.date===a.date;});
   });
+  var fpat=document.getElementById('fpat');
+  var patGroup=document.getElementById('ap-pat-group');
+  if(fpat){fpat.innerHTML='';}
+  if(patGroup)patGroup.classList.remove('ap-show');
   if(pend.length){
+    var isDesktop=window.innerWidth>=900;
     var remDiv=document.createElement('div');
-    remDiv.style.cssText='background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:8px 11px;margin-bottom:9px;display:flex;align-items:center;gap:8px;';
-    remDiv.innerHTML='<span style="font-size:12px;color:var(--r700);flex:1;">טיפול ב-'+pend[0].date+' לא תועד</span><button class="pbtn" style="background:var(--r500);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button>';
-    remDiv.querySelector('.pbtn').addEventListener('click',function(){openTreatFlow(id,pend[0].id);});
-    pfile.appendChild(remDiv);
+    if(isDesktop){
+      remDiv.className='fpat-row';
+      remDiv.innerHTML='<span style="flex:1;">⚠ טיפול ב-'+pend[0].date+' לא תועד</span><button>לרישום</button>';
+      remDiv.querySelector('button').addEventListener('click',function(){openTreatFlow(id,pend[0].id);});
+      if(fpat){fpat.appendChild(remDiv);if(patGroup)patGroup.classList.add('ap-show');}
+    } else {
+      remDiv.style.cssText='background:var(--r50);border:1px solid var(--r100);border-radius:var(--rmd);padding:8px 11px;margin-bottom:9px;display:flex;align-items:center;gap:8px;';
+      remDiv.innerHTML='<span style="font-size:12px;color:var(--r700);flex:1;">טיפול ב-'+pend[0].date+' לא תועד</span><button class="pbtn" style="background:var(--r500);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">לרישום</button>';
+      remDiv.querySelector('.pbtn').addEventListener('click',function(){openTreatFlow(id,pend[0].id);});
+      pfile.appendChild(remDiv);
+    }
   }
 
   // Info card
@@ -1275,7 +1434,7 @@ function openPatient(id){
     '<div style="flex:1;"><div class="pfn">'+p.name+(p.patType==='baby'?' 👶':'')+'</div><div class="pfs">'+(p.phone||'')+'</div></div>'+
     '<button class="pbtn pbtn-gray" id="pf-edit-btn">עריכה</button>'+
     '</div>'+
-    (hd?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
+    (hd&&window.innerWidth<900?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
     '<div class="ir"><span class="il">גיל</span><span class="iv">'+(p.age||'—')+'</span></div>'+
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
     '<div class="ir"><span class="il">סוג מטופל</span><span class="iv">'+(p.patType==='baby'?'תינוק':'מבוגר')+'</span></div>'+
@@ -1283,6 +1442,12 @@ function openPatient(id){
     '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪'+(p.price||350).toLocaleString()+'</span></div>';
   infoCard.querySelector('#pf-edit-btn').addEventListener('click',function(){openEdit(id);});
   pfile.appendChild(infoCard);
+  if(hd&&window.innerWidth>=900&&fpat){
+    var debtRow=document.createElement('div');
+    debtRow.className='fpat-row';
+    debtRow.innerHTML='<span style="flex:1;">💰 חוב פתוח: ₪'+td.toLocaleString()+'</span>';
+    fpat.appendChild(debtRow);if(patGroup)patGroup.classList.add('ap-show');
+  }
 
   // Series card
   if(hasSer){
@@ -1335,7 +1500,7 @@ function openPatient(id){
   pfile.appendChild(aCard);
 
   // Treatment history — built with DOM to avoid event bubbling issues
-  var tCard=document.createElement('div');tCard.className='card';
+  var tCard=document.createElement('div');tCard.className='card pf-history';
   // Header with add button
   var tCardHead=document.createElement('div');
   tCardHead.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;';
@@ -1537,7 +1702,10 @@ function buildCarousel(container,p,prevTreats){
   // goTo: simple show/hide — works 100% of the time
   function goTo(n){
     carIdx=Math.max(0,Math.min(n,carTotal-1));
-    slides.forEach(function(s,i){s.style.display=i===carIdx?'block':'none';});
+    slides.forEach(function(s,i){
+      if(i===carIdx){s.style.display='block';s.classList.remove('car-slide-in');void s.offsetWidth;s.classList.add('car-slide-in');}
+      else{s.style.display='none';}
+    });
     carCounter.textContent=(carIdx+1)+' / '+carTotal;
     if(dotsEl){
       dotsEl.childNodes.forEach(function(d,i){
@@ -1799,8 +1967,8 @@ async function mkPaid(pid,num){
   var sc=document.getElementById('screen-patient-file');
   var sv=sc?sc.scrollTop:0;
   await window.fbSaveP(p);
+  render();
   openPatient(pid);
-  renderAlerts();
   if(sc)sc.scrollTop=sv;
 }
 async function undoPaid(pid,num){
@@ -1831,6 +1999,16 @@ function applySettings(){
   var c=window.appCfg||defCfg();
   var sp=document.getElementById('set-price');if(sp)sp.value=c.price||350;
   var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
+  var bot=c.bot||{},msg=c.messages||{};
+  var dm=defCfg().messages;
+  var be=document.getElementById('set-bot-enabled');if(be)be.className='day-tog '+(bot.enabled?'on':'off');
+  var ba=document.getElementById('set-bot-autosend');if(ba)ba.className='day-tog '+(bot.autoSend?'on':'off');
+  var bp=document.getElementById('set-bot-phone');if(bp)bp.value=bot.phone||'';
+  var rh=document.getElementById('set-reminder-hours');if(rh)rh.value=bot.reminderHours||24;
+  var mr=document.getElementById('msg-reminder');if(mr)mr.value=msg.reminder!==undefined?msg.reminder:dm.reminder;
+  var mp=document.getElementById('msg-payment');if(mp)mp.value=msg.payment!==undefined?msg.payment:dm.payment;
+  var mf=document.getElementById('msg-followup');if(mf)mf.value=msg.followup!==undefined?msg.followup:dm.followup;
+  var mw=document.getElementById('msg-wellbeing');if(mw)mw.value=msg.wellbeing!==undefined?msg.wellbeing:dm.wellbeing;
   renderDaySchedule();renderSerTypes();
 }
 
@@ -1891,6 +2069,13 @@ async function saveSettings(){
   var c=window.appCfg||defCfg();
   var sp=document.getElementById('set-price');if(sp)c.price=Math.min(9999,parseInt(sp.value)||350);
   var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
+  if(!c.bot)c.bot={};if(!c.messages)c.messages={};
+  var bp=document.getElementById('set-bot-phone');if(bp)c.bot.phone=bp.value.trim();
+  var rh=document.getElementById('set-reminder-hours');if(rh)c.bot.reminderHours=Math.min(168,Math.max(1,parseInt(rh.value)||24));
+  var mr=document.getElementById('msg-reminder');if(mr)c.messages.reminder=mr.value;
+  var mp=document.getElementById('msg-payment');if(mp)c.messages.payment=mp.value;
+  var mf=document.getElementById('msg-followup');if(mf)c.messages.followup=mf.value;
+  var mw=document.getElementById('msg-wellbeing');if(mw)c.messages.wellbeing=mw.value;
   window.appCfg=c;await window.fbSaveCfg(c);rebuildTimeSelect();
 }
 async function autoSave(){await saveSettings();var m=document.getElementById('autosave-msg');if(m){m.style.opacity='1';setTimeout(function(){m.style.opacity='0';},1500);}}
@@ -2054,6 +2239,12 @@ function openGcal(){if(!lastAppt)return;var p=findP(lastAppt.patientId);var h=pa
 
 // ---- SCREEN NAVIGATION ----
 function showScreen(name,skipHistory){
+  var fpat=document.getElementById('fpat');
+  if(fpat&&name!=='patient-file'&&name!=='treatment-flow'){
+    fpat.innerHTML='';
+    var pg=document.getElementById('ap-pat-group');if(pg)pg.classList.remove('ap-show');
+  }
+
   if(!skipHistory){
     var prev=document.querySelector('.screen.active');
     var prevId=prev?prev.id.replace('screen-',''):null;
@@ -2106,8 +2297,8 @@ document.addEventListener('DOMContentLoaded',function(){
   // Calendar
   document.getElementById('vt-m').onclick=function(){setView('month');};
   document.getElementById('vt-w').onclick=function(){setView('week');};
-  document.getElementById('cal-prev').onclick=function(){navCal(-1);};
-  document.getElementById('cal-next').onclick=function(){navCal(1);};
+  document.getElementById('cal-prev').onclick=function(){navCal(1);};
+  document.getElementById('cal-next').onclick=function(){navCal(-1);};
   document.getElementById('dpadd-btn').onclick=function(){openNewApptForDay();};
 
   // Patient search
@@ -2155,6 +2346,8 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-add-ser-type').onclick=function(){showScreen('add-series-type');};
   document.getElementById('btn-save-ser-type').onclick=function(){addSeriesType();};
   document.getElementById('btn-clean-appts').onclick=function(){cleanOrphanAppts();};
+  document.getElementById('set-bot-enabled').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.enabled=!c.bot.enabled;this.className='day-tog '+(c.bot.enabled?'on':'off');window.appCfg=c;autoSave();};
+  document.getElementById('set-bot-autosend').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.autoSend=!c.bot.autoSend;this.className='day-tog '+(c.bot.autoSend?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('pwa-install-btn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;this.style.display='none';}};
 
   // Form editor buttons in settings
