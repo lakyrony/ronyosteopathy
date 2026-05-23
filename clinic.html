@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.1</title>
+<title>קליניקה v6.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -543,7 +543,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.1</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.2</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -559,7 +559,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.1</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.2</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -1110,7 +1110,28 @@ var efType=null,efForm=null;
 var sampleLoaded=false;
 var navHistory=[];
 // Treatment flow state
-var TF={pid:null,apptId:null,editDate:null};
+var TF={pid:null,apptId:null,editDate:null,tNum:null};
+
+// ---- Treatment-flow autosave (localStorage drafts) ----
+function tfAutosaveKey(pid,tNum){return 'tf_draft_'+String(pid)+'_'+String(tNum||'new');}
+function tfSaveDraft(pid,tNum){
+  try{
+    var data={};
+    document.querySelectorAll('[id^="if-"]').forEach(function(el){
+      data[el.id.slice(3)]=el.value;
+    });
+    ['sum-tcs','sum-done','sum-found','sum-rec','sum-ex'].forEach(function(id){
+      var el=document.getElementById(id);if(el)data['__'+id]=el.value;
+    });
+    localStorage.setItem(tfAutosaveKey(pid,tNum),JSON.stringify({t:Date.now(),data:data}));
+    var ind=document.getElementById('tf-autosave-ind');
+    if(ind){ind.textContent='💾 נשמר';ind.style.opacity='1';clearTimeout(window._tfAutoTO);window._tfAutoTO=setTimeout(function(){ind.style.opacity='0.4';},1200);}
+  }catch(e){}
+}
+function tfLoadDraft(pid,tNum){
+  try{var s=localStorage.getItem(tfAutosaveKey(pid,tNum));if(!s)return null;var o=JSON.parse(s);return o&&o.data?o.data:null;}catch(e){return null;}
+}
+function tfClearDraft(pid,tNum){try{localStorage.removeItem(tfAutosaveKey(pid,tNum));}catch(e){}}
 
 function ltoday(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+S2(d.getMonth()+1)+'-'+S2(d.getDate());}
@@ -2236,9 +2257,20 @@ function buildTF(p,a,tdate,treatNum){
     buildCarousel(mCarWrap,p,prevTreats);
   }
 
+  // Track this treatment's number for autosave key
+  TF.tNum=tNum;
+
+  // Try to restore draft if no saved field data exists in the treatment yet
+  var draft=tfLoadDraft(p.id,tNum);
+  var hasIntakeData=Object.keys(iData).some(function(k){return iData[k];});
+  if(draft&&!hasIntakeData){
+    fields.forEach(function(f){if(draft[f.id]!==undefined)iData[f.id]=draft[f.id];});
+  }
+
   // Fields
   var secDiv=document.createElement('div');secDiv.className='tf-sec';
-  secDiv.innerHTML='<div class="tf-sec-ttl">'+(isFirst?'תשאול ראשוני':'תשאול המשך')+'</div>';
+  var draftHint=draft?' <span id="tf-autosave-ind" style="font-size:10px;color:var(--ac);opacity:0.7;font-weight:500;">💾 שוחזרה טיוטה</span>':' <span id="tf-autosave-ind" style="font-size:10px;color:var(--tm);opacity:0.4;font-weight:500;">שמירה אוטומטית</span>';
+  secDiv.innerHTML='<div class="tf-sec-ttl">'+(isFirst?'תשאול ראשוני':'תשאול המשך')+draftHint+'</div>';
   fields.forEach(function(f){
     var val=iData[f.id]||'';
     var fDiv=document.createElement('div');fDiv.className='if-field';
@@ -2252,12 +2284,24 @@ function buildTF(p,a,tdate,treatNum){
   });
   intakeEl.appendChild(secDiv);
 
-  var contBtn=document.createElement('button');contBtn.className='btn bp';contBtn.textContent='המשך לסיכום טיפול ←';
-  contBtn.addEventListener('click',function(){tfSetTab('summary');});
+  // Continue button — new flow: open followup booking modal, then auto-advance to summary
+  var contBtn=document.createElement('button');contBtn.className='btn bp';contBtn.textContent='המשך — קבע תור המשך ושמירת סיכום ←';
+  contBtn.addEventListener('click',function(){
+    openFollowupBookingModal(p.id,function(){tfSetTab('summary');});
+  });
   intakeEl.appendChild(contBtn);
 
   // Summary form
   buildSummaryForm(p,existingT);
+
+  // Wire autosave on EVERY input/textarea in the treatment-flow screen.
+  // Use a single debounced handler so we don't write to localStorage on every keystroke.
+  var debTO=null;
+  function debouncedSave(){clearTimeout(debTO);debTO=setTimeout(function(){tfSaveDraft(p.id,tNum);},500);}
+  document.querySelectorAll('#screen-treatment-flow input.if-input, #screen-treatment-flow textarea.if-input').forEach(function(el){
+    el.addEventListener('input',debouncedSave);
+  });
+
   tfSetTab('intake');
 }
 
@@ -2391,7 +2435,52 @@ async function tfSave(){
   p.treatments.forEach(function(t,i){t.num=i+1;});
   
   await window.fbSaveP(p);
+  // Clear the autosave draft now that the treatment is persisted
+  tfClearDraft(TF.pid,tobj.num);
   render();openPatient(TF.pid);
+}
+
+// ---- FOLLOWUP BOOKING MODAL (treatment flow) ----
+function openFollowupBookingModal(pid,onDone){
+  var p=findP(String(pid));if(!p){if(onDone)onDone();return;}
+  var old=document.getElementById('fu-book-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='fu-book-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:340;display:flex;align-items:center;justify-content:center;padding:18px;';
+  var sheet=document.createElement('div');
+  sheet.style.cssText='background:var(--sf);border-radius:var(--rlg);padding:22px 18px;width:100%;max-width:380px;box-shadow:var(--sh);';
+  // Default: tomorrow + first available slot
+  var dt=new Date();dt.setDate(dt.getDate()+1);var defaultDate=dstr(dt);
+  function rebuildTimes(){
+    var ds=document.getElementById('fu-dt').value;
+    var slots=getSlots(ds);
+    var sel=document.getElementById('fu-tm');
+    sel.innerHTML=slots.length?slots.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join(''):'<option value="">אין שעות זמינות</option>';
+  }
+  sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;">📅 קביעת תור המשך</div>'+
+    '<div style="font-size:12px;color:var(--tm);text-align:center;margin-bottom:14px;">'+p.name+' — '+
+    'הוסף תור חדש או דלג אם אין צורך</div>'+
+    '<div class="fm"><label class="fl">תאריך</label><input type="date" class="fi" id="fu-dt" value="'+defaultDate+'" min="'+todayStr()+'"/></div>'+
+    '<div class="fm"><label class="fl">שעה</label><select class="fsl" id="fu-tm"></select></div>'+
+    '<div style="display:flex;gap:8px;margin-top:6px;">'+
+    '<button class="btn bs" id="fu-skip" style="flex:1;margin-top:0;">דלג ›</button>'+
+    '<button class="btn bp" id="fu-book" style="flex:1;margin-top:0;">קבע תור</button>'+
+    '</div>';
+  ov.appendChild(sheet);document.body.appendChild(ov);
+  rebuildTimes();
+  document.getElementById('fu-dt').addEventListener('change',rebuildTimes);
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.remove();if(onDone)onDone();}});
+  document.getElementById('fu-skip').addEventListener('click',function(){ov.remove();if(onDone)onDone();});
+  document.getElementById('fu-book').addEventListener('click',async function(){
+    var ds=document.getElementById('fu-dt').value;
+    var hr=document.getElementById('fu-tm').value;
+    if(!ds||!hr){alert('בחר תאריך ושעה תקינים');return;}
+    var nextNum=(p.treatments||[]).length+2; // current+1 (just saved) + 1
+    var aDur=getTreatmentDuration(p,nextNum);
+    var a={id:String(Date.now()),patientId:String(pid),date:ds,time:hr,duration:aDur,notes:''};
+    window.apts=[...(window.apts||[]),a];await window.fbSaveA(a);
+    ov.remove();
+    if(onDone)onDone();
+  });
 }
 
 // ---- DEBTS ----
