@@ -632,11 +632,20 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div class="set-col">
         <div class="set-group">
           <div class="set-group-hdr">⚙️ כללי</div>
-          <div class="set-item"><div class="set-item-lbl">מחיר ברירת מחדל (₪)</div>
-            <input type="number" inputmode="numeric" id="set-price" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          <div class="set-item"><div class="set-item-lbl">מחיר טיפול ראשון (₪)</div>
+            <input type="number" inputmode="numeric" id="set-price-first" min="0" max="9999" value="400" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
-          <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
-            <select class="set-sel" id="set-dur"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
+          <div class="set-item"><div class="set-item-lbl">מחיר טיפול המשך (₪)</div>
+            <input type="number" inputmode="numeric" id="set-price-followup" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול ראשון</div>
+            <select class="set-sel" id="set-dur-first"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60">60 דק׳</option><option value="75" selected>75 דק׳</option><option value="90">90 דק׳</option></select>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול המשך</div>
+            <select class="set-sel" id="set-dur-followup"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">הפסקה בין טיפולים</div>
+            <select class="set-sel" id="set-break"><option value="0">ללא</option><option value="5">5 דק׳</option><option value="10">10 דק׳</option><option value="15" selected>15 דק׳</option><option value="20">20 דק׳</option><option value="30">30 דק׳</option></select>
           </div>
         </div>
         <div class="set-group">
@@ -734,11 +743,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">סוג מטופל</label>
           <div class="chips"><button class="chip active" id="np-adult">מבוגר</button><button class="chip" id="np-baby">תינוק</button></div>
         </div>
-        <div class="fm"><label class="fl">סוג טיפול</label>
-          <div class="chips"><button class="chip active" id="np-single">טיפול יחיד</button><button class="chip" id="np-ser">סדרה</button></div>
-        </div>
-        <div class="fm hidden" id="np-ser-wrap"><label class="fl">בחר סדרה</label><select class="fsl" id="np-ser-type"></select></div>
-        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="לפי הגדרות"/></div>
+        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות (ראשון/המשך)"/></div>
+        <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:0 0 10px;line-height:1.5;">ℹ️ מטופל חדש מתחיל תמיד בטיפול יחיד. אפשר לפתוח סדרה מתוך כרטיס המטופל לאחר הטיפול הראשון.</div>
         <button class="btn bp" id="btn-add-patient">הוסף מטופל</button>
       </div>
     </div>
@@ -753,7 +759,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="ep-ph" type="tel" inputmode="numeric"/></div>
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
-        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric"/></div>
+        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות (ראשון/המשך)"/></div>
+        <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:-5px 0 12px;line-height:1.5;">ℹ️ אם תוזן ערך, ייכפה על כל הטיפולים — מבטל את הלוגיקה של ראשון/המשך וגם את מחיר הסדרה.</div>
         <button class="btn bp" id="btn-save-edit">שמור</button>
         <button class="btn bd2" id="btn-del-pt">מחק מטופל</button>
       </div>
@@ -962,7 +969,7 @@ onAuthStateChanged(auth,async function(user){
     var mv=document.getElementById('mview');mv.classList.remove('hidden');mv.classList.add('visible');
     document.getElementById('uname').textContent=user.displayName||user.email;
     setSt('ye','מסתנכרן...');
-    try{var s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?Object.assign(defCfg(),s.data()):defCfg();}catch(e){window.appCfg=defCfg();}
+    try{var s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=migrateCfg(s.exists()?Object.assign(defCfg(),s.data()):defCfg());}catch(e){window.appCfg=defCfg();}
     applySettings();
     // Reset navigation: real sign-in should always land on the calendar
     try{navHistory=[];selDate=ltoday();navDate=ltoday();calView='month';if(typeof showScreen==='function')showScreen('calendar',true);}catch(e){}
@@ -1024,13 +1031,23 @@ var DEF_FORMS={
 };
 
 function defCfg(){
-  return {price:350,duration:60,
+  return {
+    // New pricing model: first vs followup, plus optional per-patient override
+    priceFirst:400,priceFollowup:350,
+    // Duration model: first vs followup (longer for first intake)
+    durationFirst:75,durationFollowup:60,
+    // Break between treatments (mins) — applied after each treatment block
+    breakMins:15,
+    // Legacy fields kept for backward compat — copied at load time
+    price:350,duration:60,
     schedule:{
       0:{active:true,ranges:[{s:'10:00',e:'18:00'}]},1:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
       2:{active:true,ranges:[{s:'10:00',e:'18:00'}]},3:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
       4:{active:true,ranges:[{s:'10:00',e:'18:00'}]},5:{active:false,ranges:[{s:'10:00',e:'14:00'}]},
       6:{active:false,ranges:[]}
     },
+    // Per-date schedule overrides — key is YYYY-MM-DD, value is {active, ranges} that overrides the weekday default
+    scheduleOverrides:{},
     seriesTypes:[{id:'st1',name:'סדרת בסיס',count:5,price:1500},{id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}],
     forms:{adult:{intake:DEF_FORMS.adult.intake,followup:DEF_FORMS.adult.followup},
            baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup}},
@@ -1042,6 +1059,35 @@ function defCfg(){
       wellbeing:'שלום {שם},\nעבר יום מאז הטיפול — איך את/ה מרגיש/ה?\nאשמח לשמוע ולדעת אם יש שיפור 🌿'
     }
   };
+}
+// Migration: legacy single price/duration → split fields, when only old fields exist
+function migrateCfg(c){
+  if(!c)return c;
+  if(c.priceFollowup===undefined && c.price!==undefined)c.priceFollowup=c.price;
+  if(c.priceFirst===undefined)c.priceFirst=c.priceFollowup||c.price||400;
+  if(c.durationFollowup===undefined && c.duration!==undefined)c.durationFollowup=c.duration;
+  if(c.durationFirst===undefined)c.durationFirst=c.durationFollowup||c.duration||60;
+  if(c.breakMins===undefined)c.breakMins=0;
+  if(!c.scheduleOverrides)c.scheduleOverrides={};
+  return c;
+}
+// Price/duration resolution per treatment — single source of truth
+function getTreatmentPrice(p,treatmentNum,cfg){
+  cfg=cfg||window.appCfg||defCfg();
+  // Per-patient override wins
+  if(p&&p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')return parseInt(p.customPrice)||0;
+  // Active series — distribute series price across its treatments
+  if(p&&p.treatType==='series'&&p.series&&p.series.active!==false&&(p.series.used||0)<(p.series.count||0)){
+    return Math.round(p.series.price/Math.max(1,p.series.count));
+  }
+  // First treatment
+  if(treatmentNum===1)return parseInt(cfg.priceFirst)||400;
+  return parseInt(cfg.priceFollowup)||350;
+}
+function getTreatmentDuration(p,treatmentNum,cfg){
+  cfg=cfg||window.appCfg||defCfg();
+  if(treatmentNum===1||(p&&(!p.treatments||p.treatments.length===0)))return parseInt(cfg.durationFirst)||75;
+  return parseInt(cfg.durationFollowup)||60;
 }
 window.appCfg=defCfg();
 
@@ -1065,19 +1111,46 @@ function findP(id){return (window.pts||[]).find(function(x){return String(x.id)=
 function avCls(p){if(!p)return 'avg';if(p.patType==='baby')return 'avp';return AVC[(p.color||0)%4];}
 function avSz(s){return 'width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*0.38)+'px';}
 
-function getSlots(ds){
-  var d=sToD(ds),dow=d.getDay();
-  var cfg=window.appCfg||defCfg(),sched=cfg.schedule||{},day=sched[dow];
-  if(!day||!day.active)return[];
-  var dur=parseInt(cfg.duration||60);
+// Convert HH:MM → minutes since midnight (e.g. "10:15" → 615)
+function hmToMin(s){if(!s)return 0;var p=String(s).split(':');return parseInt(p[0])*60+parseInt(p[1]||0);}
+function minToHM(m){return S2(Math.floor(m/60))+':'+S2(m%60);}
+// Resolve the schedule for a given date — date-specific override beats weekday default
+function scheduleForDate(ds){
+  var cfg=window.appCfg||defCfg();
+  var ovr=(cfg.scheduleOverrides||{})[ds];
+  if(ovr)return ovr;
+  var d=sToD(ds);
+  return (cfg.schedule||{})[d.getDay()]||{active:false,ranges:[]};
+}
+// Slot generator — 15-min granularity, accounts for treatment duration,
+// breaks between treatments, and existing appointments on the date.
+// Optional `dur` arg: required block length (mins). Defaults to durationFollowup
+// (the common case; first-treatment slots are picked from the resulting list).
+function getSlots(ds,dur){
+  var day=scheduleForDate(ds);
+  if(!day||!day.active||!day.ranges||!day.ranges.length)return [];
+  var cfg=window.appCfg||defCfg();
+  dur=parseInt(dur||cfg.durationFollowup||cfg.duration||60);
+  var brk=parseInt(cfg.breakMins||0);
+  var GRAN=15;
+  // Existing appts on this date as occupied blocks (start..end+buffer)
+  var occ=(window.apts||[]).filter(function(a){return a.date===ds;}).map(function(a){
+    var s=hmToMin(a.time);
+    var aDur=parseInt(a.duration||cfg.durationFollowup||60);
+    return {s:s,e:s+aDur+brk};
+  });
   var slots=[];
   (day.ranges||[]).forEach(function(r){
-    var sh=parseInt(r.s),eh=parseInt(r.e);
-    var totalMins=(eh-sh)*60;
-    var steps=Math.floor(totalMins/dur);
-    for(var i=0;i<steps;i++){
-      var mins=sh*60+i*dur;
-      slots.push(S2(Math.floor(mins/60))+':'+S2(mins%60));
+    var rs=hmToMin(r.s),re=hmToMin(r.e);
+    for(var t=rs;t+dur<=re;t+=GRAN){
+      // Need [t .. t+dur+brk] not to overlap any occupied block, and previous block must end ≤ t
+      var ok=true;
+      for(var i=0;i<occ.length;i++){
+        var b=occ[i];
+        // overlap test: blocks [t..t+dur+brk) and [b.s..b.e) overlap if t < b.e && b.s < t+dur+brk
+        if(t < b.e && b.s < t+dur+brk){ok=false;break;}
+      }
+      if(ok)slots.push(minToHM(t));
     }
   });
   return slots;
@@ -1370,7 +1443,22 @@ function renderWeek(){
   document.getElementById('daypanel').style.display='none';
   var ts=todayStr(),ad=adMap();
   var days=[];for(var i=0;i<7;i++){var d=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i);days.push(d);}
-  var allSlots=new Set();days.forEach(function(d){getSlots(dstr(d)).forEach(function(s){allSlots.add(s);});});
+  // Display-grid hours: one row per followup-duration block, plus any existing appt times
+  // (so an off-hour booking at 10:15 still gets a row to render in).
+  var cfgW=window.appCfg||defCfg();
+  var dispDur=parseInt(cfgW.durationFollowup||cfgW.duration||60);
+  var allSlots=new Set();
+  days.forEach(function(d){
+    var ds2=dstr(d);
+    var day=scheduleForDate(ds2);
+    if(day&&day.active){
+      (day.ranges||[]).forEach(function(r){
+        var rs=hmToMin(r.s),re=hmToMin(r.e);
+        for(var t=rs;t+dispDur<=re;t+=dispDur)allSlots.add(minToHM(t));
+      });
+    }
+    (window.apts||[]).filter(function(a){return a.date===ds2;}).forEach(function(a){allSlots.add(a.time);});
+  });
   var hrs=Array.from(allSlots).sort();
   var h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:32px repeat(7,minmax(0,1fr));margin-bottom:2px;"><div></div>';
   days.forEach(function(d){
@@ -1683,7 +1771,7 @@ function openPatient(id){
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
     '<div class="ir"><span class="il">סוג מטופל</span><span class="iv">'+(p.patType==='baby'?'תינוק':'מבוגר')+'</span></div>'+
     '<div class="ir"><span class="il">סוג טיפול</span><span class="iv">'+(p.treatType==='series'?'סדרה':'יחיד')+'</span></div>'+
-    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪'+(p.price||350).toLocaleString()+'</span></div>'+
+    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">'+(function(){var cfg=window.appCfg||defCfg();var nextNum=(p.treatments||[]).length+1;var pr=getTreatmentPrice(p,nextNum,cfg);var note='';if(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')note=' (מותאם אישית)';else if(p.treatType==='series'&&p.series&&p.series.active!==false)note=' (סדרה)';else if(nextNum===1)note=' (ראשון)';else note=' (המשך)';return '₪'+pr.toLocaleString()+note;})()+'</span></div>'+
     (((p.healthConditions&&p.healthConditions.length)||p.healthOther)?
       '<div style="margin-top:10px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
       '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:5px;">🏥 מצבים רפואיים</div>'+
@@ -1703,18 +1791,38 @@ function openPatient(id){
     fpat.appendChild(debtRow);if(patGroup)patGroup.classList.add('ap-show');
   }
 
-  // Series card
-  if(hasSer){
+  // Series management card — open a series, edit/cancel an active one, or display a finished one
+  var sCard=document.createElement('div');sCard.className='card';
+  var hadFirst=(p.treatments||[]).length>=1;
+  var serActive=p.treatType==='series'&&p.series&&p.series.active!==false;
+  var serFinished=p.series&&p.series.active===false;
+  if(serActive){
     var pct=Math.round((p.series.used/p.series.count)*100);
-    var sCard=document.createElement('div');sCard.className='card';
-    sCard.innerHTML='<div class="ct">סדרה פעילה</div><div class="ser-card">'+
+    sCard.innerHTML='<div class="ct" style="display:flex;justify-content:space-between;align-items:center;"><span>🔁 סדרה פעילה</span></div><div class="ser-card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'+
       '<div style="font-size:13px;font-weight:700;color:var(--g700);">'+p.series.name+'</div>'+
       '<div style="font-size:11px;color:var(--tm);">'+p.series.used+'/'+p.series.count+' · ₪'+Math.round(p.series.price/p.series.count)+'/טיפול</div></div>'+
       '<div class="ptrack"><div class="pfill" style="width:'+pct+'%"></div></div>'+
-      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tm);margin-top:3px;"><span>נפתחה: '+(p.series.openDate||'')+'</span><span>'+pct+'%</span></div></div>';
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tm);margin-top:3px;"><span>נפתחה: '+(p.series.openDate||'')+'</span><span>'+pct+'%</span></div>'+
+      '<div style="display:flex;gap:6px;margin-top:10px;">'+
+      '<button class="pbtn pbtn-gray" id="ser-edit-btn">✏️ עריכת סדרה</button>'+
+      '<button class="pbtn pbtn-r" id="ser-end-btn">סיים סדרה</button>'+
+      '</div></div>';
     pfile.appendChild(sCard);
-  }
+    setTimeout(function(){
+      var eb=document.getElementById('ser-edit-btn');if(eb)eb.addEventListener('click',function(){openSeriesEditor(p.id);});
+      var nb=document.getElementById('ser-end-btn');if(nb)nb.addEventListener('click',function(){endSeries(p.id);});
+    },0);
+  } else if(hadFirst){
+    sCard.innerHTML='<div class="ct">סדרת טיפולים</div>'+
+      (serFinished?'<div style="font-size:12px;color:var(--tm);padding:4px 0 10px;">סדרה אחרונה הסתיימה ב-'+(p.series.endDate||p.series.openDate||'')+' · '+(p.series.name||'')+'</div>':
+      '<div style="font-size:12px;color:var(--tm);padding:4px 0 10px;">אין סדרה פעילה. המטופל משלם לפי מחיר טיפול המשך מההגדרות.</div>')+
+      '<button class="pbtn pbtn-ac" id="ser-open-btn" style="width:100%;padding:8px;">+ פתח סדרה חדשה</button>';
+    pfile.appendChild(sCard);
+    setTimeout(function(){
+      var ob=document.getElementById('ser-open-btn');if(ob)ob.addEventListener('click',function(){openSeriesEditor(p.id);});
+    },0);
+  } // else: no first treatment yet — don't show the card; series can only be opened after treatment 1
 
   // Appointments card — built with DOM for reliable event listeners
   var aCard=document.createElement('div');aCard.className='card';
@@ -2139,17 +2247,19 @@ function buildTF(p,a,tdate,treatNum){
 
 function buildSummaryForm(p,existingT){
   var ed=existingT||{};
-  var hasPrev=(p.treatments||[]).length>0;
-  var isSeries=p.treatType==='series'&&p.series;
-  var price=(isSeries&&hasPrev)?Math.round(p.series.price/p.series.count):(p.price||350);
+  // Determine the treatment number this summary belongs to
+  var thisNum=ed.num||((p.treatments||[]).length+1);
+  var price=getTreatmentPrice(p,thisNum);
   var isPaid=ed.paid!==undefined?ed.paid:true;
   var method=ed.method||'מזומן';
 
   var sumEl=document.getElementById('tf-summary-body');
   sumEl.innerHTML='';
 
-  if(isSeries&&!hasPrev){
-    sumEl.insertAdjacentHTML('beforeend','<div style="background:var(--a50);border:1px solid var(--a100);border-radius:var(--rsm);padding:7px 10px;font-size:11px;color:var(--a700);margin-bottom:10px;">⚠ מחיר הסדרה יחול מהטיפול הראשון ואילך</div>');
+  // Inline notice when a series is active for this patient
+  if(p.treatType==='series'&&p.series&&p.series.active!==false){
+    var used=(p.series.used||0),total=(p.series.count||0);
+    sumEl.insertAdjacentHTML('beforeend','<div style="background:var(--a50);border:1px solid var(--a100);border-radius:var(--rsm);padding:7px 10px;font-size:11px;color:var(--a700);margin-bottom:10px;">🔁 סדרה פעילה — '+used+'/'+total+' · מחיר לטיפול ₪'+price.toLocaleString()+'</div>');
   }
 
   var secDiv=document.createElement('div');secDiv.className='tf-sec';
@@ -2237,21 +2347,28 @@ async function tfSave(){
   // For manual add: find by manualNum, else by date
   // Always find existing treatment by date
   var existingIdx=p.treatments.findIndex(function(t){return t.date===tdate;});
-  var hasPrev=existingIdx>0||(existingIdx<0&&p.treatments.length>0);
-  var isSeries=p.treatType==='series'&&p.series;
-  var price=(isSeries&&hasPrev)?Math.round(p.series.price/p.series.count):(p.price||350);
   var cfg=window.appCfg||defCfg();
   var formType=p.patType==='baby'?'baby':'adult';
   var tNumSave=existingIdx>=0?p.treatments[existingIdx].num:(p.treatments.length+1);
+  var price=getTreatmentPrice(p,tNumSave,cfg);
   var formKey=tNumSave===1?'intake':'followup';
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var mainComplaint=fields.length&&intakeData[fields[0].id]?intakeData[fields[0].id]:'';
-  var tobj={num:existingIdx>=0?p.treatments[existingIdx].num:(p.treatments.length+1),date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
+  var tobj={num:tNumSave,date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
   if(existingIdx>=0){
     p.treatments[existingIdx]=tobj;
   } else {
     p.treatments.push(tobj);
-    if(isSeries&&!TF.editDate){p.series.used++;if(p.series.used>=p.series.count)p.series.active=false;}
+    var isSeries=p.treatType==='series'&&p.series&&p.series.active!==false;
+    if(isSeries&&!TF.editDate){
+      p.series.used=(p.series.used||0)+1;
+      // Series complete → fall back to single (followup pricing) for any future treatments
+      if(p.series.used>=p.series.count){
+        p.series.active=false;
+        p.series.endDate=todayStr();
+        p.treatType='single';
+      }
+    }
   }
   // Always renumber by date order (chronological)
   p.treatments.sort(function(a,b){return a.date.localeCompare(b.date);});
@@ -2339,11 +2456,72 @@ async function delAppt(aid,pid){
   if(cur&&cur.id==='screen-patient-file'&&pid)openPatient(pid);
 }
 
+// ---- SERIES MANAGEMENT (per-patient) ----
+function openSeriesEditor(pid){
+  var p=findP(String(pid));if(!p)return;
+  var cfg=window.appCfg||defCfg();var types=cfg.seriesTypes||[];
+  if(!types.length){alert('לא הוגדרו סוגי סדרות. ניתן להוסיף בהגדרות.');return;}
+  var existing=(p.treatType==='series'&&p.series)?p.series:null;
+  var old=document.getElementById('ser-edit-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='ser-edit-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:350;display:flex;align-items:center;justify-content:center;padding:18px;';
+  var sheet=document.createElement('div');
+  sheet.style.cssText='background:var(--sf);border-radius:var(--rlg);padding:22px 18px;width:100%;max-width:380px;box-shadow:var(--sh);';
+  var title=existing?'עריכת סדרה':'פתיחת סדרה חדשה';
+  var typeOpts=types.map(function(t){
+    var sel=existing&&existing.typeId===t.id?' selected':'';
+    return '<option value="'+t.id+'"'+sel+'>'+t.name+' · '+t.count+' טיפולים · ₪'+t.price.toLocaleString()+'</option>';
+  }).join('');
+  sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:12px;text-align:center;">'+title+'</div>'+
+    '<div class="fm"><label class="fl">סוג סדרה</label><select class="fsl" id="se-type">'+typeOpts+'</select></div>'+
+    '<div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="se-count" type="number" min="1" max="60" value="'+(existing?existing.count:types[0].count)+'"/></div>'+
+    '<div class="fm"><label class="fl">מחיר כולל לסדרה (₪)</label><input class="fi" id="se-price" type="number" min="0" value="'+(existing?existing.price:types[0].price)+'"/></div>'+
+    (existing?'<div class="fm"><label class="fl">בוצעו עד כה</label><input class="fi" id="se-used" type="number" min="0" max="'+existing.count+'" value="'+(existing.used||0)+'"/></div>':'')+
+    '<div style="display:flex;gap:8px;margin-top:8px;">'+
+    '<button class="btn bs" id="se-cancel" style="flex:1;margin-top:0;">ביטול</button>'+
+    '<button class="btn bp" id="se-save" style="flex:1;margin-top:0;">'+(existing?'שמור':'פתח סדרה')+'</button>'+
+    '</div>';
+  ov.appendChild(sheet);document.body.appendChild(ov);
+  // When type changes — auto-fill count/price from the type
+  document.getElementById('se-type').addEventListener('change',function(){
+    var t=types.find(function(x){return x.id===this.value;}.bind(this));
+    if(t){document.getElementById('se-count').value=t.count;document.getElementById('se-price').value=t.price;}
+  });
+  document.getElementById('se-cancel').addEventListener('click',function(){ov.remove();});
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('se-save').addEventListener('click',async function(){
+    var typeId=document.getElementById('se-type').value;
+    var t=types.find(function(x){return x.id===typeId;});if(!t){alert('בחר סוג סדרה');return;}
+    var count=parseInt(document.getElementById('se-count').value)||t.count;
+    var price=parseInt(document.getElementById('se-price').value)||t.price;
+    var used=existing?(parseInt(document.getElementById('se-used').value)||0):0;
+    if(used>count)used=count;
+    p.treatType='series';
+    p.series={typeId:t.id,name:t.name,count:count,price:price,used:used,
+      openDate:existing?(existing.openDate||todayStr()):todayStr(),
+      active:used<count};
+    if(!p.series.active)p.series.endDate=todayStr();
+    await window.fbSaveP(p);
+    ov.remove();render();openPatient(pid);
+  });
+}
+async function endSeries(pid){
+  var p=findP(String(pid));if(!p||!p.series)return;
+  if(!confirm('לסיים את הסדרה? הטיפולים הבאים יחושבו לפי מחיר טיפול המשך מההגדרות.'))return;
+  p.series.active=false;p.series.endDate=todayStr();
+  p.treatType='single';
+  await window.fbSaveP(p);
+  render();openPatient(String(pid));
+}
+
 // ---- SETTINGS ----
 function applySettings(){
-  var c=window.appCfg||defCfg();
-  var sp=document.getElementById('set-price');if(sp)sp.value=c.price||350;
-  var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
+  var c=migrateCfg(window.appCfg||defCfg());window.appCfg=c;
+  var spf=document.getElementById('set-price-first');if(spf)spf.value=c.priceFirst||400;
+  var spu=document.getElementById('set-price-followup');if(spu)spu.value=c.priceFollowup||350;
+  var sdf=document.getElementById('set-dur-first');if(sdf)sdf.value=c.durationFirst||75;
+  var sdu=document.getElementById('set-dur-followup');if(sdu)sdu.value=c.durationFollowup||60;
+  var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||0;
   var bot=c.bot||{},msg=c.messages||{};
   var dm=defCfg().messages;
   var be=document.getElementById('set-bot-enabled');if(be)be.className='day-tog '+(bot.enabled?'on':'off');
@@ -2412,8 +2590,13 @@ function delRange(di,ri){var c=window.appCfg||defCfg();c.schedule[di].ranges.spl
 
 async function saveSettings(){
   var c=window.appCfg||defCfg();
-  var sp=document.getElementById('set-price');if(sp)c.price=Math.min(9999,parseInt(sp.value)||350);
-  var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
+  var spf=document.getElementById('set-price-first');if(spf)c.priceFirst=Math.min(9999,parseInt(spf.value)||400);
+  var spu=document.getElementById('set-price-followup');if(spu)c.priceFollowup=Math.min(9999,parseInt(spu.value)||350);
+  var sdf=document.getElementById('set-dur-first');if(sdf)c.durationFirst=parseInt(sdf.value)||75;
+  var sdu=document.getElementById('set-dur-followup');if(sdu)c.durationFollowup=parseInt(sdu.value)||60;
+  var sbr=document.getElementById('set-break');if(sbr)c.breakMins=parseInt(sbr.value)||0;
+  // Maintain legacy fields for compatibility with the public booking page (still uses cfg.duration)
+  c.price=c.priceFollowup;c.duration=c.durationFollowup;
   if(!c.bot)c.bot={};if(!c.messages)c.messages={};
   var bp=document.getElementById('set-bot-phone');if(bp)c.bot.phone=bp.value.trim();
   var rh=document.getElementById('set-reminder-hours');if(rh)c.bot.reminderHours=Math.min(168,Math.max(1,parseInt(rh.value)||24));
@@ -2522,14 +2705,20 @@ function openEdit(id){
   var p=findP(id);if(!p)return;
   document.getElementById('ep-id').value=id;document.getElementById('ep-nm').value=p.name;
   document.getElementById('ep-ph').value=p.phone||'';document.getElementById('ep-ag').value=p.age||'';
-  document.getElementById('ep-pr').value=p.problem||'';document.getElementById('ep-px').value=p.price||350;
+  document.getElementById('ep-pr').value=p.problem||'';
+  // customPrice is the new field; old patients used p.price — show whichever is set
+  var cust=(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')?p.customPrice:(p.price&&p.price!==350?p.price:'');
+  document.getElementById('ep-px').value=cust;
   document.getElementById('back-editpt').onclick=function(){openPatient(id);};showScreen('edit-patient');
 }
 async function saveEdit(){
   var id=String(document.getElementById('ep-id').value);var p=findP(id);if(!p)return;
   p.name=document.getElementById('ep-nm').value.trim()||p.name;p.phone=document.getElementById('ep-ph').value.trim();
   p.age=document.getElementById('ep-ag').value;p.problem=document.getElementById('ep-pr').value.trim();
-  p.price=parseInt(document.getElementById('ep-px').value)||350;
+  var raw=document.getElementById('ep-px').value.trim();
+  p.customPrice=raw?(parseInt(raw)||null):null;
+  // Clear legacy field so it doesn't override the new model
+  if(p.customPrice===null)delete p.price; else p.price=p.customPrice;
   await window.fbSaveP(p);openPatient(id);
 }
 function confirmDel(){var id=String(document.getElementById('ep-id').value);var p=findP(id);delPid=id;document.getElementById('del-sub').textContent='האם למחוק את '+(p?p.name:'המטופל')+'?\nלא ניתן לביטול.';document.getElementById('del-ov').classList.remove('hidden');}
@@ -2643,17 +2832,15 @@ async function addPatient(){
   var phone=document.getElementById('np-ph').value.trim().replace(/\D/g,'');
   var age=document.getElementById('np-ag').value;
   if(npPatType==='baby'&&parseFloat(age)>2){if(!confirm('גיל '+age+' אינו מתאים לתינוקות. להמשיך?'))return;}
-  var cfg=window.appCfg||defCfg();var defPrice=cfg.price||350;
-  var px=document.getElementById('np-px').value;
-  var series2=null;
-  if(npTreatType==='series'){var types2=cfg.seriesTypes||[];var selId=document.getElementById('np-ser-type').value;var t2=types2.find(function(x){return x.id===selId;});if(t2)series2={typeId:t2.id,name:t2.name,count:t2.count,price:t2.price,used:0,openDate:todayStr(),active:true};}
-  var p={id:String(Date.now()),name:name,phone:phone,age:age,problem:document.getElementById('np-pr').value.trim(),price:px?parseInt(px):defPrice,color:(window.pts||[]).length%4,patType:npPatType,treatType:npTreatType,series:series2,treatments:[]};
+  var px=document.getElementById('np-px').value.trim();
+  // Business rule: new patients always start as single; series may be added later from the patient file.
+  var p={id:String(Date.now()),name:name,phone:phone,age:age,problem:document.getElementById('np-pr').value.trim(),
+    customPrice:px?parseInt(px):null,color:(window.pts||[]).length%4,patType:npPatType,
+    treatType:'single',series:null,treatments:[]};
   window.pts=[...(window.pts||[]),p];await window.fbSaveP(p);
   ['np-nm','np-ph','np-ag','np-pr','np-px'].forEach(function(id2){var el=document.getElementById(id2);if(el)el.value='';});
-  npPatType='adult';npTreatType='single';
+  npPatType='adult';
   document.getElementById('np-adult').classList.add('active');document.getElementById('np-baby').classList.remove('active');
-  document.getElementById('np-single').classList.add('active');document.getElementById('np-ser').classList.remove('active');
-  document.getElementById('np-ser-wrap').classList.add('hidden');
   showScreen('patients');
 }
 
@@ -2690,7 +2877,7 @@ function showScreen(name,skipHistory){
   }
   if(name==='patients')renderPatients();
   if(name==='settings'){renderSerTypes();applySettings();}
-  if(name==='new-patient'){var types3=window.appCfg.seriesTypes||[];var serSel=document.getElementById('np-ser-type');if(serSel)serSel.innerHTML=types3.map(function(x){return '<option value="'+x.id+'">'+x.name+'</option>';}).join('');}
+  // (was: populating series-type dropdown for new patient; new-patient form no longer has series)
 }
 function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(prev,true);}else showScreen('calendar',true);}
 
@@ -2770,8 +2957,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(age2&&age2>2){alert('גיל '+age2+' אינו מתאים לתינוקות.');return;}
     npPatType='baby';this.classList.add('active');document.getElementById('np-adult').classList.remove('active');
   };
-  document.getElementById('np-single').onclick=function(){npTreatType='single';this.classList.add('active');document.getElementById('np-ser').classList.remove('active');document.getElementById('np-ser-wrap').classList.add('hidden');};
-  document.getElementById('np-ser').onclick=function(){npTreatType='series';this.classList.add('active');document.getElementById('np-single').classList.remove('active');document.getElementById('np-ser-wrap').classList.remove('hidden');var types4=window.appCfg.seriesTypes||[];document.getElementById('np-ser-type').innerHTML=types4.length?types4.map(function(x){return '<option value="'+x.id+'">'+x.name+'</option>';}).join(''):'<option>אין סדרות</option>';};
+  // Single/series toggle removed — new patient is always single (series added from patient file).
   document.getElementById('btn-add-patient').onclick=function(){addPatient();};
 
   // Edit patient
@@ -2782,7 +2968,9 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('del-ov').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 
   // Settings
-  document.getElementById('set-price').onchange=function(){autoSave();};
+  ['set-price-first','set-price-followup','set-dur-first','set-dur-followup','set-break'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.onchange=function(){autoSave();};
+  });
   document.getElementById('set-dur').onchange=function(){autoSave();};
   document.getElementById('btn-add-ser-type').onclick=function(){showScreen('add-series-type');};
   document.getElementById('btn-save-ser-type').onclick=function(){addSeriesType();};
