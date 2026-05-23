@@ -1154,35 +1154,42 @@ function scheduleForDate(ds){
   var d=sToD(ds);
   return (cfg.schedule||{})[d.getDay()]||{active:false,ranges:[]};
 }
-// Slot generator — 15-min granularity, accounts for treatment duration,
-// breaks between treatments, and existing appointments on the date.
-// Optional `dur` arg: required block length (mins). Defaults to durationFollowup
-// (the common case; first-treatment slots are picked from the resulting list).
+// Slot generator — cascading slots. Each slot starts (duration + break) after the previous,
+// so a 60-min treatment + 15-min break = next available slot is 75 min later.
+// A slot is only emitted if a FULL treatment block (≥60 min minimum) fits before the range end.
+// Existing appointments shift subsequent slots: after an existing appt, the next slot resumes
+// from (appt end + buffer), then continues cascading from there.
 function getSlots(ds,dur){
   var day=scheduleForDate(ds);
   if(!day||!day.active||!day.ranges||!day.ranges.length)return [];
   var cfg=window.appCfg||defCfg();
   dur=parseInt(dur||cfg.durationFollowup||cfg.duration||60);
   var brk=parseInt(cfg.breakMins||0);
-  var GRAN=15;
-  // Existing appts on this date as occupied blocks (start..end+buffer)
-  var occ=(window.apts||[]).filter(function(a){return a.date===ds;}).map(function(a){
-    var s=hmToMin(a.time);
-    var aDur=parseInt(a.duration||cfg.durationFollowup||60);
-    return {s:s,e:s+aDur+brk};
-  });
+  var MIN_TREAT=60; // a slot is only valid if at least 60 min fit before the range end
+  // Existing appts on this date — sorted by time, used as anchors that shift the cascade
+  var apts=(window.apts||[]).filter(function(a){return a.date===ds;})
+    .map(function(a){return {s:hmToMin(a.time),e:hmToMin(a.time)+parseInt(a.duration||cfg.durationFollowup||60)};})
+    .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
     var rs=hmToMin(r.s),re=hmToMin(r.e);
-    for(var t=rs;t+dur<=re;t+=GRAN){
-      // Need [t .. t+dur+brk] not to overlap any occupied block, and previous block must end ≤ t
-      var ok=true;
-      for(var i=0;i<occ.length;i++){
-        var b=occ[i];
-        // overlap test: blocks [t..t+dur+brk) and [b.s..b.e) overlap if t < b.e && b.s < t+dur+brk
-        if(t < b.e && b.s < t+dur+brk){ok=false;break;}
+    var cursor=rs;
+    // Build a list of "anchors" that force the cursor to skip ahead: each appt within this range.
+    var rangeApts=apts.filter(function(a){return a.s<re&&a.e>rs;});
+    while(true){
+      // If cursor is inside an existing appt, jump to its end+buffer
+      var inAppt=null;
+      for(var i=0;i<rangeApts.length;i++){
+        var a=rangeApts[i];
+        if(cursor<a.e&&cursor+dur>a.s){inAppt=a;break;}
       }
-      if(ok)slots.push(minToHM(t));
+      if(inAppt){cursor=inAppt.e+brk;continue;}
+      // Out of range?
+      if(cursor+MIN_TREAT>re)break;
+      // If the treatment doesn't fully fit but ≥60 min remain, still allow the slot only if dur fits.
+      if(cursor+dur>re)break;
+      slots.push(minToHM(cursor));
+      cursor+=dur+brk;
     }
   });
   return slots;
@@ -2706,7 +2713,9 @@ function applySettings(){
   renderDaySchedule();renderSerTypes();
 }
 
-var HOURS=[];for(var hh=6;hh<=22;hh++)HOURS.push(S2(hh)+':00');
+// 15-min granularity for opening-hours ranges
+var HOURS=[];for(var hh=6;hh<=22;hh++){['00','15','30','45'].forEach(function(mm){HOURS.push(S2(hh)+':'+mm);});}
+HOURS.push('23:00'); // late close option
 var HOUR_OPTS=HOURS.map(function(h){return '<option value="'+h+'">'+h+'</option>';}).join('');
 
 function renderDaySchedule(){
@@ -2741,20 +2750,21 @@ function updateRange(di,ri,k,val){
   if(!cfg2.schedule[di]||!cfg2.schedule[di].ranges[ri])return;
   var range=cfg2.schedule[di].ranges[ri];
   range[k]=val;
-  if(k==='s'){var sv=parseInt(val);if(sv>=parseInt(range.e))range.e=S2(Math.min(sv+1,22))+':00';}
-  if(k==='e'){var ev=parseInt(val);if(ev<=parseInt(range.s))range.e=S2(parseInt(range.s)+1)+':00';}
+  // Auto-correct if end ≤ start
+  if(hmToMin(range.s)>=hmToMin(range.e)){
+    range.e=minToHM(Math.min(hmToMin(range.s)+60,23*60));
+  }
   window.appCfg=cfg2;autoSave();renderDaySchedule();
 }
 function addRange(di){
   var cfg3=window.appCfg||defCfg();
   if(!cfg3.schedule[di])cfg3.schedule[di]={active:true,ranges:[]};
   var ranges=cfg3.schedule[di].ranges;
-  // Start from last end time
   var lastEnd=ranges.length?ranges[ranges.length-1].e:'09:00';
-  var startH=parseInt(lastEnd);
-  var endH=Math.min(startH+2,22);
-  if(startH>=22){alert('הגעת לגבול השעות (22:00)');return;}
-  ranges.push({s:S2(startH)+':00',e:S2(endH)+':00'});
+  var startM=hmToMin(lastEnd);
+  var endM=Math.min(startM+120,23*60);
+  if(startM>=23*60){alert('הגעת לגבול השעות (23:00)');return;}
+  ranges.push({s:minToHM(startM),e:minToHM(endM)});
   window.appCfg=cfg3;renderDaySchedule();autoSave();
 }
 function delRange(di,ri){var c=window.appCfg||defCfg();c.schedule[di].ranges.splice(ri,1);window.appCfg=c;renderDaySchedule();autoSave();}
