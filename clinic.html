@@ -307,10 +307,27 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     overflow-y:auto;
   }
   .ap-head{
-    display:block;
+    display:flex;align-items:center;justify-content:space-between;
     font-size:15px;font-weight:700;color:var(--g700);
     padding-bottom:12px;border-bottom:1px solid var(--bd);
   }
+  .ap-toggle-btn{
+    background:none;border:none;color:var(--tm);font-size:16px;
+    cursor:pointer;padding:2px 6px;line-height:1;border-radius:6px;
+    font-family:'Heebo',sans-serif;
+  }
+  .ap-toggle-btn:hover{background:var(--bdl);color:var(--g700)}
+  #ap-show-btn{
+    display:none;position:fixed;top:50%;left:0;transform:translateY(-50%);
+    writing-mode:vertical-rl;background:var(--g600);color:#fff;border:none;
+    border-radius:0 10px 10px 0;padding:16px 7px;font-size:11px;
+    font-family:'Heebo',sans-serif;cursor:pointer;z-index:50;
+    box-shadow:var(--sh);font-weight:700;letter-spacing:0.5px;
+  }
+  #ap-show-btn:hover{background:var(--g700)}
+  body.alerts-hidden #alerts-panel{display:none!important}
+  body.alerts-hidden #mview{grid-template-columns:250px 1fr 0!important}
+  body.alerts-hidden #ap-show-btn{display:block}
   .ap-group{display:flex;flex-direction:column;gap:8px}
   .ap-sub{
     display:block;
@@ -557,7 +574,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     <button class="qb qbs" id="qb-pt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל חדש</button>
   </div>
   <aside id="alerts-panel">
-    <div class="ap-head">התראות</div>
+    <div class="ap-head"><span>התראות</span><button class="ap-toggle-btn" id="ap-hide-btn" title="הסתר חלונית" aria-label="הסתר חלונית">✕</button></div>
     <div class="ap-group">
       <div class="ap-sub">כלל המטופלים</div>
       <div class="abar" id="abar"></div>
@@ -568,6 +585,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div id="fpat"></div>
     </div>
   </aside>
+  <button id="ap-show-btn" title="הצג חלונית התראות" aria-label="הצג חלונית התראות">‹ התראות</button>
 
   <div class="screens">
     <!-- Calendar -->
@@ -618,7 +636,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
             <input type="number" inputmode="numeric" id="set-price" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
           <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
-            <select class="set-sel" id="set-dur"><option value="30">30 דק׳</option><option value="45">45 דק׳</option><option value="60" selected>60 דק׳</option><option value="75">75 דק׳</option><option value="90">90 דק׳</option><option value="120">120 דק׳</option></select>
+            <select class="set-sel" id="set-dur"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
           </div>
         </div>
         <div class="set-group">
@@ -2149,7 +2167,7 @@ function buildSummaryForm(p,existingT){
     '<button class="chip '+(isPaid?'active':'')+'" id="sum-paid-btn">שולם</button>'+
     '<button class="chip '+(!isPaid?'active':'')+'" id="sum-unpaid-btn">לא שולם</button></div>'+
     '<div id="sum-method-wrap" style="display:'+(isPaid?'flex':'none')+';gap:7px;flex-wrap:wrap;margin-bottom:10px;">'+
-    ['מזומן','העברה','אשראי','ביט'].map(function(m){return '<button class="chip '+(method===m?'active':'')+'" data-m="'+m+'">'+m+'</button>';}).join('')+
+    ['מזומן','העברה','פייבוקס','ביט'].map(function(m){return '<button class="chip '+(method===m?'active':'')+'" data-m="'+m+'">'+m+'</button>';}).join('')+
     '</div>';
   sumEl.appendChild(payDiv);
 
@@ -2273,7 +2291,7 @@ function askPayMethod(){
     sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;">אמצעי תשלום</div>'+
       '<div style="font-size:12px;color:var(--tm);text-align:center;margin-bottom:16px;">איך שולם הטיפול?</div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;" id="pm-opts">'+
-      ['מזומן','העברה','אשראי','ביט'].map(function(m){return '<button class="chip" data-m="'+m+'" style="padding:9px 16px;font-size:13px;">'+m+'</button>';}).join('')+
+      ['מזומן','העברה','פייבוקס','ביט'].map(function(m){return '<button class="chip" data-m="'+m+'" style="padding:9px 16px;font-size:13px;">'+m+'</button>';}).join('')+
       '</div>'+
       '<button class="btn bs" id="pm-cancel" style="margin-top:0;">ביטול</button>';
     ov.appendChild(sheet);document.body.appendChild(ov);
@@ -2451,9 +2469,53 @@ function renderFormFields(){
     el.appendChild(div);
   });
 }
-function addFormField(){var cfg=window.appCfg||defCfg();if(!cfg.forms)cfg.forms={adult:{intake:[...DEF_FORMS.adult.intake],followup:[...DEF_FORMS.adult.followup]},baby:{intake:[...DEF_FORMS.baby.intake],followup:[...DEF_FORMS.baby.followup]}};if(!cfg.forms[efType])cfg.forms[efType]={intake:[...DEF_FORMS[efType].intake],followup:[...DEF_FORMS[efType].followup]};var f=getFormFields();cfg.forms[efType][efForm]=[...f,{id:'ff'+Date.now(),label:'שדה חדש',multi:false}];window.appCfg=cfg;renderFormFields();}
-function delFormField(i){var f=getFormFields();f.splice(i,1);var cfg=window.appCfg||defCfg();if(!cfg.forms)cfg.forms={};if(!cfg.forms[efType])cfg.forms[efType]={};cfg.forms[efType][efForm]=f;window.appCfg=cfg;renderFormFields();}
-async function saveFormFields(){var f=getFormFields();var cfg=window.appCfg||defCfg();if(!cfg.forms)cfg.forms={};if(!cfg.forms[efType])cfg.forms[efType]={};var saved=f.map(function(fi,i){return{id:fi.id,label:(document.getElementById('ff-lbl-'+i)||{value:fi.label}).value.trim(),multi:(document.getElementById('ff-type-'+i)||{value:'false'}).value==='true'};});cfg.forms[efType][efForm]=saved;window.appCfg=cfg;await window.fbSaveCfg(cfg);alert('נשמר ✓');showScreen('settings');}
+// Sync the in-DOM edits (label inputs, type selects) back into window.appCfg
+// without persisting. Must be called before any structural change (add/delete)
+// so the user's unsaved edits don't get reverted.
+function syncFormFieldsFromDOM(){
+  var f=getFormFields();
+  var cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={};
+  if(!cfg.forms[efType])cfg.forms[efType]={};
+  cfg.forms[efType][efForm]=f.map(function(fi,i){
+    var lblEl=document.getElementById('ff-lbl-'+i);
+    var typeEl=document.getElementById('ff-type-'+i);
+    return {
+      id:fi.id,
+      label:lblEl?lblEl.value.trim():fi.label,
+      multi:typeEl?typeEl.value==='true':fi.multi
+    };
+  });
+  window.appCfg=cfg;
+}
+function addFormField(){
+  var cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={adult:{intake:[...DEF_FORMS.adult.intake],followup:[...DEF_FORMS.adult.followup]},baby:{intake:[...DEF_FORMS.baby.intake],followup:[...DEF_FORMS.baby.followup]}};
+  if(!cfg.forms[efType])cfg.forms[efType]={intake:[...DEF_FORMS[efType].intake],followup:[...DEF_FORMS[efType].followup]};
+  window.appCfg=cfg;
+  syncFormFieldsFromDOM(); // preserve pending edits before adding
+  var f=getFormFields();
+  cfg.forms[efType][efForm]=[...f,{id:'ff'+Date.now(),label:'שדה חדש',multi:false}];
+  window.appCfg=cfg;
+  renderFormFields();
+}
+function delFormField(i){
+  syncFormFieldsFromDOM(); // preserve pending edits before deleting
+  var f=getFormFields();f.splice(i,1);
+  var cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={};
+  if(!cfg.forms[efType])cfg.forms[efType]={};
+  cfg.forms[efType][efForm]=f;
+  window.appCfg=cfg;
+  renderFormFields();
+}
+async function saveFormFields(){
+  syncFormFieldsFromDOM();
+  var cfg=window.appCfg||defCfg();
+  await window.fbSaveCfg(cfg);
+  alert('נשמר ✓');
+  showScreen('settings');
+}
 
 // ---- PATIENTS CRUD ----
 function openEdit(id){
@@ -2633,7 +2695,19 @@ function showScreen(name,skipHistory){
 function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(prev,true);}else showScreen('calendar',true);}
 
 // ---- EVENT WIRING ----
+// Alerts panel show/hide (desktop only) — persisted to localStorage
+function toggleAlertsPanel(hide){
+  if(hide===undefined)hide=!document.body.classList.contains('alerts-hidden');
+  document.body.classList.toggle('alerts-hidden',hide);
+  try{localStorage.setItem('clinic_alerts_hidden',hide?'1':'0');}catch(e){}
+}
+try{if(localStorage.getItem('clinic_alerts_hidden')==='1')document.body.classList.add('alerts-hidden');}catch(e){}
+
 document.addEventListener('DOMContentLoaded',function(){
+  // Alerts panel toggle buttons
+  var hbtn=document.getElementById('ap-hide-btn');if(hbtn)hbtn.addEventListener('click',function(){toggleAlertsPanel(true);});
+  var sbtn=document.getElementById('ap-show-btn');if(sbtn)sbtn.addEventListener('click',function(){toggleAlertsPanel(false);});
+
   // Navigation
   document.getElementById('nav-cal').onclick=function(){
     navHistory=[];
