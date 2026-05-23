@@ -700,7 +700,28 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <button class="bbtn" id="back-appt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
       <div class="card">
         <div class="ct">קביעת תור חדש</div>
-        <div class="fm"><label class="fl">מטופל *</label><select class="fsl" id="na-pt"></select></div>
+        <div class="fm">
+          <label class="fl">מטופל *</label>
+          <select class="fsl" id="na-pt"></select>
+          <button type="button" id="na-new-pt-btn" style="margin-top:6px;background:none;border:1px dashed var(--ac);border-radius:var(--rsm);padding:5px 12px;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;font-family:'Heebo',sans-serif;width:100%;">＋ מטופל חדש שאינו ברשימה</button>
+          <div id="na-new-pt-wrap" style="display:none;margin-top:8px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:12px 13px;">
+            <div style="font-size:11px;font-weight:700;color:var(--ac);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;">הוספת מטופל מהירה</div>
+            <div class="fm" style="margin-bottom:8px;"><label class="fl">שם מלא *</label><input class="fi" id="na-np-nm" type="text" placeholder="ישראל ישראלי" style="font-size:13px;"/></div>
+            <div class="fm" style="margin-bottom:8px;"><label class="fl">טלפון</label><input class="fi" id="na-np-ph" type="tel" placeholder="05X-XXXXXXX" style="font-size:13px;"/></div>
+            <div class="fm" style="margin-bottom:10px;">
+              <label class="fl">סוג מטופל</label>
+              <div class="chips">
+                <button type="button" class="chip active" id="na-np-adult" onclick="naSetType('adult')">מבוגר</button>
+                <button type="button" class="chip" id="na-np-baby" onclick="naSetType('baby')">תינוק 👶</button>
+              </div>
+            </div>
+            <div id="na-np-err" style="font-size:12px;color:var(--r500);margin-bottom:6px;display:none;"></div>
+            <div style="display:flex;gap:7px;">
+              <button type="button" id="na-np-save" class="btn bp" style="flex:1;margin-top:0;padding:9px;font-size:13px;">הוסף וקבע תור</button>
+              <button type="button" onclick="document.getElementById('na-new-pt-wrap').style.display='none';document.getElementById('na-new-pt-btn').style.display='block';" style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:9px 14px;font-size:13px;cursor:pointer;font-family:'Heebo',sans-serif;">ביטול</button>
+            </div>
+          </div>
+        </div>
         <div class="fm"><label class="fl">תאריך *</label><input class="fi" id="na-dt" type="date"/></div>
         <div class="fm"><label class="fl">שעה *</label><select class="fsl" id="na-tm"></select></div>
         <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה..."/></div>
@@ -2178,8 +2199,41 @@ function rebuildTimeSelect(ds){
   var err=document.getElementById('na-err');if(!slots.length&&err){err.style.color='var(--r500)';err.textContent='אין שעות פנויות ביום זה';err.style.display='block';}else if(err)err.style.display='none';
 }
 
+var _naPatType='adult';
+function naSetType(t){
+  _naPatType=t;
+  document.getElementById('na-np-adult').classList.toggle('active',t==='adult');
+  document.getElementById('na-np-baby').classList.toggle('active',t==='baby');
+}
+async function addQuickPatient(){
+  var name=document.getElementById('na-np-nm').value.trim().replace(/[0-9]/g,'');
+  var errEl=document.getElementById('na-np-err');
+  if(!name){errEl.textContent='נא להזין שם';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  var btn=document.getElementById('na-np-save');btn.disabled=true;btn.textContent='שומר...';
+  var phone=document.getElementById('na-np-ph').value.trim().replace(/\D/g,'');
+  var cfg=window.appCfg||defCfg();
+  var p={id:String(Date.now()),name:name,phone:phone,age:'',problem:'',price:cfg.price||350,color:(window.pts||[]).length%4,patType:_naPatType,treatType:'single',series:null,treatments:[]};
+  window.pts=[...(window.pts||[]),p];
+  await window.fbSaveP(p);
+  // Rebuild select and pick new patient
+  var sel=document.getElementById('na-pt');
+  sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort(function(a,b){return a.name.localeCompare(b.name,'he');}).map(function(pt){return '<option value="'+pt.id+'">'+pt.name+(pt.patType==='baby'?' 👶':'')+'</option>';}).join('');
+  sel.value=p.id;
+  // Hide the mini form
+  document.getElementById('na-new-pt-wrap').style.display='none';
+  document.getElementById('na-new-pt-btn').style.display='block';
+  document.getElementById('na-np-nm').value='';
+  document.getElementById('na-np-ph').value='';
+  naSetType('adult');
+  btn.disabled=false;btn.textContent='הוסף וקבע תור';
+}
+
 function openNewAppt(){
   showScreen('new-appointment');
+  // Reset quick-add form
+  document.getElementById('na-new-pt-wrap').style.display='none';
+  document.getElementById('na-new-pt-btn').style.display='block';
   var sel=document.getElementById('na-pt');
   sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort(function(a,b){return a.name.localeCompare(b.name,'he');}).map(function(p){return '<option value="'+p.id+'">'+p.name+(p.patType==='baby'?' 👶':'')+'</option>';}).join('');
   document.getElementById('na-dt').value=todayStr();
@@ -2321,6 +2375,12 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('na-dt').onchange=function(){rebuildTimeSelect(this.value);};
   document.getElementById('btn-save-appt').onclick=function(){addAppointment();};
   document.getElementById('gcal-btn').onclick=function(){openGcal();};
+  document.getElementById('na-new-pt-btn').onclick=function(){
+    this.style.display='none';
+    document.getElementById('na-new-pt-wrap').style.display='block';
+    document.getElementById('na-np-nm').focus();
+  };
+  document.getElementById('na-np-save').onclick=function(){addQuickPatient();};
 
   // New patient
   document.getElementById('np-adult').onclick=function(){npPatType='adult';this.classList.add('active');document.getElementById('np-baby').classList.remove('active');};
