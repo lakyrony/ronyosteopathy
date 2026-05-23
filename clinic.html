@@ -461,13 +461,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .tnum{font-size:13px}
   .tnotes{font-size:13px;line-height:1.7}
 
-  /* Weekly view — more breathing room on desktop */
-  .wtl,.wcell{height:78px}
+  /* Weekly view — tighter rows on desktop so more hours fit without scrolling */
+  .wtl,.wcell{height:54px}
   .wcell{padding:2px}
-  .wappt{padding:5px 7px}
-  .wappt .wn{font-size:12px}
-  .wappt .wmeta{font-size:10px}
-  .wappt .wcomp{font-size:10px;-webkit-line-clamp:2}
+  .wappt{padding:3px 6px;gap:0}
+  .wappt .wn{font-size:12px;line-height:1.1}
+  .wappt .wmeta{font-size:10px;line-height:1.15}
+  .wappt .wcomp{font-size:10px;line-height:1.15;-webkit-line-clamp:1}
   /* Treatment flow */
   .if-label{font-size:13px}
   .if-input{font-size:14px;padding:9px 12px}
