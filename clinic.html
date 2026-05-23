@@ -220,12 +220,19 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .tf-side-row .val{color:var(--tp);font-weight:500;text-align:left;word-break:break-word}
 .tf-side-health{margin-top:9px;padding:8px 10px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;font-size:12px;color:var(--tp);line-height:1.45}
 .tf-side-health .lbl{font-size:10px;font-weight:700;color:#9b1c1c;margin-bottom:3px;display:block}
-.tf-side-visit{padding:8px 10px;border:1px solid var(--bdl);border-radius:var(--rsm);margin-bottom:7px;background:var(--sf2);font-size:12px;cursor:pointer;transition:background 0.15s,border-color 0.15s}
+.tf-side-visit{padding:9px 11px;border:1px solid var(--bdl);border-radius:var(--rsm);margin-bottom:8px;background:var(--sf2);font-size:12px;cursor:pointer;transition:background 0.15s,border-color 0.15s}
 .tf-side-visit:last-child{margin-bottom:0}
 .tf-side-visit:hover{background:var(--g50);border-color:var(--g200)}
-.tf-side-visit .vd{font-weight:700;color:var(--ac);font-size:11px;display:flex;justify-content:space-between;align-items:center}
+.tf-side-visit .vd{font-weight:700;color:var(--ac);font-size:11px;display:flex;justify-content:space-between;align-items:center;padding-bottom:5px;border-bottom:1px solid var(--bdl);margin-bottom:6px;gap:6px}
+.tf-side-visit .vd-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .tf-side-visit .vd .opn{font-size:10px;color:var(--tm);font-weight:500}
-.tf-side-visit .vt{color:var(--tp);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tf-side-visit .vpay{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;line-height:1.4}
+.tf-side-visit .vpaid{background:#e7f5ed;color:#0d6b3f}
+.tf-side-visit .vunpaid{background:var(--r50);color:var(--r700)}
+.tf-side-visit .vfld{font-size:11px;line-height:1.45;color:var(--tp);margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tf-side-visit .vfld:last-child{margin-bottom:0}
+.tf-side-visit .vlbl{font-weight:700;color:var(--tm);font-size:10px;margin-left:3px}
+.tf-side-visit .vempty{color:var(--gr400);font-style:italic;font-size:11px}
 .tf-hdr{background:linear-gradient(135deg,var(--g600),var(--g500));padding:11px 14px;color:#fff;display:flex;align-items:center;gap:11px}
 .tf-hdr-info{flex:1;min-width:0;text-align:left}
 .tf-back{background:rgba(255,255,255,0.18);border:none;border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;flex-shrink:0;padding:0}
@@ -2045,8 +2052,23 @@ function buildTF(p,a,tdate,treatNum){
     if(prevTreats.length>0){
       sh+='<div class="tf-side-sec"><div class="tf-side-ttl">📋 ביקורים קודמים ('+prevTreats.length+')</div>';
       prevTreats.forEach(function(t){
-        var snippet=String(t.done||t.tcs||t.found||t.recommend||'').replace(/\s+/g,' ').trim().slice(0,120);
-        sh+='<div class="tf-side-visit" data-tnum="'+t.num+'" title="לחץ לפתיחת הטיפול"><div class="vd"><span>טיפול '+t.num+' · '+t.date+'</span><span class="opn">פתח ›</span></div>'+(snippet?'<div class="vt">'+snippet+'</div>':'')+'</div>';
+        // Build structured field list — only include non-empty fields
+        var fields=[];
+        if(t.mainComplaint)fields.push({lbl:'תלונה',val:t.mainComplaint});
+        if(t.found)fields.push({lbl:'ממצא',val:t.found});
+        if(t.done)fields.push({lbl:'טיפול',val:t.done});
+        if(t.tcs)fields.push({lbl:'TCS',val:t.tcs});
+        if(t.recommend)fields.push({lbl:'המלצה',val:t.recommend});
+        if(t.exercises)fields.push({lbl:'תרגילים',val:t.exercises});
+        var bodyHTML=fields.length?fields.map(function(f){
+          return '<div class="vfld"><span class="vlbl">'+f.lbl+':</span>'+f.val+'</div>';
+        }).join(''):'<div class="vempty">אין תיעוד</div>';
+        // Payment status pill
+        var payTag=t.paid?'<span class="vpay vpaid">שולם'+(t.method?' · '+t.method:'')+'</span>':'<span class="vpay vunpaid">לא שולם</span>';
+        sh+='<div class="tf-side-visit" data-tnum="'+t.num+'" title="לחץ לפתיחת הטיפול">'+
+            '<div class="vd"><span>טיפול '+t.num+' · '+t.date+'</span><span class="vd-right">'+payTag+'<span class="opn">פתח ›</span></span></div>'+
+            bodyHTML+
+            '</div>';
       });
       sh+='</div>';
     }
