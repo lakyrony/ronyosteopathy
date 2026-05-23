@@ -1154,42 +1154,40 @@ function scheduleForDate(ds){
   var d=sToD(ds);
   return (cfg.schedule||{})[d.getDay()]||{active:false,ranges:[]};
 }
-// Slot generator — cascading slots. Each slot starts (duration + break) after the previous,
-// so a 60-min treatment + 15-min break = next available slot is 75 min later.
-// A slot is only emitted if a FULL treatment block (≥60 min minimum) fits before the range end.
-// Existing appointments shift subsequent slots: after an existing appt, the next slot resumes
-// from (appt end + buffer), then continues cascading from there.
-function getSlots(ds,dur){
+// Slot generator — cascading slots with a FIXED step of 60 min + break.
+// Per the therapist's rule: each appointment is treated as 1 hour + break for
+// the purpose of finding the next available slot, regardless of any duration
+// override in settings. A slot is only emitted if a full hour fits before the
+// range end. Existing appointments shift the cascade: after one ends, the next
+// candidate resumes from (appt end + break) and cascades from there.
+function getSlots(ds){
   var day=scheduleForDate(ds);
   if(!day||!day.active||!day.ranges||!day.ranges.length)return [];
   var cfg=window.appCfg||defCfg();
-  dur=parseInt(dur||cfg.durationFollowup||cfg.duration||60);
   var brk=parseInt(cfg.breakMins||0);
-  var MIN_TREAT=60; // a slot is only valid if at least 60 min fit before the range end
-  // Existing appts on this date — sorted by time, used as anchors that shift the cascade
+  var TREAT=60; // fixed hour per the therapist's rule
+  var STEP=TREAT+brk;
+  // Existing appts on this date — block at least TREAT minutes each (longer if stored)
   var apts=(window.apts||[]).filter(function(a){return a.date===ds;})
-    .map(function(a){return {s:hmToMin(a.time),e:hmToMin(a.time)+parseInt(a.duration||cfg.durationFollowup||60)};})
+    .map(function(a){return {s:hmToMin(a.time),e:hmToMin(a.time)+Math.max(TREAT,parseInt(a.duration||TREAT))};})
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
     var rs=hmToMin(r.s),re=hmToMin(r.e);
     var cursor=rs;
-    // Build a list of "anchors" that force the cursor to skip ahead: each appt within this range.
     var rangeApts=apts.filter(function(a){return a.s<re&&a.e>rs;});
     while(true){
-      // If cursor is inside an existing appt, jump to its end+buffer
+      // If cursor overlaps an existing appt, jump past it + break
       var inAppt=null;
       for(var i=0;i<rangeApts.length;i++){
         var a=rangeApts[i];
-        if(cursor<a.e&&cursor+dur>a.s){inAppt=a;break;}
+        if(cursor<a.e&&cursor+TREAT>a.s){inAppt=a;break;}
       }
       if(inAppt){cursor=inAppt.e+brk;continue;}
-      // Out of range?
-      if(cursor+MIN_TREAT>re)break;
-      // If the treatment doesn't fully fit but ≥60 min remain, still allow the slot only if dur fits.
-      if(cursor+dur>re)break;
+      // Need a full hour before the range end
+      if(cursor+TREAT>re)break;
       slots.push(minToHM(cursor));
-      cursor+=dur+brk;
+      cursor+=STEP;
     }
   });
   return slots;
