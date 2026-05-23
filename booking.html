@@ -33,25 +33,15 @@ body{
 
 /* Header */
 .hd{
-  text-align:center;margin-bottom:24px;padding-top:8px;
-  background:linear-gradient(160deg,rgba(255,255,255,0.85),rgba(247,242,235,0.6));
-  border:1px solid var(--bdl);border-radius:var(--rxl);
-  padding:28px 20px 22px;box-shadow:var(--sh2);
-  backdrop-filter:blur(6px);
+  display:flex;align-items:center;gap:14px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.9),rgba(247,242,235,0.7));
+  border:1px solid var(--bdl);border-radius:var(--rlg);
+  padding:14px 18px;margin-bottom:20px;box-shadow:var(--sh);
 }
-.hd img{
-  height:120px;width:auto;
-  border-radius:16px;
-  box-shadow:0 4px 18px rgba(60,40,20,0.13);
-  margin-bottom:16px;
-}
-.hd-divider{
-  width:48px;height:2px;
-  background:linear-gradient(90deg,transparent,var(--sand),transparent);
-  margin:12px auto 10px;
-}
-.hd-title{font-size:16px;font-weight:600;color:var(--ts);letter-spacing:0.3px}
-.hd-sub{font-size:12px;color:var(--tm);margin-top:3px}
+.hd img{height:62px;width:auto;border-radius:10px;flex-shrink:0;}
+.hd-text{text-align:right;flex:1;}
+.hd-title{font-size:15px;font-weight:700;color:var(--ac2);line-height:1.3;}
+.hd-sub{font-size:12px;color:var(--tm);margin-top:2px;}
 
 /* Card */
 .card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);
@@ -180,9 +170,10 @@ body{
   <!-- Header -->
   <div class="hd">
     <img src="logo.png" alt="Rony Osteopath D.O"/>
-    <div class="hd-divider"></div>
-    <div class="hd-title">קביעת תור אונליין</div>
-    <div class="hd-sub">נהריה &nbsp;•&nbsp; אוסטאופתיה ושיקום</div>
+    <div class="hd-text">
+      <div class="hd-title">קביעת תור אונליין</div>
+      <div class="hd-sub">נהריה &nbsp;•&nbsp; אוסטאופתיה ושיקום</div>
+    </div>
   </div>
 
   <!-- Loading state -->
@@ -216,6 +207,9 @@ body{
       <div class="card" id="slot-card" style="display:none;">
         <div class="slot-title" id="slot-title"></div>
         <div id="slot-body"></div>
+        <div id="slot-taken-warn" style="display:none;margin-top:10px;padding:10px 13px;background:#fef2f2;border:1px solid #fdd5d5;border-radius:var(--rsm);color:#9b1c1c;font-size:13px;">
+          ⚠️ השעה שבחרת נתפסה זה עתה — נא לבחור שעה אחרת.
+        </div>
       </div>
 
       <button class="btn bp" id="btn-step-1" disabled>המשך לפרטים →</button>
@@ -248,6 +242,11 @@ body{
         <div class="fm">
           <label class="fl">סיבת הפנייה (אופציונלי)</label>
           <textarea class="ftx" id="f-problem" placeholder="ספר/י לי בכמה מילים על הכאב או הבעיה..."></textarea>
+        </div>
+
+        <div class="fm">
+          <label class="fl" id="captcha-label">אימות: כמה זה <span id="captcha-q"></span>? <span class="req">*</span></label>
+          <input class="fi" id="f-captcha" type="number" placeholder="הכנס את התשובה..." autocomplete="off" inputmode="numeric"/>
         </div>
       </div>
 
@@ -305,7 +304,7 @@ body{
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,doc,getDoc,collection,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,doc,onSnapshot,collection,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Same Firebase project as clinic.html
 var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
@@ -319,6 +318,17 @@ viewMonth.setDate(1);
 var selDate=null;               // {y,m,d}
 var selTime=null;
 var pType='adult';
+// CAPTCHA
+var _captchaAnswer=0;
+function genCaptcha(){
+  var n1=Math.floor(Math.random()*8)+2;
+  var n2=Math.floor(Math.random()*8)+2;
+  _captchaAnswer=n1+n2;
+  var el=document.getElementById('captcha-q');
+  if(el)el.textContent=n1+' ועוד '+n2;
+  var fi=document.getElementById('f-captcha');
+  if(fi)fi.value='';
+}
 
 var HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 var DS=['א','ב','ג','ד','ה','ו','ש'];
@@ -494,6 +504,7 @@ window.setPType=function(t){
 document.getElementById('btn-step-1').addEventListener('click',function(){
   if(!selDate||!selTime)return;
   goToStep(2);
+  genCaptcha();
 });
 document.getElementById('btn-back-1').addEventListener('click',function(){goToStep(1);});
 
@@ -505,6 +516,8 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   err.classList.remove('show');
   if(!name||name.length<2){err.textContent='נא להזין שם מלא';err.classList.add('show');return;}
   if(!phone||phone.replace(/\D/g,'').length<8){err.textContent='נא להזין מספר טלפון תקין';err.classList.add('show');return;}
+  var captchaVal=parseInt(document.getElementById('f-captcha').value||'0');
+  if(captchaVal!==_captchaAnswer){err.textContent='תשובת האימות שגויה — נסה שוב';err.classList.add('show');genCaptcha();document.getElementById('f-captcha').value='';return;}
 
   // Fill summary
   var d=new Date(selDate.y,selDate.m,selDate.d);
@@ -529,6 +542,13 @@ document.getElementById('btn-confirm').addEventListener('click',async function()
   btn.disabled=true;btn.textContent='שולח...';
   try{
     var d=new Date(selDate.y,selDate.m,selDate.d);
+    // Final check — slot might have been taken since step 1
+    if(availableSlots(dstr(d)).indexOf(selTime)<0){
+      btn.disabled=false;btn.textContent='✓ שלח בקשה';
+      alert('⚠️ מצטערים — השעה '+selTime+' נתפסה בינתיים.\nנא לחזור ולבחור שעה אחרת.');
+      selTime=null;updateStep1Btn();goToStep(1);renderCalendar();if(selDate)renderSlots();
+      return;
+    }
     var booking={
       name:document.getElementById('f-name').value.trim().replace(/[0-9]/g,''),
       phone:document.getElementById('f-phone').value.trim().replace(/\D/g,''),
@@ -560,35 +580,49 @@ document.getElementById('cal-next').addEventListener('click',function(){
 });
 
 // ---- Load availability and init ----
-async function loadAvailability(){
-  try{
-    var snap=await getDoc(doc(db,'publicData','main'));
-    if(snap.exists()){
-      availability=snap.data();
-    } else {
-      // Fallback default schedule (in case clinic.html hasn't synced yet)
-      availability={
-        schedule:{
-          0:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
-          1:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
-          2:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
-          3:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
-          4:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
-          5:{active:false,ranges:[]},
-          6:{active:false,ranges:[]}
-        },
-        duration:60,
-        taken:[]
-      };
+// Real-time listener — updates calendar & slots instantly when owner approves/adds appointments
+function loadAvailability(){
+  var defaultSchedule={
+    0:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+    1:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+    2:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+    3:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+    4:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
+    5:{active:false,ranges:[]},6:{active:false,ranges:[]}
+  };
+  var initialized=false;
+  onSnapshot(doc(db,'publicData','main'),
+    function(snap){
+      availability=snap.exists()?snap.data():{schedule:defaultSchedule,duration:60,taken:[]};
+      if(!initialized){
+        initialized=true;
+        document.getElementById('loading').style.display='none';
+        document.getElementById('main-content').style.display='block';
+      }
+      // Re-render calendar & slots with fresh availability data
+      renderCalendar();
+      if(selDate)renderSlots();
+      // If currently-selected slot became taken — deselect and warn
+      if(selTime&&selDate){
+        var ds=dstr(new Date(selDate.y,selDate.m,selDate.d));
+        if(availableSlots(ds).indexOf(selTime)<0){
+          selTime=null;
+          updateStep1Btn();
+          renderSlots();
+          var warn=document.getElementById('slot-taken-warn');
+          if(warn)warn.style.display='block';
+          setTimeout(function(){if(warn)warn.style.display='none';},5000);
+        }
+      }
+    },
+    function(e){
+      console.error('Load error:',e);
+      if(!initialized){
+        document.getElementById('loading').style.display='none';
+        document.getElementById('err-state').style.display='block';
+      }
     }
-    document.getElementById('loading').style.display='none';
-    document.getElementById('main-content').style.display='block';
-    renderCalendar();
-  }catch(e){
-    console.error('Load error:',e);
-    document.getElementById('loading').style.display='none';
-    document.getElementById('err-state').style.display='block';
-  }
+  );
 }
 
 loadAvailability();
