@@ -31,17 +31,28 @@ body{
 }
 .wrap{max-width:560px;margin:0 auto}
 
-/* Header */
+/* Header — blended into background */
 .hd{
-  display:flex;align-items:center;gap:14px;
-  background:linear-gradient(135deg,rgba(255,255,255,0.9),rgba(247,242,235,0.7));
-  border:1px solid var(--bdl);border-radius:var(--rlg);
-  padding:14px 18px;margin-bottom:20px;box-shadow:var(--sh);
+  text-align:center;
+  margin-bottom:18px;
+  padding:6px 0 4px;
 }
-.hd img{height:62px;width:auto;border-radius:10px;flex-shrink:0;}
-.hd-text{text-align:right;flex:1;}
-.hd-title{font-size:15px;font-weight:700;color:var(--ac2);line-height:1.3;}
-.hd-sub{font-size:12px;color:var(--tm);margin-top:2px;}
+.hd img{
+  max-width:100%;
+  height:auto;
+  max-height:130px;
+  width:auto;
+  display:block;
+  margin:0 auto;
+  /* Subtle blend filter so cream-on-cream looks seamless */
+  mix-blend-mode:multiply;
+}
+.hd-sub{
+  font-size:13px;
+  color:var(--tm);
+  margin-top:2px;
+  letter-spacing:0.4px;
+}
 
 /* Card */
 .card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);
@@ -169,11 +180,8 @@ body{
 
   <!-- Header -->
   <div class="hd">
-    <img src="logo.png" alt="Rony Osteopath D.O"/>
-    <div class="hd-text">
-      <div class="hd-title">קביעת תור אונליין</div>
-      <div class="hd-sub">נהריה &nbsp;•&nbsp; אוסטאופתיה ושיקום</div>
-    </div>
+    <img src="logo_long.png" alt="Rony Osteopath D.O — אוסטאופתיה ושיקום"/>
+    <div class="hd-sub">קביעת תור אונליין &nbsp;•&nbsp; נהריה</div>
   </div>
 
   <!-- Loading state -->
@@ -242,11 +250,6 @@ body{
         <div class="fm">
           <label class="fl">סיבת הפנייה (אופציונלי)</label>
           <textarea class="ftx" id="f-problem" placeholder="ספר/י לי בכמה מילים על הכאב או הבעיה..."></textarea>
-        </div>
-
-        <div class="fm">
-          <label class="fl" id="captcha-label">אימות: כמה זה <span id="captcha-q"></span>? <span class="req">*</span></label>
-          <input class="fi" id="f-captcha" type="number" placeholder="הכנס את התשובה..." autocomplete="off" inputmode="numeric"/>
         </div>
       </div>
 
@@ -318,17 +321,6 @@ viewMonth.setDate(1);
 var selDate=null;               // {y,m,d}
 var selTime=null;
 var pType='adult';
-// CAPTCHA
-var _captchaAnswer=0;
-function genCaptcha(){
-  var n1=Math.floor(Math.random()*8)+2;
-  var n2=Math.floor(Math.random()*8)+2;
-  _captchaAnswer=n1+n2;
-  var el=document.getElementById('captcha-q');
-  if(el)el.textContent=n1+' ועוד '+n2;
-  var fi=document.getElementById('f-captcha');
-  if(fi)fi.value='';
-}
 
 var HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 var DS=['א','ב','ג','ד','ה','ו','ש'];
@@ -504,7 +496,6 @@ window.setPType=function(t){
 document.getElementById('btn-step-1').addEventListener('click',function(){
   if(!selDate||!selTime)return;
   goToStep(2);
-  genCaptcha();
 });
 document.getElementById('btn-back-1').addEventListener('click',function(){goToStep(1);});
 
@@ -516,8 +507,6 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   err.classList.remove('show');
   if(!name||name.length<2){err.textContent='נא להזין שם מלא';err.classList.add('show');return;}
   if(!phone||phone.replace(/\D/g,'').length<8){err.textContent='נא להזין מספר טלפון תקין';err.classList.add('show');return;}
-  var captchaVal=parseInt(document.getElementById('f-captcha').value||'0');
-  if(captchaVal!==_captchaAnswer){err.textContent='תשובת האימות שגויה — נסה שוב';err.classList.add('show');genCaptcha();document.getElementById('f-captcha').value='';return;}
 
   // Fill summary
   var d=new Date(selDate.y,selDate.m,selDate.d);
