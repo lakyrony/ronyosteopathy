@@ -236,7 +236,8 @@ body{
 
         <div class="fm">
           <label class="fl">טלפון <span class="req">*</span></label>
-          <input class="fi" id="f-phone" type="tel" placeholder="05X-XXXXXXX" autocomplete="tel"/>
+          <input class="fi" id="f-phone" type="tel" placeholder="05X-XXX-XXXX" autocomplete="tel" maxlength="14" inputmode="tel"/>
+          <div id="f-phone-hint" style="font-size:11px;color:var(--tm);margin-top:4px;">מספר ישראלי בלבד (סלולרי / קווי)</div>
         </div>
 
         <div class="fm">
@@ -269,6 +270,10 @@ body{
         <div style="margin-top:14px;padding:11px 13px;background:var(--g50);border-radius:var(--rmd);
           font-size:12px;color:var(--ts);line-height:1.6;border-right:3px solid var(--ac);">
           💡 לאחר השליחה, רוני תקבל את הבקשה ותחזור אליך לאישור התור בהקדם.
+        </div>
+        <div id="confirm-err" style="display:none;margin-top:12px;padding:12px 14px;background:#fef2f2;border:1px solid #fdd5d5;border-right:4px solid var(--r500);border-radius:var(--rmd);">
+          <div style="font-size:13px;font-weight:700;color:#9b1c1c;margin-bottom:4px;">⚠️ השעה נתפסה זה עתה</div>
+          <div style="font-size:12px;color:#9b1c1c;line-height:1.6;">מטופל אחר אישר את המשבצת הזו בזמן שמילאת את הפרטים. נא לחזור ולבחור מועד אחר.</div>
         </div>
       </div>
       <button class="btn bp" id="btn-confirm">✓ שלח בקשה</button>
@@ -352,6 +357,37 @@ function getSlots(ds){
     }
   });
   return slots;
+}
+
+// Validate Israeli phone number (mobile or landline)
+function isValidIsraeliPhone(raw){
+  if(!raw)return false;
+  var d=String(raw).replace(/\D/g,'');
+  // International +972 → convert to local 0
+  if(d.length>=12&&d.slice(0,3)==='972')d='0'+d.slice(3);
+  // Mobile: 050,051,052,053,054,055,058,059 + 7 digits (total 10)
+  if(/^05[0-9]{8}$/.test(d))return true;
+  // VoIP/business: 072,073,074,076,077,079 + 7 digits (total 10)
+  if(/^07[2-79][0-9]{7}$/.test(d))return true;
+  // Landline: 02/03/04/08/09 + 7 digits (total 9)
+  if(/^0[23489][0-9]{7}$/.test(d))return true;
+  return false;
+}
+
+// Format phone nicely as user types — strips junk, allows dashes/spaces visually
+function formatPhoneInput(el){
+  var v=el.value.replace(/[^\d\-\s+]/g,'');
+  // Strip excessive chars
+  if(v.replace(/\D/g,'').length>11)v=v.slice(0,el.value.length-1);
+  el.value=v;
+  // Live visual: green border if valid, red if invalid (only after enough digits)
+  var digits=v.replace(/\D/g,'');
+  if(digits.length>=9){
+    if(isValidIsraeliPhone(v)){el.style.borderColor='#7fbf8c';}
+    else{el.style.borderColor='var(--r500)';}
+  } else {
+    el.style.borderColor='var(--bd)';
+  }
 }
 
 function takenAt(ds){
@@ -505,8 +541,8 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   var phone=document.getElementById('f-phone').value.trim();
   var err=document.getElementById('form-err');
   err.classList.remove('show');
-  if(!name||name.length<2){err.textContent='נא להזין שם מלא';err.classList.add('show');return;}
-  if(!phone||phone.replace(/\D/g,'').length<8){err.textContent='נא להזין מספר טלפון תקין';err.classList.add('show');return;}
+  if(!name||name.length<2){err.textContent='נא להזין שם מלא';err.classList.add('show');document.getElementById('f-name').focus();return;}
+  if(!isValidIsraeliPhone(phone)){err.textContent='מספר טלפון אינו תקין. יש להזין מספר ישראלי (סלולרי 05X או קווי 02-09).';err.classList.add('show');document.getElementById('f-phone').focus();return;}
 
   // Fill summary
   var d=new Date(selDate.y,selDate.m,selDate.d);
@@ -529,13 +565,17 @@ document.getElementById('btn-back-2').addEventListener('click',function(){goToSt
 document.getElementById('btn-confirm').addEventListener('click',async function(){
   var btn=this;
   btn.disabled=true;btn.textContent='שולח...';
+  document.getElementById('confirm-err').style.display='none';
   try{
     var d=new Date(selDate.y,selDate.m,selDate.d);
     // Final check — slot might have been taken since step 1
     if(availableSlots(dstr(d)).indexOf(selTime)<0){
       btn.disabled=false;btn.textContent='✓ שלח בקשה';
-      alert('⚠️ מצטערים — השעה '+selTime+' נתפסה בינתיים.\nנא לחזור ולבחור שעה אחרת.');
-      selTime=null;updateStep1Btn();goToStep(1);renderCalendar();if(selDate)renderSlots();
+      document.getElementById('confirm-err').style.display='block';
+      // Auto-return to step 1 after a moment so user can pick new slot
+      setTimeout(function(){
+        selTime=null;updateStep1Btn();goToStep(1);renderCalendar();if(selDate)renderSlots();
+      },2500);
       return;
     }
     var booking={
@@ -613,6 +653,9 @@ function loadAvailability(){
     }
   );
 }
+
+// Live phone validation
+document.getElementById('f-phone').addEventListener('input',function(){formatPhoneInput(this);});
 
 loadAvailability();
 </script>
