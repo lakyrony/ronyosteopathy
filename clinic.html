@@ -98,12 +98,45 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .atb{background:var(--sf2);border-radius:var(--rsm);padding:4px 7px;text-align:center;min-width:44px;flex-shrink:0}
 .ath{font-size:13px;font-weight:700;color:var(--ac)}
 /* Week view */
+/* Legacy grid-based week (kept for any inline references) */
 .wtl{height:64px;display:flex;align-items:flex-start;padding-top:2px;font-size:9px;color:var(--tm);justify-content:center}
 .wcell{height:64px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:1px;cursor:pointer;min-width:0;overflow:hidden}
 .wappt{height:100%;border-radius:3px;padding:3px 4px;display:flex;flex-direction:column;justify-content:center;gap:0;overflow:hidden}
 .wappt .wn{font-weight:700;font-size:10px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wappt .wmeta{font-size:8px;opacity:0.85;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wappt .wcomp{font-size:8px;line-height:1.2;font-style:italic;opacity:0.9;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
+/* New Google-Calendar–style week view (absolute-positioned events) */
+.wcal{display:grid;grid-template-rows:auto 1fr;background:var(--sf);border:1px solid var(--bdl);border-radius:var(--rmd);overflow:hidden}
+.wcal-hdr{display:grid;grid-template-columns:36px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--bdl);background:var(--sf2)}
+.wcal-hdr>div{padding:6px 2px;text-align:center;font-size:11px;border-right:1px solid var(--bdl)}
+.wcal-hdr>div:last-child{border-right:none}
+.wcal-hdr .wcal-dh{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:default;position:relative}
+.wcal-hdr .wcal-dh .wcal-dh-dow{font-size:9px;font-weight:700;color:var(--tm)}
+.wcal-hdr .wcal-dh .wcal-dh-num{font-size:13px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+.wcal-hdr .wcal-dh.today .wcal-dh-num{background:var(--ac);color:#fff}
+.wcal-hdr .wcal-dh-edit{position:absolute;top:2px;left:2px;background:none;border:none;font-size:11px;color:var(--tm);cursor:pointer;padding:1px 3px;border-radius:4px;line-height:1}
+.wcal-hdr .wcal-dh-edit:hover{background:var(--bdl);color:var(--ac)}
+.wcal-body{position:relative;display:grid;grid-template-columns:36px repeat(7,minmax(0,1fr));overflow-y:auto;max-height:calc(100vh - 240px)}
+.wcal-tcol{display:flex;flex-direction:column;font-family:'Heebo',sans-serif}
+.wcal-tcell{font-size:9px;color:var(--tm);text-align:center;padding-top:2px;border-bottom:1px solid var(--bdl);box-sizing:border-box}
+.wcal-day{position:relative;border-right:1px solid var(--bdl);box-sizing:border-box}
+.wcal-day:last-child{border-right:none}
+.wcal-hline{border-bottom:1px solid var(--bdl);box-sizing:border-box}
+.wcal-half-hline{border-bottom:1px dashed var(--bdl);box-sizing:border-box;opacity:0.5}
+.wcal-off{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(0,0,0,0.025),rgba(0,0,0,0.025) 6px,transparent 6px,transparent 12px);pointer-events:none}
+.wcal-past{position:absolute;left:0;right:0;background:rgba(120,110,90,0.07);pointer-events:none}
+.wcal-now{position:absolute;left:0;right:0;height:2px;background:#e53e3e;z-index:5;pointer-events:none}
+.wcal-now::before{content:'';position:absolute;right:-4px;top:-3px;width:8px;height:8px;background:#e53e3e;border-radius:50%}
+.wcal-ev{position:absolute;border-radius:4px;padding:3px 5px;overflow:hidden;cursor:pointer;font-size:10px;line-height:1.15;box-sizing:border-box;border:1px solid rgba(0,0,0,0.05);z-index:2;transition:filter 0.15s,box-shadow 0.15s}
+.wcal-ev:hover{filter:brightness(0.96);box-shadow:0 1px 4px rgba(60,40,20,0.18);z-index:3}
+.wcal-ev .wn{font-weight:700;font-size:10px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcal-ev .wmeta{font-size:9px;opacity:0.9;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcal-ev .wcomp{font-size:9px;line-height:1.2;font-style:italic;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcal-ev .wt{font-size:8px;opacity:0.7;line-height:1.15;direction:ltr}
+.wcal-ev.wbl{background:var(--b50);color:var(--b600);border-right:3px solid var(--b400)}
+.wcal-ev.wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
+.wcal-ev.wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
+.wcal-ev.wpu{background:#f3e8ff;color:#6b21a8;border-right:3px solid #a855f7}
 .wbl{background:var(--b50);color:var(--b600);border-right:3px solid var(--b400)}
 .wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
 .wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
@@ -1472,7 +1505,10 @@ function renderMonth(){
   });
 }
 
+// Google-Calendar–style week view: hour rows + absolutely-positioned events
 function renderWeek(){
+  var PX_PER_HOUR=48;            // visual density
+  var PX_PER_MIN=PX_PER_HOUR/60; // 0.8 px/min
   var dow=navDate.getDay();
   var sun=new Date(navDate.getFullYear(),navDate.getMonth(),navDate.getDate()-dow);
   var sat=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+6);
@@ -1480,71 +1516,205 @@ function renderWeek(){
   document.getElementById('daypanel').style.display='none';
   var ts=todayStr(),ad=adMap();
   var days=[];for(var i=0;i<7;i++){var d=new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i);days.push(d);}
-  // Display-grid hours: one row per followup-duration block, plus any existing appt times
-  // (so an off-hour booking at 10:15 still gets a row to render in).
-  var cfgW=window.appCfg||defCfg();
-  var dispDur=parseInt(cfgW.durationFollowup||cfgW.duration||60);
-  var allSlots=new Set();
+
+  // Determine the visible hour range across the week (clamped + padded)
+  var minM=Infinity,maxM=-Infinity;
   days.forEach(function(d){
     var ds2=dstr(d);
     var day=scheduleForDate(ds2);
-    if(day&&day.active){
-      (day.ranges||[]).forEach(function(r){
-        var rs=hmToMin(r.s),re=hmToMin(r.e);
-        for(var t=rs;t+dispDur<=re;t+=dispDur)allSlots.add(minToHM(t));
+    if(day&&day.active&&day.ranges){
+      day.ranges.forEach(function(r){
+        minM=Math.min(minM,hmToMin(r.s));
+        maxM=Math.max(maxM,hmToMin(r.e));
       });
     }
-    (window.apts||[]).filter(function(a){return a.date===ds2;}).forEach(function(a){allSlots.add(a.time);});
-  });
-  var hrs=Array.from(allSlots).sort();
-  var h='<div style="overflow-x:auto;"><div style="display:grid;grid-template-columns:32px repeat(7,minmax(0,1fr));margin-bottom:2px;"><div></div>';
-  days.forEach(function(d){
-    var ds=dstr(d),isT=ds===ts;
-        h+='<div style="text-align:center;padding:2px 1px;cursor:pointer;" data-wds="'+ds+'"><div style="font-size:9px;font-weight:700;color:'+(isT?'var(--ac)':'var(--tm)')+';">'+DS[d.getDay()]+'</div><div style="font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto;'+(isT?'background:var(--ac);color:#fff;':'')+'">'+d.getDate()+'</div></div>';
-  });
-  h+='</div><div style="display:grid;grid-template-columns:32px repeat(7,minmax(0,1fr));">';
-  hrs.forEach(function(hr){
-    h+='<div class="wtl">'+hr+'</div>';
-    days.forEach(function(d){
-      var ds=dstr(d),isPast=ds<ts,avail=getSlots(ds).includes(hr);
-      var appt=(ad[ds]||[]).find(function(a){return a.time===hr;});
-      if(appt){
-        var p=findP(appt.patientId),hd=p&&p.treatments&&p.treatments.some(function(t){return !t.paid;}),isSer=p&&p.treatType==='series',isBaby=p&&p.patType==='baby';
-        var cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
-        var nm=p?p.name:'';
-        var ageStr=(p&&p.age)?'גיל '+p.age:'';
-        var phStr=(p&&p.phone)?p.phone:'';
-        var compStr=(p&&p.problem)?p.problem:'';
-        // Phone only in tooltip — it overflows visibly in narrow cells. Age + complaint shown.
-        var tooltip=nm+(ageStr?' · '+ageStr:'')+(phStr?' · '+phStr:'')+(compStr?'\n'+compStr:'');
-        h+='<div class="wcell" data-pid="'+appt.patientId+'" data-aid="'+appt.id+'" title="'+tooltip.replace(/"/g,'&quot;')+'"><div class="wappt '+cls+'">'+
-          '<div class="wn">'+nm+'</div>'+
-          (ageStr?'<div class="wmeta">'+ageStr+'</div>':'')+
-          (compStr?'<div class="wcomp">'+compStr+'</div>':'')+
-          '</div></div>';
-      } else if(!avail||isPast){
-        h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'" style="background:var(--sf2);opacity:0.4;cursor:pointer;"></div>';
-      } else {
-        h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'"></div>';
-      }
+    (window.apts||[]).filter(function(a){return a.date===ds2;}).forEach(function(a){
+      var s=hmToMin(a.time),e=s+parseInt(a.duration||60);
+      minM=Math.min(minM,s);maxM=Math.max(maxM,e);
     });
   });
-  var cb=document.getElementById('calbody');
-  cb.innerHTML=h+'</div></div>';
-  // Day headers are non-interactive in week view now (no separate day panel)
-  cb.querySelectorAll('.wcell[data-pid]').forEach(function(el){
-    (function(pid,aid){
-      var nameEl=el.querySelector('.wappt');
-      if(nameEl){
-        nameEl.style.cursor='pointer';
-        nameEl.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid,aid);});
+  if(minM===Infinity){minM=8*60;maxM=20*60;}
+  // Snap to whole hours and add a tiny padding
+  var startHour=Math.max(0,Math.floor(minM/60));
+  var endHour=Math.min(24,Math.ceil(maxM/60));
+  if(endHour-startHour<8){endHour=Math.min(24,startHour+8);} // keep at least 8 hours visible
+  var totalMin=(endHour-startHour)*60;
+  var bodyHeight=totalMin*PX_PER_MIN;
+
+  // ---- Build header ----
+  var hdrHTML='<div class="wcal-hdr"><div></div>';
+  days.forEach(function(d){
+    var ds=dstr(d),isT=ds===ts;
+    hdrHTML+='<div class="wcal-dh'+(isT?' today':'')+'" data-ds="'+ds+'">'+
+      '<button class="wcal-dh-edit" data-ds="'+ds+'" title="ערוך שעות יום זה">⏰</button>'+
+      '<div class="wcal-dh-dow">'+DS[d.getDay()]+'</div>'+
+      '<div class="wcal-dh-num">'+d.getDate()+'</div>'+
+      '</div>';
+  });
+  hdrHTML+='</div>';
+
+  // ---- Build body: time column + 7 day columns ----
+  // Time column with hour labels
+  var timeColHTML='<div class="wcal-tcol">';
+  for(var hr=startHour;hr<endHour;hr++){
+    timeColHTML+='<div class="wcal-tcell" style="height:'+PX_PER_HOUR+'px;">'+S2(hr)+':00</div>';
+  }
+  timeColHTML+='</div>';
+
+  // Per-day columns
+  var dayColsHTML='';
+  days.forEach(function(d){
+    var ds=dstr(d);
+    var isPastDay=ds<ts;
+    var day=scheduleForDate(ds);
+    // Background: hour gridlines + half-hour dashed lines
+    var gridHTML='';
+    for(var h2=startHour;h2<endHour;h2++){
+      gridHTML+='<div class="wcal-hline" style="height:'+(PX_PER_HOUR/2)+'px;"></div>';
+      gridHTML+='<div class="wcal-half-hline" style="height:'+(PX_PER_HOUR/2)+'px;"></div>';
+    }
+    // Off-hours overlay: shade everything OUTSIDE active ranges
+    var offHTML='';
+    if(!day||!day.active||!day.ranges||!day.ranges.length){
+      offHTML='<div class="wcal-off" style="top:0;height:'+bodyHeight+'px;"></div>';
+    } else {
+      // Top off: from startHour to first range start
+      var sorted=day.ranges.slice().sort(function(a,b){return hmToMin(a.s)-hmToMin(b.s);});
+      var prevEnd=startHour*60;
+      sorted.forEach(function(r){
+        var rs=hmToMin(r.s),re=hmToMin(r.e);
+        if(rs>prevEnd){
+          var top=(prevEnd-startHour*60)*PX_PER_MIN;
+          var hgt=(rs-prevEnd)*PX_PER_MIN;
+          offHTML+='<div class="wcal-off" style="top:'+top+'px;height:'+hgt+'px;"></div>';
+        }
+        prevEnd=Math.max(prevEnd,re);
+      });
+      if(prevEnd<endHour*60){
+        var top2=(prevEnd-startHour*60)*PX_PER_MIN;
+        var hgt2=(endHour*60-prevEnd)*PX_PER_MIN;
+        offHTML+='<div class="wcal-off" style="top:'+top2+'px;height:'+hgt2+'px;"></div>';
       }
-      // Outside the name pill — open patient file (less likely target now that pill fills cell)
-      el.addEventListener('click',function(e){if(e.target===el)openPatient(pid);});
+    }
+    // Past-day shading
+    if(isPastDay)offHTML+='<div class="wcal-past" style="top:0;height:'+bodyHeight+'px;"></div>';
+
+    // Events for this day
+    var evHTML='';
+    var dayApts=(ad[ds]||[]).slice().sort(function(a,b){return hmToMin(a.time)-hmToMin(b.time);});
+    dayApts.forEach(function(a){
+      var s=hmToMin(a.time),dur=parseInt(a.duration||60),e=s+dur;
+      // Skip if outside visible range
+      if(e<=startHour*60||s>=endHour*60)return;
+      var top=(s-startHour*60)*PX_PER_MIN;
+      var hgt=Math.max(20,dur*PX_PER_MIN-1);
+      var p=findP(a.patientId);
+      var hd=p&&p.treatments&&p.treatments.some(function(t){return !t.paid;});
+      var isSer=p&&p.treatType==='series';
+      var isBaby=p&&p.patType==='baby';
+      var cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
+      var nm=p?p.name:'';
+      var ageStr=(p&&p.age)?'גיל '+p.age:'';
+      var phStr=(p&&p.phone)?p.phone:'';
+      var compStr=(p&&p.problem)?p.problem:'';
+      var endHM=minToHM(e);
+      var tooltip=nm+(ageStr?' · '+ageStr:'')+(phStr?' · '+phStr:'')+'\n'+a.time+' – '+endHM+(compStr?'\n'+compStr:'');
+      // Density-based content: show name always; meta + complaint only if event is tall enough
+      var showMeta=hgt>=34,showComp=hgt>=50;
+      evHTML+='<div class="wcal-ev '+cls+'" data-pid="'+a.patientId+'" data-aid="'+a.id+'" '+
+        'style="top:'+top+'px;height:'+hgt+'px;left:2px;right:2px;" '+
+        'title="'+tooltip.replace(/"/g,'&quot;')+'">'+
+        '<div class="wn">'+nm+'</div>'+
+        (showMeta?'<div class="wt">'+a.time+'</div>':'')+
+        (showMeta&&ageStr?'<div class="wmeta">'+ageStr+'</div>':'')+
+        (showComp&&compStr?'<div class="wcomp">'+compStr+'</div>':'')+
+        '</div>';
+    });
+
+    dayColsHTML+='<div class="wcal-day" data-ds="'+ds+'" style="height:'+bodyHeight+'px;">'+
+      gridHTML+offHTML+evHTML+
+      '</div>';
+  });
+
+  // "Now" indicator (only if today is in the week)
+  var todayIdx=days.findIndex(function(d){return dstr(d)===ts;});
+  var nowHTML='';
+  if(todayIdx>=0){
+    var now=new Date();var nowMin=now.getHours()*60+now.getMinutes();
+    if(nowMin>=startHour*60&&nowMin<=endHour*60){
+      var nowTop=(nowMin-startHour*60)*PX_PER_MIN;
+      // Position absolutely within the body grid, in the today column
+      nowHTML='<div class="wcal-now" id="wcal-now-line" data-idx="'+todayIdx+'" style="top:'+nowTop+'px;"></div>';
+    }
+  }
+
+  var bodyHTML='<div class="wcal-body" id="wcal-body">'+timeColHTML+dayColsHTML+'</div>';
+  var cb=document.getElementById('calbody');
+  cb.innerHTML='<div class="wcal">'+hdrHTML+bodyHTML+'</div>';
+
+  // Post-render: position "now" line inside the today column
+  if(nowHTML){
+    var todayCol=cb.querySelectorAll('.wcal-day')[todayIdx];
+    if(todayCol){
+      var nl=document.createElement('div');nl.className='wcal-now';
+      var now2=new Date();var nowMin2=now2.getHours()*60+now2.getMinutes();
+      nl.style.top=((nowMin2-startHour*60)*PX_PER_MIN)+'px';
+      todayCol.appendChild(nl);
+    }
+  }
+  // Auto-scroll to ~7:00 (or to the now line if today is shown) so the user lands on useful content
+  setTimeout(function(){
+    var body=document.getElementById('wcal-body');if(!body)return;
+    var target;
+    if(todayIdx>=0){
+      var now3=new Date();var nowMin3=now3.getHours()*60+now3.getMinutes();
+      target=Math.max(0,(nowMin3-startHour*60)*PX_PER_MIN-60);
+    } else {
+      target=Math.max(0,(8*60-startHour*60)*PX_PER_MIN-10);
+    }
+    body.scrollTop=target;
+  },0);
+
+  // ---- Wire interactions ----
+  // Event clicks → patient name opens treatment, rest of event opens patient file
+  cb.querySelectorAll('.wcal-ev').forEach(function(el){
+    (function(pid,aid){
+      el.addEventListener('click',function(e){
+        e.stopPropagation();
+        // Click on the name pill specifically → treatment flow; otherwise → patient file
+        if(e.target.classList&&(e.target.classList.contains('wn')||e.target.classList.contains('wt')))openTreatFlow(pid,aid);
+        else openPatient(pid);
+      });
     })(el.dataset.pid,el.dataset.aid);
   });
-  cb.querySelectorAll('.wcell[data-ds]:not([data-pid])').forEach(function(el){
-    el.addEventListener('click',function(){selectWeekDay(this.dataset.ds,this.dataset.hr);});
+  // Click on empty space in a day column → create new appt (snap to nearest 15 min)
+  cb.querySelectorAll('.wcal-day').forEach(function(col){
+    col.addEventListener('click',function(e){
+      if(e.target.closest('.wcal-ev'))return; // already handled
+      var rect=col.getBoundingClientRect();
+      var y=e.clientY-rect.top;
+      var min=Math.round(y/PX_PER_MIN);
+      var totalMin=startHour*60+min;
+      // Snap to 15
+      totalMin=Math.round(totalMin/15)*15;
+      var ds=col.dataset.ds;
+      if(ds<ts)return; // past day — no booking
+      // Look up the available slots; if the snapped time isn't one, find the closest valid slot
+      var slots=getSlots(ds);
+      if(!slots.length){alert('אין שעות פנויות ליום זה. ניתן לערוך את שעות העבודה (⏰).');return;}
+      var target=minToHM(totalMin);
+      var picked=slots.indexOf(target)>=0?target:slots.reduce(function(best,s){
+        return Math.abs(hmToMin(s)-totalMin)<Math.abs(hmToMin(best)-totalMin)?s:best;
+      },slots[0]);
+      openNewApptAt(ds,picked);
+    });
+  });
+  // ⏰ edit-hours button on each day header
+  cb.querySelectorAll('.wcal-dh-edit').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      openDayHoursEditor(this.dataset.ds);
+    });
   });
 }
 
