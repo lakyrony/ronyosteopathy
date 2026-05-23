@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.6</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.7</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -192,6 +192,9 @@ body{
 .step{animation:fadeIn 0.3s ease-out}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
+@media(max-width:480px){
+  .hd img{max-height:72px}
+}
 @media(max-width:380px){
   .slots{grid-template-columns:repeat(2,1fr)}
   .hd-title{font-size:20px}
@@ -273,14 +276,6 @@ body{
         </div>
 
         <div class="fm">
-          <label class="fl">סוג מטופל</label>
-          <div class="chips">
-            <button type="button" class="chip active" data-ptype="adult" onclick="setPType('adult')">מבוגר</button>
-            <button type="button" class="chip" data-ptype="baby" onclick="setPType('baby')">תינוק 👶</button>
-          </div>
-        </div>
-
-        <div class="fm">
           <label class="fl">סיבת הפנייה <span class="opt-badge">אופציונלי</span></label>
           <textarea class="ftx" id="f-problem" placeholder="ספר/י לי בכמה מילים על הכאב או הבעיה..."></textarea>
         </div>
@@ -300,12 +295,12 @@ body{
               <label class="chk-item"><input type="checkbox" value="מצבים נוירולוגיים"/> מצבים נוירולוגיים</label>
               <label class="chk-item"><input type="checkbox" value="מחלת כבד/כליה"/> מחלת כבד/כליה</label>
               <label class="chk-item"><input type="checkbox" value="הפרעות הורמונליות"/> הפרעות הורמונליות</label>
-              <label class="chk-item"><input type="checkbox" value="מחלות זיהומיות פעילות"/> מחלות זיהומיות</label>
-              <label class="chk-item full"><input type="checkbox" value="אחר"/> אחר</label>
+              <label class="chk-item full"><input type="checkbox" value="מחלות זיהומיות פעילות"/> מחלות זיהומיות פעילות</label>
             </div>
+            <input class="fi" id="f-hc-other" type="text" placeholder="מצב רפואי אחר שאינו ברשימה..." style="margin-top:8px"/>
           </div>
 
-          <div class="fm">
+          <div class="fm" style="margin-bottom:0">
             <label class="fl">נטילת תרופות קבועה <span class="opt-badge">אופציונלי</span></label>
             <div class="yn-chips">
               <button type="button" class="yn-chip" id="med-no" onclick="setMeds(false)">לא</button>
@@ -314,11 +309,6 @@ body{
             <div id="med-details-wrap" style="display:none;margin-top:10px;">
               <textarea class="ftx" id="f-meds" placeholder="אנא ציין/י שמות התרופות..."></textarea>
             </div>
-          </div>
-
-          <div class="fm" style="margin-bottom:0">
-            <label class="fl">מידע בריאותי נוסף <span class="opt-badge">אופציונלי</span></label>
-            <textarea class="ftx" id="f-health-extra" placeholder="תסמינים לא מוסברים, חום, דלקות, בעיות ראייה, מצב נפשי, כאבי ראש חדשים..."></textarea>
           </div>
         </div>
 
@@ -635,6 +625,7 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   if(!name||name.length<2){err.textContent='נא להזין שם מלא';err.classList.add('show');document.getElementById('f-name').focus();return;}
   var ageNum=parseInt(age);
   if(!age||isNaN(ageNum)||ageNum<0||ageNum>120){err.textContent='נא להזין גיל תקין';err.classList.add('show');document.getElementById('f-age').focus();return;}
+  pType=ageNum<2?'baby':'adult'; // auto-set from age
   if(!isValidIsraeliPhone(phone)){err.textContent='מספר טלפון אינו תקין. יש להזין מספר ישראלי (סלולרי 05X או קווי 02-09).';err.classList.add('show');document.getElementById('f-phone').focus();return;}
   if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='כתובת האימייל אינה תקינה';err.classList.add('show');document.getElementById('f-email').focus();return;}
 
@@ -661,10 +652,10 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   // Health summary
   var healthParts=[];
   document.querySelectorAll('#health-conditions input:checked').forEach(function(cb){healthParts.push(cb.value);});
+  var hcOther=document.getElementById('f-hc-other').value.trim();
+  if(hcOther)healthParts.push(hcOther);
   if(medsYes===true){var meds=document.getElementById('f-meds').value.trim();healthParts.push('תרופות: '+(meds||'כן'));}
   else if(medsYes===false){healthParts.push('ללא תרופות קבועות');}
-  var extra=document.getElementById('f-health-extra').value.trim();
-  if(extra)healthParts.push(extra);
   if(healthParts.length){
     document.getElementById('sum-health').textContent=healthParts.join(' • ');
     document.getElementById('sum-health-row').style.display='flex';
@@ -702,9 +693,9 @@ document.getElementById('btn-confirm').addEventListener('click',async function()
       problem:document.getElementById('f-problem').value.trim(),
       patType:pType,
       healthConditions:healthConds,
+      healthOther:document.getElementById('f-hc-other').value.trim(),
       takingMedication:medsYes,
       medications:medsYes?document.getElementById('f-meds').value.trim():'',
-      healthExtra:document.getElementById('f-health-extra').value.trim(),
       date:dstr(d),
       time:selTime,
       status:'pending',
