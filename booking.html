@@ -3,8 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.7</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.8</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
+<!-- WhatsApp / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ronyosteopathy.com/booking.html">
+<meta property="og:title" content="קביעת תור | רוני פפוביאן — אוסטאופתיה נהריה">
+<meta property="og:description" content="קביעת תור אונליין בקליניקת אוסטאופתיה ושיקום. בחרו תאריך ושעה בקלות.">
+<meta property="og:image" content="https://ronyosteopathy.com/logo_long.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="400">
+<meta property="og:locale" content="he_IL">
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -267,7 +276,7 @@ body{
 
         <div class="fm">
           <label class="fl">טלפון <span class="req">*</span></label>
-          <input class="fi" id="f-phone" type="tel" placeholder="05X-XXX-XXXX" autocomplete="tel" maxlength="14" inputmode="tel"/>
+          <input class="fi" id="f-phone" type="tel" placeholder="05X-XXX-XXXX" autocomplete="tel" maxlength="18" inputmode="tel"/>
         </div>
 
         <div class="fm">
@@ -427,9 +436,13 @@ function getSlots(ds){
 function isValidIsraeliPhone(raw){
   if(!raw)return false;
   var d=String(raw).replace(/\D/g,'');
-  // International +972 → convert to local 0
-  if(d.length>=12&&d.slice(0,3)==='972')d='0'+d.slice(3);
-  // Mobile: 050,051,052,053,054,055,058,059 + 7 digits (total 10)
+  // Strip international prefixes: 00972 or +972 (possibly with leading 0 after)
+  if(d.startsWith('00972'))d='0'+d.slice(5);
+  else if(d.startsWith('972')){
+    var after=d.slice(3);
+    d=after.startsWith('0')?after:'0'+after; // +972-0XX or +972-XX
+  }
+  // Mobile: 05X + 7 digits (total 10)
   if(/^05[0-9]{8}$/.test(d))return true;
   // VoIP/business: 072,073,074,076,077,079 + 7 digits (total 10)
   if(/^07[2-79][0-9]{7}$/.test(d))return true;
@@ -441,8 +454,8 @@ function isValidIsraeliPhone(raw){
 // Format phone nicely as user types — strips junk, allows dashes/spaces visually
 function formatPhoneInput(el){
   var v=el.value.replace(/[^\d\-\s+]/g,'');
-  // Strip excessive chars
-  if(v.replace(/\D/g,'').length>11)v=v.slice(0,el.value.length-1);
+  // Allow up to 12 raw digits (covers +972-XX format)
+  if(v.replace(/\D/g,'').length>12)v=v.slice(0,el.value.length-1);
   el.value=v;
   // Live visual: green border if valid, red if invalid (only after enough digits)
   var digits=v.replace(/\D/g,'');

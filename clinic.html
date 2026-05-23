@@ -83,9 +83,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .mday.today .dn{background:var(--ac);color:#fff;border-radius:50%}
 .mday.sel{background:var(--g50)}
 .dn{font-size:12px;font-weight:500;color:var(--tp);width:27px;height:27px;display:flex;align-items:center;justify-content:center}
-.ddots{display:flex;gap:2px}
-.dd{width:4px;height:4px;border-radius:50%}
-.dd.g{background:var(--ac)}.dd.r{background:var(--r500)}
+.ddots{display:flex;justify-content:center;margin-top:1px}
+.dd{font-size:9px;font-weight:800;border-radius:10px;padding:0 5px;min-width:16px;
+  text-align:center;line-height:15px;height:15px}
+.dd.g{background:var(--ac);color:#fff}.dd.r{background:var(--r500);color:#fff}
 /* Day panel */
 .daypanel{border-top:1px solid var(--bdl);margin-top:9px;padding-top:9px}
 .dph{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
@@ -1193,7 +1194,14 @@ async function approveBooking(id){
     } else {
       // Create new patient
       var cfg=window.appCfg||defCfg();
-      var p={id:String(Date.now()),name:b.name,phone:b.phone,age:'',problem:b.problem||'',
+      var p={id:String(Date.now()),name:b.name,phone:b.phone,
+        age:b.age?String(b.age):'',
+        email:b.email||'',
+        problem:b.problem||'',
+        healthConditions:b.healthConditions||[],
+        healthOther:b.healthOther||'',
+        takingMedication:b.takingMedication??null,
+        medications:b.medications||'',
         price:cfg.price||350,color:(window.pts||[]).length%4,patType:b.patType||'adult',
         treatType:'single',series:null,treatments:[]};
       window.pts=[...(window.pts||[]),p];
@@ -1267,7 +1275,7 @@ function renderMonth(){
     var ds=y+'-'+S2(m+1)+'-'+S2(d);
     var isT=ds===ts,isSel=ds===ss&&!isT,isPastDay=ds<ts,aps=ad[ds]||[];
     var dots='';
-    if(aps.length){var hd=aps.some(function(a){var p=findP(a.patientId);return p&&p.treatments&&p.treatments.some(function(t){return !t.paid;});});dots='<div class="ddots"><div class="dd '+(hd?'r':'g')+'"></div></div>';}
+    if(aps.length){var hd=aps.some(function(a){var p=findP(a.patientId);return p&&p.treatments&&p.treatments.some(function(t){return !t.paid;});});dots='<div class="ddots"><div class="dd '+(hd?'r':'g')+'">'+aps.length+'</div></div>';}
     h+='<div class="mday'+(isT?' today':'')+(isSel?' sel':'')+(isPastDay&&!isT?' past':'')+'" data-ds="'+ds+'"><div class="dn" style="'+(isPastDay&&!isT?'color:var(--gr400);':'')+'" >'+d+'</div>'+dots+'</div>';
   }
   var rem=(sdow+dim)%7;if(rem>0)for(var j=1;j<=7-rem;j++)h+='<div class="mday other"><div class="dn">'+j+'</div></div>';
@@ -1596,10 +1604,21 @@ function openPatient(id){
     '</div>'+
     (hd&&window.innerWidth<900?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
     '<div class="ir"><span class="il">גיל</span><span class="iv">'+(p.age||'—')+'</span></div>'+
+    (p.email?'<div class="ir"><span class="il">אימייל</span><span class="iv" style="direction:ltr;text-align:right;">'+p.email+'</span></div>':'')+
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
     '<div class="ir"><span class="il">סוג מטופל</span><span class="iv">'+(p.patType==='baby'?'תינוק':'מבוגר')+'</span></div>'+
     '<div class="ir"><span class="il">סוג טיפול</span><span class="iv">'+(p.treatType==='series'?'סדרה':'יחיד')+'</span></div>'+
-    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪'+(p.price||350).toLocaleString()+'</span></div>';
+    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">₪'+(p.price||350).toLocaleString()+'</span></div>'+
+    (((p.healthConditions&&p.healthConditions.length)||p.healthOther)?
+      '<div style="margin-top:10px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
+      '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:5px;">🏥 מצבים רפואיים</div>'+
+      '<div style="font-size:13px;color:var(--tp);">'+((p.healthConditions||[]).join(' • '))+(p.healthOther?(p.healthConditions&&p.healthConditions.length?' • ':'')+p.healthOther:'')+'</div>'+
+      '</div>':'')+
+    (p.takingMedication===true?
+      '<div style="margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
+      '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:3px;">💊 תרופות</div>'+
+      '<div style="font-size:13px;color:var(--tp);">'+(p.medications||'כן')+'</div>'+
+      '</div>':'');
   infoCard.querySelector('#pf-edit-btn').addEventListener('click',function(){openEdit(id);});
   pfile.appendChild(infoCard);
   if(hd&&window.innerWidth>=900&&fpat){
