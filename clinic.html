@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.0</title>
+<title>קליניקה v6.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -98,9 +98,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .atb{background:var(--sf2);border-radius:var(--rsm);padding:4px 7px;text-align:center;min-width:44px;flex-shrink:0}
 .ath{font-size:13px;font-weight:700;color:var(--ac)}
 /* Week view */
-.wtl{height:48px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
-.wcell{height:48px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer}
-.wappt{height:100%;border-radius:4px;padding:2px 3px;font-size:9px;font-weight:600;display:flex;align-items:center;overflow:hidden;pointer-events:none}
+.wtl{height:72px;display:flex;align-items:flex-start;padding-top:2px;font-size:10px;color:var(--tm);justify-content:center}
+.wcell{height:72px;border-bottom:1px solid var(--bdl);border-right:1px solid var(--bdl);padding:2px;cursor:pointer;min-width:78px}
+.wappt{height:100%;border-radius:4px;padding:4px 5px;font-size:10px;display:flex;flex-direction:column;justify-content:center;gap:1px;overflow:hidden}
+.wappt .wn{font-weight:700;font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wappt .wmeta{font-size:9px;opacity:0.85;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wappt .wcomp{font-size:9px;line-height:1.2;font-style:italic;opacity:0.9;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .wbl{background:var(--b50);color:var(--b600);border-right:3px solid var(--b400)}
 .wrd{background:var(--r50);color:var(--r700);border-right:3px solid var(--r500)}
 .wgr{background:var(--g50);color:var(--g700);border-right:3px solid var(--g400)}
@@ -205,9 +208,31 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .form-field-item input{flex:1;padding:5px 9px;border:1px solid var(--bd);border-radius:6px;font-family:'Heebo',sans-serif;font-size:13px;outline:none;direction:rtl}
 .form-field-item input:focus{border-color:var(--ac)}
 /* Treatment flow */
-.tf-hdr{background:linear-gradient(135deg,var(--g600),var(--g500));padding:13px 15px;color:#fff}
+.tf-wrap{display:block}
+.tf-main{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);overflow:hidden;box-shadow:var(--sh)}
+.tf-side{display:none}
+.tf-side-sec{margin-bottom:14px}
+.tf-side-sec:last-child{margin-bottom:0}
+.tf-side-ttl{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bdl)}
+.tf-side-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;font-size:13px;border-bottom:1px solid var(--bdl)}
+.tf-side-row:last-child{border-bottom:none}
+.tf-side-row .lbl{color:var(--tm);font-size:11px;flex-shrink:0}
+.tf-side-row .val{color:var(--tp);font-weight:500;text-align:left;word-break:break-word}
+.tf-side-health{margin-top:9px;padding:8px 10px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;font-size:12px;color:var(--tp);line-height:1.45}
+.tf-side-health .lbl{font-size:10px;font-weight:700;color:#9b1c1c;margin-bottom:3px;display:block}
+.tf-side-visit{padding:8px 10px;border:1px solid var(--bdl);border-radius:var(--rsm);margin-bottom:7px;background:var(--sf2);font-size:12px;cursor:pointer;transition:background 0.15s,border-color 0.15s}
+.tf-side-visit:last-child{margin-bottom:0}
+.tf-side-visit:hover{background:var(--g50);border-color:var(--g200)}
+.tf-side-visit .vd{font-weight:700;color:var(--ac);font-size:11px;display:flex;justify-content:space-between;align-items:center}
+.tf-side-visit .vd .opn{font-size:10px;color:var(--tm);font-weight:500}
+.tf-side-visit .vt{color:var(--tp);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tf-hdr{background:linear-gradient(135deg,var(--g600),var(--g500));padding:11px 14px;color:#fff;display:flex;align-items:center;gap:11px}
+.tf-hdr-info{flex:1;min-width:0;text-align:left}
+.tf-back{background:rgba(255,255,255,0.18);border:none;border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;flex-shrink:0;padding:0}
+.tf-back svg{width:17px;height:17px}
+.tf-back:hover{background:rgba(255,255,255,0.28)}
 .tf-pt{font-size:17px;font-weight:700}
-.tf-tm{font-size:12px;opacity:0.8;margin-top:2px}
+.tf-tm{font-size:12px;opacity:0.85;margin-top:2px}
 .tf-tabs{display:flex;border-bottom:1px solid var(--bdl)}
 .tf-tab{flex:1;padding:10px;background:none;border:none;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;border-bottom:2px solid transparent}
 .tf-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
@@ -434,6 +459,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .if-input{font-size:14px;padding:9px 12px}
   .tf-pt{font-size:19px}
   .tf-tab{font-size:13px;padding:12px}
+  /* Treatment flow — two columns layout */
+  #screen-treatment-flow{max-width:1100px}
+  .tf-wrap{display:flex;gap:18px;align-items:flex-start}
+  .tf-side{display:block;width:300px;flex-shrink:0;position:sticky;top:0;max-height:calc(100vh - 40px);overflow-y:auto;background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);box-shadow:var(--sh);padding:14px}
+  .tf-main{flex:1;min-width:0}
+  .tf-mobile-carousel{display:none}
 
   /* Buttons */
   .btn{font-size:15px;padding:13px}
@@ -481,7 +512,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.0</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.1</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -497,7 +528,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.0</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.1</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -533,9 +564,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           <button class="vt" id="vt-w">שבועי</button>
         </div>
         <div class="calh">
-          <button class="caln" id="cal-prev">›</button>
+          <button class="caln" id="cal-prev">‹</button>
           <div class="calt" id="calt"></div>
-          <button class="caln" id="cal-next">‹</button>
+          <button class="caln" id="cal-next">›</button>
         </div>
         <div id="calbody"></div>
         <div class="daypanel" id="daypanel">
@@ -734,16 +765,21 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
     <!-- Treatment Flow -->
     <div class="screen" id="screen-treatment-flow">
-      <button class="bbtn" id="back-tf"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>חזרה</button>
-      <div style="background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);overflow:hidden;box-shadow:var(--sh);">
-        <div class="tf-hdr"><div class="tf-pt" id="tf-pt"></div><div class="tf-tm" id="tf-tm"></div></div>
-        <div class="tf-tabs">
-          <button class="tf-tab active" id="tf-tab-intake">תשאול</button>
-          <button class="tf-tab" id="tf-tab-summary">סיכום טיפול</button>
-        </div>
-        <div class="tf-body">
-          <div id="tf-intake-body"></div>
-          <div id="tf-summary-body" class="hidden"></div>
+      <div class="tf-wrap">
+        <aside class="tf-side" id="tf-side"></aside>
+        <div class="tf-main">
+          <div class="tf-hdr">
+            <button class="tf-back" id="back-tf" aria-label="חזרה" title="חזרה"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <div class="tf-hdr-info"><div class="tf-pt" id="tf-pt"></div><div class="tf-tm" id="tf-tm"></div></div>
+          </div>
+          <div class="tf-tabs">
+            <button class="tf-tab active" id="tf-tab-intake">תשאול</button>
+            <button class="tf-tab" id="tf-tab-summary">סיכום טיפול</button>
+          </div>
+          <div class="tf-body">
+            <div id="tf-intake-body"></div>
+            <div id="tf-summary-body" class="hidden"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -813,6 +849,10 @@ window.doSignOut=async function(){
   if(unsubP)unsubP();if(unsubA)unsubA();
   await fbOut(auth);
   window.pts=[];window.apts=[];window.appCfg=defCfg();
+  // Reset navigation state so next sign-in lands on the calendar
+  try{navHistory=[];if(typeof ltoday==='function'){selDate=ltoday();navDate=ltoday();}calView='month';}catch(e){}
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var cal=document.getElementById('screen-calendar');if(cal)cal.classList.add('active');
   document.getElementById('lview').classList.remove('hidden');
   document.getElementById('mview').classList.add('hidden');
 };
@@ -892,6 +932,8 @@ onAuthStateChanged(auth,async function(user){
     setSt('ye','מסתנכרן...');
     try{var s=await getDoc(doc(db,'users',uid,'config','main'));window.appCfg=s.exists()?Object.assign(defCfg(),s.data()):defCfg();}catch(e){window.appCfg=defCfg();}
     applySettings();
+    // Reset navigation: real sign-in should always land on the calendar
+    try{navHistory=[];selDate=ltoday();navDate=ltoday();calView='month';if(typeof showScreen==='function')showScreen('calendar',true);}catch(e){}
     if(unsubP)unsubP();if(unsubA)unsubA();
     var pr=false,ar=false;
     isDemoMode=false; // real Firebase — never load sample data
@@ -1026,7 +1068,9 @@ window._enterDemo=function(){
   document.getElementById('sdot').className='sdot ye';
   document.getElementById('stxt').textContent='דמו — נתונים לא נשמרים';
   applySettings();
-  loadSample().then(function(){render();});
+  // Reset to calendar view (don't show whatever screen was previously open)
+  try{navHistory=[];selDate=ltoday();navDate=ltoday();calView='month';}catch(e){}
+  loadSample().then(function(){render();showScreen('calendar',true);});
   
   }catch(err){alert('שגיאה: '+err.message);console.error(err);}
 };
@@ -1253,7 +1297,8 @@ function setView(v){
   document.getElementById('vt-m').classList.toggle('active',v==='month');
   document.getElementById('vt-w').classList.toggle('active',v==='week');
   document.getElementById('daypanel').style.display=v==='month'?'block':'none';
-  document.getElementById('week-daypanel').style.display=v==='week'?'block':'none';
+  // Weekly view: no separate day panel — week grid itself is rich enough
+  document.getElementById('week-daypanel').style.display='none';
   renderCal();
 }
 function navCal(dir){
@@ -1309,7 +1354,17 @@ function renderWeek(){
       if(appt){
         var p=findP(appt.patientId),hd=p&&p.treatments&&p.treatments.some(function(t){return !t.paid;}),isSer=p&&p.treatType==='series',isBaby=p&&p.patType==='baby';
         var cls=hd?'wrd':isBaby?'wpu':isSer?'wgr':'wbl';
-        h+='<div class="wcell" data-pid="'+appt.patientId+'" data-aid="'+appt.id+'"><div class="wappt '+cls+'">'+(p?p.name.split(' ')[0]:'')+'</div></div>';
+        var nm=p?p.name:'';
+        var ageStr=(p&&p.age)?'גיל '+p.age:'';
+        var phStr=(p&&p.phone)?p.phone:'';
+        var compStr=(p&&p.problem)?p.problem:'';
+        // Phone only in tooltip — it overflows visibly in narrow cells. Age + complaint shown.
+        var tooltip=nm+(ageStr?' · '+ageStr:'')+(phStr?' · '+phStr:'')+(compStr?'\n'+compStr:'');
+        h+='<div class="wcell" data-pid="'+appt.patientId+'" data-aid="'+appt.id+'" title="'+tooltip.replace(/"/g,'&quot;')+'"><div class="wappt '+cls+'">'+
+          '<div class="wn">'+nm+'</div>'+
+          (ageStr?'<div class="wmeta">'+ageStr+'</div>':'')+
+          (compStr?'<div class="wcomp">'+compStr+'</div>':'')+
+          '</div></div>';
       } else if(!avail||isPast){
         h+='<div class="wcell" data-ds="'+ds+'" data-hr="'+hr+'" style="background:var(--sf2);opacity:0.4;cursor:pointer;"></div>';
       } else {
@@ -1319,37 +1374,25 @@ function renderWeek(){
   });
   var cb=document.getElementById('calbody');
   cb.innerHTML=h+'</div></div>';
-  // Wire day header clicks
-  cb.querySelectorAll('[data-wds]').forEach(function(el){
-    el.addEventListener('click',function(){
-      selDate=sToD(this.dataset.wds);
-      var wdp=document.getElementById('week-daypanel');
-      wdp.innerHTML=''; // clear immediately
-      wdp.style.display='block';
-      renderWeekDayPanel();
-    });
-  });
+  // Day headers are non-interactive in week view now (no separate day panel)
   cb.querySelectorAll('.wcell[data-pid]').forEach(function(el){
     (function(pid,aid){
-      el.addEventListener('click',function(e){openPatient(pid);});
       var nameEl=el.querySelector('.wappt');
       if(nameEl){
         nameEl.style.cursor='pointer';
-        nameEl.title='לחץ לפתיחת טיפול';
         nameEl.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid,aid);});
       }
+      // Outside the name pill — open patient file (less likely target now that pill fills cell)
+      el.addEventListener('click',function(e){if(e.target===el)openPatient(pid);});
     })(el.dataset.pid,el.dataset.aid);
   });
   cb.querySelectorAll('.wcell[data-ds]:not([data-pid])').forEach(function(el){
     el.addEventListener('click',function(){selectWeekDay(this.dataset.ds,this.dataset.hr);});
   });
-  // Day panel below week grid — show selected day
-  renderWeekDayPanel();
 }
 
 function selectWeekDay(ds,hr){
   selDate=sToD(ds);
-  renderWeekDayPanel();
   // Only open new appt if future date AND valid slot
   if(hr&&ds>=todayStr()){
     var slots=getSlots(ds);
@@ -1878,9 +1921,14 @@ function buildCarousel(container,p,prevTreats){
   });
   carousel.appendChild(slideContainer);
 
+  // Refs filled in if multiple slides; goTo handles nulls safely
+  var dotsEl=null,prevArrow=null,nextArrow=null;
+
   // goTo: simple show/hide — works 100% of the time
   function goTo(n){
-    carIdx=Math.max(0,Math.min(n,carTotal-1));
+    var target=Math.max(0,Math.min(n,carTotal-1));
+    if(target===carIdx)return; // no-op at edges (prevents pointless animation)
+    carIdx=target;
     slides.forEach(function(s,i){
       if(i===carIdx){s.style.display='block';s.classList.remove('car-slide-in');void s.offsetWidth;s.classList.add('car-slide-in');}
       else{s.style.display='none';}
@@ -1891,10 +1939,24 @@ function buildCarousel(container,p,prevTreats){
         d.style.background=i===carIdx?'var(--ac)':'var(--bdl)';
       });
     }
+    updateArrows();
+  }
+  function updateArrows(){
+    if(prevArrow){
+      var atNewest=carIdx===0;
+      prevArrow.disabled=atNewest;
+      prevArrow.style.opacity=atNewest?'0.3':'1';
+      prevArrow.style.cursor=atNewest?'not-allowed':'pointer';
+    }
+    if(nextArrow){
+      var atOldest=carIdx===carTotal-1;
+      nextArrow.disabled=atOldest;
+      nextArrow.style.opacity=atOldest?'0.3':'1';
+      nextArrow.style.cursor=atOldest?'not-allowed':'pointer';
+    }
   }
 
   // Dots (only if multiple slides)
-  var dotsEl=null;
   if(carTotal>1){
     dotsEl=document.createElement('div');
     dotsEl.style.cssText='display:flex;justify-content:center;gap:7px;margin-top:9px;';
@@ -1909,17 +1971,17 @@ function buildCarousel(container,p,prevTreats){
     // Arrow buttons
     var arrows=document.createElement('div');
     arrows.style.cssText='display:flex;justify-content:space-between;margin-top:6px;';
-    var prevArrow=document.createElement('button');
-    prevArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:14px;cursor:pointer;color:var(--ac);';
+    prevArrow=document.createElement('button');
+    prevArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:11px;color:var(--ac);';
     prevArrow.textContent='← חדש יותר';
-    prevArrow.style.fontSize='11px';
-    prevArrow.addEventListener('click',function(){goTo(carIdx-1);});
-    var nextArrow=document.createElement('button');
-    nextArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:11px;cursor:pointer;color:var(--ac);';
+    prevArrow.addEventListener('click',function(){if(!prevArrow.disabled)goTo(carIdx-1);});
+    nextArrow=document.createElement('button');
+    nextArrow.style.cssText='background:none;border:1px solid var(--bd);border-radius:var(--rsm);padding:3px 10px;font-size:11px;color:var(--ac);';
     nextArrow.textContent='ישן יותר →';
-    nextArrow.addEventListener('click',function(){goTo(carIdx+1);});
+    nextArrow.addEventListener('click',function(){if(!nextArrow.disabled)goTo(carIdx+1);});
     arrows.appendChild(prevArrow);arrows.appendChild(nextArrow);
     carousel.appendChild(arrows);
+    updateArrows(); // set initial state (at index 0, "newer" disabled)
 
     // Touch swipe on slide container
     var tx0=0;
@@ -1957,18 +2019,51 @@ function buildTF(p,a,tdate,treatNum){
   // Show carousel only for the LAST treatment (highest num)
   var maxNum=Math.max.apply(null,(p.treatments||[]).map(function(t){return t.num;}).concat([0]));
   var isLastTreatment=tNum>maxNum||(existingT&&existingT.num===maxNum);
-  var prevTreats=isLastTreatment?(p.treatments||[]).filter(function(t){return t.num<tNum;}).sort(function(a2,b){return b.num-a2.num;}).slice(0,3):[];
+  var prevTreats=isLastTreatment?(p.treatments||[]).filter(function(t){return t.num<tNum;}).sort(function(a2,b){return b.num-a2.num;}):[];
 
   var intakeEl=document.getElementById('tf-intake-body');
   intakeEl.innerHTML='';
 
-  // Show previous visits carousel only for latest treatment
-  if(prevTreats.length>0)buildCarousel(intakeEl,p,prevTreats);
+  // Populate side panel (visible on desktop only via CSS)
+  var sideEl=document.getElementById('tf-side');
+  if(sideEl){
+    var sh='';
+    sh+='<div class="tf-side-sec"><div class="tf-side-ttl">סיכום מטופל</div>';
+    if(p.age)sh+='<div class="tf-side-row"><span class="lbl">גיל</span><span class="val">'+p.age+(p.patType==='baby'?' 👶':'')+'</span></div>';
+    if(p.phone)sh+='<div class="tf-side-row"><span class="lbl">טלפון</span><span class="val" style="direction:ltr">'+p.phone+'</span></div>';
+    if(p.email)sh+='<div class="tf-side-row"><span class="lbl">אימייל</span><span class="val" style="direction:ltr;font-size:11px">'+p.email+'</span></div>';
+    if(p.problem)sh+='<div class="tf-side-row"><span class="lbl">תלונה</span><span class="val">'+p.problem+'</span></div>';
+    if((p.healthConditions&&p.healthConditions.length)||p.healthOther){
+      var hc=(p.healthConditions||[]).join(' • ');
+      if(p.healthOther)hc+=(hc?' • ':'')+p.healthOther;
+      sh+='<div class="tf-side-health"><span class="lbl">🏥 מצבים רפואיים</span>'+hc+'</div>';
+    }
+    if(p.takingMedication===true){
+      sh+='<div class="tf-side-health"><span class="lbl">💊 תרופות</span>'+(p.medications||'כן')+'</div>';
+    }
+    sh+='</div>';
+    if(prevTreats.length>0){
+      sh+='<div class="tf-side-sec"><div class="tf-side-ttl">📋 ביקורים קודמים ('+prevTreats.length+')</div>';
+      prevTreats.forEach(function(t){
+        var snippet=String(t.done||t.tcs||t.found||t.recommend||'').replace(/\s+/g,' ').trim().slice(0,120);
+        sh+='<div class="tf-side-visit" data-tnum="'+t.num+'" title="לחץ לפתיחת הטיפול"><div class="vd"><span>טיפול '+t.num+' · '+t.date+'</span><span class="opn">פתח ›</span></div>'+(snippet?'<div class="vt">'+snippet+'</div>':'')+'</div>';
+      });
+      sh+='</div>';
+    }
+    sideEl.innerHTML=sh;
+    // Wire previous-visit clicks
+    sideEl.querySelectorAll('.tf-side-visit').forEach(function(el){
+      el.addEventListener('click',function(){openEditTreatment(p.id,parseInt(this.dataset.tnum));});
+    });
+  }
 
-  // Skip button
-  var skipBtn=document.createElement('button');skipBtn.className='btn bp';skipBtn.style.cssText='font-size:12px;margin-bottom:12px;';skipBtn.textContent='דלג לסיכום טיפול ←';
-  skipBtn.addEventListener('click',function(){tfSetTab('summary');});
-  intakeEl.appendChild(skipBtn);
+  // Show previous visits carousel only for latest treatment (mobile only via CSS)
+  if(prevTreats.length>0){
+    var mCarWrap=document.createElement('div');
+    mCarWrap.className='tf-mobile-carousel';
+    intakeEl.appendChild(mCarWrap);
+    buildCarousel(mCarWrap,p,prevTreats);
+  }
 
   // Fields
   var secDiv=document.createElement('div');secDiv.className='tf-sec';
@@ -2139,10 +2234,34 @@ function renderDebts(){
   });
 }
 
+function askPayMethod(){
+  return new Promise(function(resolve){
+    var old=document.getElementById('pay-method-ov');if(old)old.remove();
+    var ov=document.createElement('div');ov.id='pay-method-ov';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:350;display:flex;align-items:center;justify-content:center;padding:18px;';
+    var sheet=document.createElement('div');
+    sheet.style.cssText='background:var(--sf);border-radius:var(--rlg);padding:22px 18px;width:100%;max-width:340px;box-shadow:var(--sh);';
+    sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;">אמצעי תשלום</div>'+
+      '<div style="font-size:12px;color:var(--tm);text-align:center;margin-bottom:16px;">איך שולם הטיפול?</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;" id="pm-opts">'+
+      ['מזומן','העברה','אשראי','ביט'].map(function(m){return '<button class="chip" data-m="'+m+'" style="padding:9px 16px;font-size:13px;">'+m+'</button>';}).join('')+
+      '</div>'+
+      '<button class="btn bs" id="pm-cancel" style="margin-top:0;">ביטול</button>';
+    ov.appendChild(sheet);document.body.appendChild(ov);
+    ov.querySelectorAll('#pm-opts [data-m]').forEach(function(b){
+      b.addEventListener('click',function(){var m=this.dataset.m;ov.remove();resolve(m);});
+    });
+    document.getElementById('pm-cancel').addEventListener('click',function(){ov.remove();resolve(null);});
+    ov.addEventListener('click',function(e){if(e.target===ov){ov.remove();resolve(null);}});
+  });
+}
 async function mkPaid(pid,num){
   num=parseInt(num);var p=findP(pid);if(!p)return;
   var t=p.treatments.find(function(x){return x.num===num;});
-  if(t){t.paid=true;t.method=t.method||'מזומן';}
+  if(!t)return;
+  var method=await askPayMethod();
+  if(!method)return; // user cancelled
+  t.paid=true;t.method=method;
   var sc=document.getElementById('screen-patient-file');
   var sv=sc?sc.scrollTop:0;
   await window.fbSaveP(p);
@@ -2475,7 +2594,7 @@ function showScreen(name,skipHistory){
   var nav=document.querySelector('.bnav');if(nav)nav.style.display='flex';
   if(name==='calendar'){
     document.getElementById('daypanel').style.display=calView==='month'?'block':'none';
-    document.getElementById('week-daypanel').style.display=calView==='week'?'block':'none';
+    document.getElementById('week-daypanel').style.display='none';
     renderCal();
   }
   if(name==='patients')renderPatients();
@@ -2509,8 +2628,9 @@ document.addEventListener('DOMContentLoaded',function(){
   // Calendar
   document.getElementById('vt-m').onclick=function(){setView('month');};
   document.getElementById('vt-w').onclick=function(){setView('week');};
-  document.getElementById('cal-prev').onclick=function(){navCal(1);};
-  document.getElementById('cal-next').onclick=function(){navCal(-1);};
+  // RTL convention: right chevron = previous (back in time), left chevron = next (forward)
+  document.getElementById('cal-prev').onclick=function(){navCal(-1);};
+  document.getElementById('cal-next').onclick=function(){navCal(1);};
   document.getElementById('dpadd-btn').onclick=function(){openNewApptForDay();};
 
   // Patient search
