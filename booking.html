@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.8</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.9</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -411,22 +411,36 @@ function todayD(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),
 function todayStr(){return dstr(todayD());}
 function monthAhead(n){var d=new Date();d.setMonth(d.getMonth()+n);return d;}
 
-// Compute slots for a given date string based on schedule
+// Compute slots for a given date string — 15-min granularity, per-day overrides, buffer
+function hmToMin(s){if(!s)return 0;var p=String(s).split(':');return parseInt(p[0])*60+parseInt(p[1]||0);}
+function minToHM(m){return S2(Math.floor(m/60))+':'+S2(m%60);}
 function getSlots(ds){
-  if(!availability||!availability.schedule)return[];
+  if(!availability)return[];
   var d=new Date(ds.split('-')[0],parseInt(ds.split('-')[1])-1,parseInt(ds.split('-')[2]));
-  var dow=d.getDay();
-  var day=availability.schedule[dow];
-  if(!day||!day.active)return[];
-  var dur=parseInt(availability.duration||60);
+  // Per-date override beats weekday default
+  var ovr=(availability.scheduleOverrides||{})[ds];
+  var day=ovr||((availability.schedule||{})[d.getDay()]);
+  if(!day||!day.active||!day.ranges||!day.ranges.length)return[];
+  // For public booking: assume first-treatment duration (longer) as the slot length, so we don't
+  // suggest a 60-min slot that would actually overlap an existing 75-min first treatment.
+  var dur=parseInt(availability.durationFirst||availability.duration||60);
+  var brk=parseInt(availability.breakMins||0);
+  var GRAN=15;
+  var occ=(availability.taken||[]).filter(function(a){return a.date===ds;}).map(function(a){
+    var s=hmToMin(a.time);
+    var aDur=parseInt(a.duration||availability.duration||60);
+    return {s:s,e:s+aDur+brk};
+  });
   var slots=[];
   (day.ranges||[]).forEach(function(r){
-    var sh=parseInt(r.s),eh=parseInt(r.e);
-    var totalMins=(eh-sh)*60;
-    var steps=Math.floor(totalMins/dur);
-    for(var i=0;i<steps;i++){
-      var mins=sh*60+i*dur;
-      slots.push(S2(Math.floor(mins/60))+':'+S2(mins%60));
+    var rs=hmToMin(r.s),re=hmToMin(r.e);
+    for(var t=rs;t+dur<=re;t+=GRAN){
+      var ok=true;
+      for(var i=0;i<occ.length;i++){
+        var b=occ[i];
+        if(t<b.e&&b.s<t+dur+brk){ok=false;break;}
+      }
+      if(ok)slots.push(minToHM(t));
     }
   });
   return slots;
@@ -475,19 +489,18 @@ function takenAt(ds){
 function availableSlots(ds){
   var ts=todayStr();
   if(ds<ts)return[];
+  // Public window: book at most 14 days ahead
+  var maxAhead=new Date();maxAhead.setDate(maxAhead.getDate()+14);
+  if(ds>dstr(maxAhead))return[];
+  // getSlots already excludes taken+buffer; only filter today's past hours
   var all=getSlots(ds);
-  var taken=takenAt(ds);
-  // For today, hide past hours
   var now=new Date();
   var isToday=ds===ts;
   var nowM=now.getHours()*60+now.getMinutes();
+  if(!isToday)return all;
   return all.filter(function(t){
-    if(taken.indexOf(t)>=0)return false;
-    if(isToday){
-      var h=parseInt(t.split(':')[0]),m=parseInt(t.split(':')[1]);
-      if(h*60+m<=nowM+15)return false; // need at least 15 min buffer
-    }
-    return true;
+    var h=parseInt(t.split(':')[0]),m=parseInt(t.split(':')[1]);
+    return h*60+m>nowM+15; // need at least 15 min buffer from now
   });
 }
 
@@ -496,10 +509,11 @@ function renderCalendar(){
   var y=viewMonth.getFullYear(),m=viewMonth.getMonth();
   document.getElementById('calt').textContent=HM[m]+' '+y;
 
-  // Limit navigation: cannot go back past current month, max 3 months ahead
+  // Limit navigation: cannot go back, and cannot go past the month containing now+14d
   var today=todayD();
   var minM=new Date(today.getFullYear(),today.getMonth(),1);
-  var maxM=new Date(today.getFullYear(),today.getMonth()+3,1);
+  var lastBookable=new Date();lastBookable.setDate(lastBookable.getDate()+14);
+  var maxM=new Date(lastBookable.getFullYear(),lastBookable.getMonth(),1);
   document.getElementById('cal-next').disabled=viewMonth<=minM;
   document.getElementById('cal-prev').disabled=viewMonth>=maxM;
 

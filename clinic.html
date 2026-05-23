@@ -602,7 +602,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         </div>
         <div id="calbody"></div>
         <div class="daypanel" id="daypanel">
-          <div class="dph"><div class="dpt" id="dptitle"></div><button class="dpadd" id="dpadd-btn">+ תור</button></div>
+          <div class="dph">
+            <div class="dpt" id="dptitle"></div>
+            <div style="display:flex;gap:6px;">
+              <button class="dpadd" id="dpedit-hours-btn" style="background:none;color:var(--ac);border:1px solid var(--ac);">⏰ ערוך שעות יום</button>
+              <button class="dpadd" id="dpadd-btn">+ תור</button>
+            </div>
+          </div>
           <div id="dplist"></div>
         </div>
         <div id="week-daypanel" class="daypanel" style="display:none;"></div>
@@ -912,13 +918,18 @@ function syncPublicAvailability(){
     if(!uid)return;
     try{
       var cfg=window.appCfg||defCfg();
-      // Only include future taken slots (today onward) to keep public doc small
+      // Only include future taken slots within the public window (14 days) to keep doc small
       var ts=todayStr();
-      var taken=(window.apts||[]).filter(function(a){return a.date>=ts;}).map(function(a){return {date:a.date,time:a.time};});
+      var maxDate=new Date();maxDate.setDate(maxDate.getDate()+14);var maxStr=dstr(maxDate);
+      var taken=(window.apts||[]).filter(function(a){return a.date>=ts&&a.date<=maxStr;}).map(function(a){return {date:a.date,time:a.time,duration:a.duration||cfg.durationFollowup||60};});
       await setDoc(doc(db,'publicData','main'),{
         schedule:cfg.schedule||{},
-        duration:cfg.duration||60,
+        scheduleOverrides:cfg.scheduleOverrides||{},
+        duration:cfg.durationFollowup||cfg.duration||60,
+        durationFirst:cfg.durationFirst||cfg.durationFollowup||75,
+        breakMins:cfg.breakMins||0,
         taken:taken,
+        publicDaysAhead:14,
         updatedAt:Date.now()
       });
     }catch(e){console.warn('Public availability sync failed:',e);}
@@ -1358,7 +1369,7 @@ async function approveBooking(id){
       pid=p.id;
     }
     // 2. Create appointment
-    var apt={id:String(Date.now()+1),patientId:String(pid),date:b.date,time:b.time,notes:b.problem||''};
+    var apt={id:String(Date.now()+1),patientId:String(pid),date:b.date,time:b.time,duration:getTreatmentDuration({treatments:[]},1),notes:b.problem||''};
     window.apts=[...(window.apts||[]),apt];
     await window.fbSaveA(apt);
     // 3. Delete the booking request
@@ -1576,8 +1587,13 @@ function renderDayPanel(){
   var ad=adMap();
   var dayApts=(ad[ds]||[]).sort(function(a,b){return a.time.localeCompare(b.time);});
   var avail=getSlots(ds).length>0;
-  document.getElementById('dptitle').textContent=DFL[selDate.getDay()]+', '+selDate.getDate()+' '+HM[selDate.getMonth()];
+  var cfgDP=window.appCfg||defCfg();
+  var isOverride=!!(cfgDP.scheduleOverrides&&cfgDP.scheduleOverrides[ds]);
+  document.getElementById('dptitle').innerHTML=DFL[selDate.getDay()]+', '+selDate.getDate()+' '+HM[selDate.getMonth()]+
+    (isOverride?'<span style="font-size:10px;color:var(--a700);background:var(--a50);border-radius:8px;padding:1px 8px;margin-right:6px;border:1px solid var(--a100);">שעות מותאמות</span>':'');
   document.getElementById('dpadd-btn').style.display=(isPast||!avail)?'none':'block';
+  // Edit-hours button hidden for past dates
+  var dehBtn2=document.getElementById('dpedit-hours-btn');if(dehBtn2)dehBtn2.style.display=isPast?'none':'block';
   var list=document.getElementById('dplist');
   list.innerHTML='';
   if(!dayApts.length){
@@ -2505,6 +2521,72 @@ function openSeriesEditor(pid){
     ov.remove();render();openPatient(pid);
   });
 }
+// ---- DAY-LEVEL SCHEDULE OVERRIDES ----
+function openDayHoursEditor(ds){
+  var cfg=window.appCfg||defCfg();
+  if(!cfg.scheduleOverrides)cfg.scheduleOverrides={};
+  var dow=sToD(ds).getDay();
+  var weekdayDef=(cfg.schedule||{})[dow]||{active:false,ranges:[]};
+  var current=cfg.scheduleOverrides[ds]||JSON.parse(JSON.stringify(weekdayDef));
+  var old=document.getElementById('day-hrs-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='day-hrs-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:360;display:flex;align-items:center;justify-content:center;padding:18px;';
+  var sheet=document.createElement('div');
+  sheet.style.cssText='background:var(--sf);border-radius:var(--rlg);padding:20px 18px;width:100%;max-width:380px;box-shadow:var(--sh);max-height:90vh;overflow-y:auto;';
+  var isOverride=!!cfg.scheduleOverrides[ds];
+  function render(){
+    var rangesHTML=(current.ranges||[]).map(function(r,i){
+      return '<div class="dh-rng" data-i="'+i+'">'+
+        '<input type="time" class="fi" value="'+r.s+'" data-f="s" style="width:auto;padding:5px 8px;"/>'+
+        ' עד '+
+        '<input type="time" class="fi" value="'+r.e+'" data-f="e" style="width:auto;padding:5px 8px;"/>'+
+        ' <button class="pbtn pbtn-r" data-del="'+i+'">✕</button>'+
+        '</div>';
+    }).join('');
+    sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:6px;text-align:center;">⏰ שעות עבודה ל-'+ds+'</div>'+
+      '<div style="font-size:11px;color:var(--tm);text-align:center;margin-bottom:14px;">'+(isOverride?'⚠ יום זה משתמש בשעות מותאמות אישית':'ברירת מחדל לפי יום בשבוע')+'</div>'+
+      '<div class="fm"><label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" id="dh-active" '+(current.active?'checked':'')+'/> יום פעיל (אפשר לקבוע תורים)</label></div>'+
+      '<div id="dh-ranges" style="margin-bottom:10px;">'+rangesHTML+'</div>'+
+      '<button class="pbtn pbtn-gray" id="dh-add-rng" style="width:100%;margin-bottom:14px;">+ הוסף טווח שעות</button>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">'+
+      (isOverride?'<button class="btn bs" id="dh-reset" style="flex:1;margin-top:0;">↩ חזור לברירת מחדל</button>':'')+
+      '<button class="btn bs" id="dh-cancel" style="flex:1;margin-top:0;">ביטול</button>'+
+      '<button class="btn bp" id="dh-save" style="flex:1;margin-top:0;">שמור</button>'+
+      '</div>';
+    // Wire range inputs (live update)
+    sheet.querySelectorAll('.dh-rng').forEach(function(el){
+      var i=parseInt(el.dataset.i);
+      el.querySelectorAll('input[data-f]').forEach(function(inp){
+        inp.addEventListener('change',function(){current.ranges[i][this.dataset.f]=this.value;});
+      });
+      var del=el.querySelector('[data-del]');
+      del.addEventListener('click',function(){current.ranges.splice(i,1);render();});
+    });
+    sheet.querySelector('#dh-add-rng').addEventListener('click',function(){
+      if(!current.ranges)current.ranges=[];
+      current.ranges.push({s:'10:00',e:'14:00'});render();
+    });
+    sheet.querySelector('#dh-active').addEventListener('change',function(){current.active=this.checked;});
+    sheet.querySelector('#dh-cancel').addEventListener('click',function(){ov.remove();});
+    var resetBtn=sheet.querySelector('#dh-reset');
+    if(resetBtn)resetBtn.addEventListener('click',async function(){
+      delete cfg.scheduleOverrides[ds];window.appCfg=cfg;
+      await window.fbSaveCfg(cfg);ov.remove();renderCal();renderDayPanel();
+    });
+    sheet.querySelector('#dh-save').addEventListener('click',async function(){
+      // Validate ranges
+      var bad=(current.ranges||[]).some(function(r){return !r.s||!r.e||r.s>=r.e;});
+      if(bad){alert('יש טווח לא תקין (שעת סיום חייבת להיות אחרי שעת התחלה)');return;}
+      cfg.scheduleOverrides[ds]={active:!!current.active,ranges:current.ranges||[]};
+      window.appCfg=cfg;await window.fbSaveCfg(cfg);
+      ov.remove();renderCal();renderDayPanel();
+    });
+  }
+  ov.appendChild(sheet);document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  render();
+}
+
 async function endSeries(pid){
   var p=findP(String(pid));if(!p||!p.series)return;
   if(!confirm('לסיים את הסדרה? הטיפולים הבאים יחושבו לפי מחיר טיפול המשך מההגדרות.'))return;
@@ -2819,7 +2901,11 @@ async function addAppointment(){
   if(!availSlots.includes(time)){err.style.color='var(--r500)';err.textContent='השעה '+time+' אינה בשעות הזמינות';err.style.display='block';return;}
   var ad=adMap();if((ad[date]||[]).some(function(a){return a.time===time;})){err.style.color='var(--r500)';err.textContent='כבר יש תור בשעה '+time;err.style.display='block';return;}
   err.style.color='var(--ac)';err.textContent='✓ התור נקבע בהצלחה!';err.style.display='block';
-  var a={id:String(Date.now()),patientId:pid,date:date,time:time,notes:document.getElementById('na-nt').value};
+  // Stamp the appointment with the duration it will block — first treatment is longer
+  var p=findP(pid);
+  var nextNum=p?((p.treatments||[]).length+1):1;
+  var aDur=getTreatmentDuration(p||{},nextNum);
+  var a={id:String(Date.now()),patientId:pid,date:date,time:time,duration:aDur,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
   selDate=sToD(date);navDate=new Date(selDate);
   document.getElementById('gcal-btn').classList.remove('hidden');
@@ -2922,6 +3008,8 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('cal-prev').onclick=function(){navCal(-1);};
   document.getElementById('cal-next').onclick=function(){navCal(1);};
   document.getElementById('dpadd-btn').onclick=function(){openNewApptForDay();};
+  var dehBtn=document.getElementById('dpedit-hours-btn');
+  if(dehBtn)dehBtn.onclick=function(){openDayHoursEditor(dstr(selDate));};
 
   // Patient search
   document.getElementById('pt-search').oninput=function(){renderPatients(this.value);};
