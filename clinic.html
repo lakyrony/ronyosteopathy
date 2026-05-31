@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.4</title>
+<title>קליניקה v6.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -129,6 +129,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .wcal-now::before{content:'';position:absolute;right:-4px;top:-3px;width:8px;height:8px;background:#e53e3e;border-radius:50%}
 .wcal-ev{position:absolute;border-radius:4px;padding:3px 5px;overflow:hidden;cursor:pointer;font-size:10px;line-height:1.15;box-sizing:border-box;border:1px solid rgba(0,0,0,0.05);z-index:2;transition:filter 0.15s,box-shadow 0.15s}
 .wcal-ev:hover{filter:brightness(0.96);box-shadow:0 1px 4px rgba(60,40,20,0.18);z-index:3}
+.wcal-ev .wcal-act{position:absolute;top:1px;left:1px;display:none;gap:2px;z-index:4}
+.wcal-ev:hover .wcal-act{display:flex}
+.wcal-ev .wcal-act button{background:rgba(255,255,255,0.92);border:1px solid rgba(0,0,0,0.08);border-radius:4px;width:18px;height:18px;font-size:10px;cursor:pointer;color:var(--tp);padding:0;line-height:1;font-family:'Heebo',sans-serif;display:flex;align-items:center;justify-content:center}
+.wcal-ev .wcal-act button:hover{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.wcal-ev .wcal-act .wcal-del:hover{color:var(--r500);border-color:var(--r100)}
+.wcal-ev .wcal-act .wcal-edit:hover{color:var(--ac);border-color:var(--g200)}
 .wcal-ev .wn{font-weight:700;font-size:10px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wcal-ev .wmeta{font-size:9px;opacity:0.9;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wcal-ev .wcomp{font-size:9px;line-height:1.2;font-style:italic;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -236,10 +242,17 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .set-form-btn{width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:none;border:0;border-bottom:1px solid var(--bdl);font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--tp);cursor:pointer;text-align:right}
 .set-form-btn:last-child{border-bottom:none}
 .set-form-btn:active{background:var(--sf2)}
-.form-field-item{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl)}
+.form-field-item{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--bdl);background:var(--sf);transition:background .12s,opacity .12s,transform .12s}
 .form-field-item:last-child{border-bottom:none}
 .form-field-item input{flex:1;padding:5px 9px;border:1px solid var(--bd);border-radius:6px;font-family:'Heebo',sans-serif;font-size:13px;outline:none;direction:rtl}
 .form-field-item input:focus{border-color:var(--ac)}
+.form-field-item.dragging{opacity:.45;background:var(--g50)}
+.form-field-item.drop-target{box-shadow:inset 0 2px 0 var(--ac)}
+.ff-drag{cursor:grab;user-select:none;color:var(--tm);font-size:14px;padding:2px 4px;flex-shrink:0;line-height:1}
+.ff-drag:active{cursor:grabbing}
+.ff-up,.ff-down{background:var(--sf2);border:1px solid var(--bdl);border-radius:5px;width:22px;height:22px;font-size:11px;cursor:pointer;color:var(--tm);font-family:'Heebo',sans-serif;line-height:1;padding:0;flex-shrink:0}
+.ff-up:hover,.ff-down:hover{background:var(--g50);color:var(--ac);border-color:var(--g200)}
+.ff-up:disabled,.ff-down:disabled{opacity:.3;cursor:not-allowed}
 /* Treatment flow */
 .tf-wrap{display:block}
 .tf-main{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);overflow:hidden;box-shadow:var(--sh)}
@@ -580,7 +593,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.4</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.5</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -596,7 +609,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.4</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.5</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -612,6 +625,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   </div>
   <aside id="alerts-panel">
     <div class="ap-head"><span>התראות</span><button class="ap-toggle-btn" id="ap-hide-btn" title="הסתר חלונית" aria-label="הסתר חלונית">✕</button></div>
+    <div id="ap-blocked-msg" style="display:none;background:#fff3cd;border:1px solid #f0d678;color:#7a5a14;border-radius:8px;padding:8px 10px;font-size:11.5px;line-height:1.45;">
+      לא ניתן להסתיר — יש בקשת/בקשות תור שממתינות לאישור.
+    </div>
     <div class="ap-group">
       <div class="ap-sub">כלל המטופלים</div>
       <div class="abar" id="abar"></div>
@@ -848,6 +864,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm">
           <label class="fl">משך טיפול (דק׳) — אופציונלי</label>
           <input class="fi" id="na-dur" type="number" min="10" max="240" step="5" placeholder="ברירת מחדל לפי סוג הטיפול"/>
+        </div>
+        <div class="fm">
+          <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tp);cursor:pointer;padding:6px 0;">
+            <input type="checkbox" id="na-skip-break" style="width:16px;height:16px;cursor:pointer;"/>
+            <span>וותר על ההפסקה לפני / אחרי תור זה</span>
+          </label>
+          <div style="font-size:10.5px;color:var(--tm);line-height:1.4;">מאפשר לקבוע צמוד לתור קיים (לדוגמה: 60 דק׳ ב-16:00 → תור נוסף ב-17:00 במקום 17:15).</div>
         </div>
         <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה..."/></div>
         <div id="na-err" style="font-size:12px;margin-top:3px;display:none;"></div>
@@ -1225,11 +1248,12 @@ function getSlots(ds){
   var TREAT=60;            // slot window: 1-hour treatment minimum (for fitting in working hours)
   var STEP=60;             // hourly cadence between slots
   // Each existing appt blocks ITS ACTUAL duration + trailing break (then the therapist is free)
+  // (appts with skipBreak=true don't reserve the trailing break — back-to-back booking allowed)
   var apts=(window.apts||[]).filter(function(a){return a.date===ds;})
     .map(function(a){
       var s=hmToMin(a.time);
       var dur=parseInt(a.duration)||TREAT;
-      return {s:s,e:s+dur+brk};
+      return {s:s,e:s+dur+(a.skipBreak?0:brk)};
     })
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
@@ -1369,6 +1393,8 @@ function renderAlerts(){
   bar.innerHTML=rows.join('');
   var emptyEl=document.getElementById('abar-empty');
   if(emptyEl)emptyEl.classList.toggle('ap-show',rows.length===0);
+  // Lock the close button while bookings are pending
+  if(typeof syncAlertsLockState==='function')syncAlertsLockState();
   // Event listeners on alerts
   bar.querySelectorAll('[data-nav]').forEach(function(el){
     el.addEventListener('click',function(){showScreen(this.dataset.nav);});
@@ -1648,9 +1674,15 @@ function renderWeek(){
       var tooltip=nm+(ageStr?' · '+ageStr:'')+(phStr?' · '+phStr:'')+'\n'+a.time+' – '+endHM+(compStr?'\n'+compStr:'');
       // Density-based content: show name always; meta + complaint only if event is tall enough
       var showMeta=hgt>=34,showComp=hgt>=50;
+      var isPastAppt=ds<ts||(ds===ts&&(s+dur)<=(new Date().getHours()*60+new Date().getMinutes()));
+      var actHTML='<div class="wcal-act">'+
+        (isPastAppt?'':'<button class="wcal-edit" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="ערוך זמן תור">✎</button>')+
+        (isPastAppt?'':'<button class="wcal-del" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="ביטול תור">✕</button>')+
+        '</div>';
       evHTML+='<div class="wcal-ev '+cls+'" data-pid="'+a.patientId+'" data-aid="'+a.id+'" '+
         'style="top:'+top+'px;height:'+hgt+'px;left:2px;right:2px;" '+
         'title="'+tooltip.replace(/"/g,'&quot;')+'">'+
+        actHTML+
         '<div class="wn">'+nm+'</div>'+
         (showMeta?'<div class="wt">'+a.time+'</div>':'')+
         (showMeta&&ageStr?'<div class="wmeta">'+ageStr+'</div>':'')+
@@ -1703,16 +1735,22 @@ function renderWeek(){
   },0);
 
   // ---- Wire interactions ----
-  // Event clicks → patient name opens treatment, rest of event opens patient file
+  // Event clicks → ALWAYS open the treatment flow (the patient card is reachable from there).
+  // Mini-buttons on hover: ✎ edit time / ✕ cancel (don't bubble to the event click).
   cb.querySelectorAll('.wcal-ev').forEach(function(el){
     (function(pid,aid){
       el.addEventListener('click',function(e){
+        if(e.target.closest('.wcal-act'))return; // action buttons handle themselves
         e.stopPropagation();
-        // Click on the name pill specifically → treatment flow; otherwise → patient file
-        if(e.target.classList&&(e.target.classList.contains('wn')||e.target.classList.contains('wt')))openTreatFlow(pid,aid);
-        else openPatient(pid);
+        openTreatFlow(pid,aid);
       });
     })(el.dataset.pid,el.dataset.aid);
+  });
+  cb.querySelectorAll('.wcal-edit').forEach(function(b){
+    b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();editApptTime(this.dataset.aid);});
+  });
+  cb.querySelectorAll('.wcal-del').forEach(function(b){
+    b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();delAppt(this.dataset.aid,this.dataset.pid);});
   });
   // Click on empty space in a day column → create new appt (snap to nearest 15 min)
   cb.querySelectorAll('.wcal-day').forEach(function(col){
@@ -1892,13 +1930,23 @@ function renderDayPanel(){
       cancelWrap.appendChild(delBtn);
       row.appendChild(cancelWrap);
     }
+    // Add a small "edit time" button next to cancel (only for future appts)
+    if(!isApptPast){
+      var editBtn=document.createElement('button');
+      editBtn.className='pbtn pbtn-ac';
+      editBtn.style.cssText='font-size:10px;padding:2px 8px;align-self:flex-start;';
+      editBtn.textContent='✎ זמן';
+      editBtn.title='ערוך זמן תור';
+      (function(aid2){editBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();editApptTime(aid2);});})(a.id);
+      row.appendChild(editBtn);
+    }
     // IMPORTANT: use capture-based approach to avoid closure issues
     (function(pid,aid){
       tfBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();openTreatFlow(pid,aid);});
-      // Entire row click (excluding tfBtn) → patient card
+      // Entire row click (excluding buttons) → treatment flow (not patient card)
       row.addEventListener('click',function(e){
         if(e.target.tagName==='BUTTON')return;
-        openPatient(pid);
+        openTreatFlow(pid,aid);
       });
     })(String(a.patientId),String(a.id));
     list.appendChild(row);
@@ -2763,6 +2811,62 @@ async function delAppt(aid,pid){
   if(cur&&cur.id==='screen-patient-file'&&pid)openPatient(pid);
 }
 
+// ---- EDIT APPOINTMENT TIME (quick overlay) ----
+// Opens a small modal letting the therapist change an appointment's date/time/duration
+// without leaving the calendar. Respects the same overlap check as new appointments,
+// but allows the "skip break" override.
+function editApptTime(aid){
+  var a=(window.apts||[]).find(function(x){return String(x.id)===String(aid);});
+  if(!a){alert('התור לא נמצא');return;}
+  var p=findP(a.patientId);
+  var old=document.getElementById('eat-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='eat-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:350;display:flex;align-items:center;justify-content:center;padding:18px;';
+  var dur=parseInt(a.duration)||60;
+  ov.innerHTML='<div style="background:var(--sf);border-radius:14px;padding:18px 18px 14px;width:100%;max-width:380px;box-shadow:0 8px 28px rgba(0,0,0,0.25);">'+
+    '<div style="font-size:15px;font-weight:700;color:var(--tp);margin-bottom:4px;">עריכת זמן תור</div>'+
+    '<div style="font-size:12px;color:var(--tm);margin-bottom:14px;">'+(p?p.name:'')+'</div>'+
+    '<div class="fm"><label class="fl">תאריך</label><input class="fi" id="eat-dt" type="date" value="'+a.date+'"/></div>'+
+    '<div class="fm"><label class="fl">שעה</label><input class="fi" id="eat-tm" type="time" step="300" value="'+a.time+'"/></div>'+
+    '<div class="fm"><label class="fl">משך טיפול (דק׳)</label><input class="fi" id="eat-dur" type="number" min="10" max="240" step="5" value="'+dur+'"/></div>'+
+    '<label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tp);cursor:pointer;padding:6px 0;">'+
+      '<input type="checkbox" id="eat-skip-break" '+(a.skipBreak?'checked':'')+' style="width:16px;height:16px;cursor:pointer;"/>'+
+      '<span>וותר על ההפסקה לפני / אחרי תור זה</span>'+
+    '</label>'+
+    '<div id="eat-err" style="font-size:12px;color:var(--r500);display:none;margin:4px 0 8px;"></div>'+
+    '<div style="display:flex;gap:8px;margin-top:6px;">'+
+      '<button class="btn bp" id="eat-save" style="flex:1;margin-top:0;padding:10px;font-size:13px;">שמור</button>'+
+      '<button class="btn bs" id="eat-cancel" style="flex:1;margin-top:0;padding:10px;font-size:13px;">ביטול</button>'+
+    '</div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('eat-cancel').onclick=function(){ov.remove();};
+  document.getElementById('eat-save').onclick=async function(){
+    var newDate=document.getElementById('eat-dt').value;
+    var newTime=document.getElementById('eat-tm').value;
+    var newDur=parseInt(document.getElementById('eat-dur').value)||dur;
+    var skipBreak=document.getElementById('eat-skip-break').checked;
+    var err=document.getElementById('eat-err');
+    if(!newDate||!newTime){err.textContent='נא למלא תאריך ושעה';err.style.display='block';return;}
+    if(newDate<todayStr()){err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
+    var cfg=window.appCfg||defCfg();var brk=parseInt(cfg.breakMins||0);
+    var effBrk=skipBreak?0:brk;
+    var newS=hmToMin(newTime),newE=newS+newDur;
+    var ad=adMap();
+    var conflict=(ad[newDate]||[]).find(function(x){
+      if(String(x.id)===String(a.id))return false;
+      var s=hmToMin(x.time);var e=s+(parseInt(x.duration)||60)+(x.skipBreak?0:brk);
+      return newS<e&&s<newE+effBrk;
+    });
+    if(conflict){err.textContent='חופף לתור קיים בשעה '+conflict.time;err.style.display='block';return;}
+    a.date=newDate;a.time=newTime;a.duration=newDur;
+    if(skipBreak)a.skipBreak=true;else delete a.skipBreak;
+    await window.fbSaveA(a);
+    ov.remove();
+    render();
+  };
+}
+
 // ---- SERIES MANAGEMENT (per-patient) ----
 function openSeriesEditor(pid){
   var p=findP(String(pid));if(!p)return;
@@ -3018,15 +3122,67 @@ function getFormFields(){var cfg=window.appCfg||defCfg();return((cfg.forms||{})[
 function renderFormFields(){
   var fields=getFormFields();
   var el=document.getElementById('ef-fields');el.innerHTML='';
+  // Hint above the list
+  var hint=document.createElement('div');
+  hint.style.cssText='font-size:11px;color:var(--tm);padding:6px 2px 10px;line-height:1.4;';
+  hint.innerHTML='💡 ניתן לגרור את ידית האחיזה (⋮⋮) או להשתמש בחצים ↑↓ כדי לסדר מחדש את השדות.';
+  el.appendChild(hint);
+
   fields.forEach(function(f,i){
     var div=document.createElement('div');div.className='form-field-item';
-    div.innerHTML='<input value="'+f.label.replace(/"/g,'&quot;')+'" id="ff-lbl-'+i+'" placeholder="שם שדה"/>'+
+    div.draggable=true;
+    div.dataset.idx=i;
+    div.innerHTML=
+      '<span class="ff-drag" title="גרור כדי לסדר מחדש">⋮⋮</span>'+
+      '<input value="'+f.label.replace(/"/g,'&quot;')+'" id="ff-lbl-'+i+'" placeholder="שם שדה"/>'+
       '<select id="ff-type-'+i+'" style="padding:4px 6px;border:1px solid var(--bd);border-radius:5px;font-size:12px;font-family:Heebo,sans-serif;">'+
       '<option value="false"'+(f.multi?'':' selected')+'>שורה</option><option value="true"'+(f.multi?' selected':'')+'>פסקה</option></select>'+
-      '<button class="pbtn pbtn-r" data-i="'+i+'">✕</button>';
+      '<button class="ff-up" title="הזז למעלה" '+(i===0?'disabled':'')+'>↑</button>'+
+      '<button class="ff-down" title="הזז למטה" '+(i===fields.length-1?'disabled':'')+'>↓</button>'+
+      '<button class="pbtn pbtn-r" data-i="'+i+'" title="מחק">✕</button>';
     div.querySelector('.pbtn-r').addEventListener('click',function(){delFormField(parseInt(this.dataset.i));});
+    div.querySelector('.ff-up').addEventListener('click',function(){moveFormField(i,i-1);});
+    div.querySelector('.ff-down').addEventListener('click',function(){moveFormField(i,i+1);});
+
+    // Drag & drop reordering
+    div.addEventListener('dragstart',function(e){
+      syncFormFieldsFromDOM();
+      div.classList.add('dragging');
+      try{e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move';}catch(_){}
+    });
+    div.addEventListener('dragend',function(){
+      div.classList.remove('dragging');
+      el.querySelectorAll('.drop-target').forEach(function(n){n.classList.remove('drop-target');});
+    });
+    div.addEventListener('dragover',function(e){
+      e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}
+      el.querySelectorAll('.drop-target').forEach(function(n){if(n!==div)n.classList.remove('drop-target');});
+      div.classList.add('drop-target');
+    });
+    div.addEventListener('dragleave',function(){div.classList.remove('drop-target');});
+    div.addEventListener('drop',function(e){
+      e.preventDefault();
+      div.classList.remove('drop-target');
+      var from=-1;try{from=parseInt(e.dataTransfer.getData('text/plain'));}catch(_){}
+      var to=parseInt(div.dataset.idx);
+      if(!isNaN(from)&&from>=0&&from!==to)moveFormField(from,to);
+    });
+
     el.appendChild(div);
   });
+}
+function moveFormField(from,to){
+  syncFormFieldsFromDOM();
+  var f=getFormFields();
+  if(from<0||from>=f.length||to<0||to>=f.length||from===to)return;
+  var item=f.splice(from,1)[0];
+  f.splice(to,0,item);
+  var cfg=window.appCfg||defCfg();
+  if(!cfg.forms)cfg.forms={};
+  if(!cfg.forms[efType])cfg.forms[efType]={};
+  cfg.forms[efType][efForm]=f;
+  window.appCfg=cfg;
+  renderFormFields();
 }
 // Sync the in-DOM edits (label inputs, type selects) back into window.appCfg
 // without persisting. Must be called before any structural change (add/delete)
@@ -3187,6 +3343,7 @@ function openNewAppt(){
   document.getElementById('na-dt').value=todayStr();
   document.getElementById('na-tm').value='';
   var dEl=document.getElementById('na-dur');if(dEl)dEl.value='';
+  var sbEl=document.getElementById('na-skip-break');if(sbEl)sbEl.checked=false;
   rebuildTimeSelect();
   document.getElementById('gcal-btn').classList.add('hidden');
   var err=document.getElementById('na-err');err.style.display='none';
@@ -3202,6 +3359,8 @@ async function addAppointment(){
   var time=document.getElementById('na-tm').value;
   var durOverrideEl=document.getElementById('na-dur');
   var durOverride=durOverrideEl?parseInt(durOverrideEl.value)||0:0;
+  var skipBreakEl=document.getElementById('na-skip-break');
+  var skipBreak=skipBreakEl?!!skipBreakEl.checked:false;
   var err=document.getElementById('na-err');
   if(!pid){err.style.color='var(--r500)';err.textContent='נא לבחור מטופל';err.style.display='block';return;}
   if(!date){err.style.color='var(--r500)';err.textContent='נא לבחור תאריך';err.style.display='block';return;}
@@ -3219,15 +3378,17 @@ async function addAppointment(){
   var aDur=durOverride>0?durOverride:getTreatmentDuration(p||{},nextNum);
   var cfg=window.appCfg||defCfg();
   var brk=parseInt(cfg.breakMins||0);
+  var effBrk=skipBreak?0:brk;   // therapist may waive the break around this appointment
   var newS=hmToMin(time),newE=newS+aDur;
   var ad=adMap();
   var conflict=(ad[date]||[]).find(function(a){
-    var s=hmToMin(a.time);var e=s+(parseInt(a.duration)||60)+brk;
-    return newS<e&&s<newE+brk;
+    var s=hmToMin(a.time);var e=s+(parseInt(a.duration)||60)+effBrk;
+    return newS<e&&s<newE+effBrk;
   });
   if(conflict){err.style.color='var(--r500)';err.textContent='חופף לתור קיים בשעה '+conflict.time;err.style.display='block';return;}
   err.style.color='var(--ac)';err.textContent='✓ התור נקבע בהצלחה!';err.style.display='block';
   var a={id:String(Date.now()),patientId:pid,date:date,time:time,duration:aDur,notes:document.getElementById('na-nt').value};
+  if(skipBreak)a.skipBreak=true;
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
   selDate=sToD(date);navDate=new Date(selDate);
   document.getElementById('gcal-btn').classList.remove('hidden');
@@ -3290,11 +3451,41 @@ function showScreen(name,skipHistory){
 function goBack(){if(navHistory.length>0){var prev=navHistory.pop();showScreen(prev,true);}else showScreen('calendar',true);}
 
 // ---- EVENT WIRING ----
-// Alerts panel show/hide (desktop only) — persisted to localStorage
+// Alerts panel show/hide (desktop only) — persisted to localStorage.
+// CRITICAL: when there are pending booking requests from the public form, the panel
+// CANNOT be hidden — the therapist must see + handle them before dismissing.
+function hasPendingBookings(){
+  return (window.pendingBookings||[]).some(function(b){return b.status==='pending';});
+}
 function toggleAlertsPanel(hide){
   if(hide===undefined)hide=!document.body.classList.contains('alerts-hidden');
+  if(hide&&hasPendingBookings()){
+    // Block the hide — keep the panel visible and surface a brief explanation.
+    document.body.classList.remove('alerts-hidden');
+    try{localStorage.setItem('clinic_alerts_hidden','0');}catch(e){}
+    var msg=document.getElementById('ap-blocked-msg');
+    if(msg){msg.style.display='block';clearTimeout(window._apMsgT);window._apMsgT=setTimeout(function(){msg.style.display='none';},3200);}
+    return;
+  }
   document.body.classList.toggle('alerts-hidden',hide);
   try{localStorage.setItem('clinic_alerts_hidden',hide?'1':'0');}catch(e){}
+  // Hide / show the close (✕) button itself when bookings are pending — visual lock.
+  syncAlertsLockState();
+}
+function syncAlertsLockState(){
+  var locked=hasPendingBookings();
+  var hbtn=document.getElementById('ap-hide-btn');
+  if(hbtn){
+    hbtn.style.display=locked?'none':'';
+    hbtn.title=locked?'יש בקשות תור פתוחות — לא ניתן להסתיר':'הסתר חלונית';
+  }
+  if(locked&&document.body.classList.contains('alerts-hidden')){
+    document.body.classList.remove('alerts-hidden');
+    try{localStorage.setItem('clinic_alerts_hidden','0');}catch(e){}
+  }
+  // Also hide the side "show" pill when locked (panel is forced open anyway).
+  var sbtn=document.getElementById('ap-show-btn');
+  if(sbtn&&locked)sbtn.style.display='none';
 }
 try{if(localStorage.getItem('clinic_alerts_hidden')==='1')document.body.classList.add('alerts-hidden');}catch(e){}
 
