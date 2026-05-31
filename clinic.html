@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.6</title>
+<title>קליניקה v6.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -598,7 +598,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.6</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.7</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -614,7 +614,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.6</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.7</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -678,6 +678,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div class="swrap">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         <input class="si" id="pt-search" type="text" placeholder="חיפוש לפי שם או טלפון..."/>
+      </div>
+      <div style="text-align:left;margin-bottom:8px;">
+        <button onclick="openImportPatients()" style="background:none;border:1px dashed var(--bd);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--tm);cursor:pointer;font-family:'Heebo',sans-serif;">⬆ ייבוא מטופלים (JSON)</button>
       </div>
       <div class="card" style="padding:4px 13px;"><div id="plist"></div></div>
     </div>
@@ -3414,6 +3417,95 @@ async function addPatient(){
   npPatType='adult';
   document.getElementById('np-adult').classList.add('active');document.getElementById('np-baby').classList.remove('active');
   showScreen('patients');
+}
+
+// ---- PATIENT IMPORT (from Claude-generated JSON) ----
+// Format: array of patient objects. Each field is optional except "name".
+// Claude will generate this JSON from Word intake forms.
+function openImportPatients(){
+  var old=document.getElementById('import-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='import-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px;';
+  ov.innerHTML='<div style="background:var(--sf);border-radius:14px;padding:20px;width:100%;max-width:520px;box-shadow:0 8px 32px rgba(0,0,0,0.25);display:flex;flex-direction:column;gap:12px;">'+
+    '<div style="font-size:16px;font-weight:700;color:var(--tp);">⬆ ייבוא מטופלים מ-JSON</div>'+
+    '<div style="font-size:12px;color:var(--tm);line-height:1.55;">'+
+      'הדבק כאן את ה-JSON שהכין Claude מהטפסים שלך.<br>'+
+      'ניתן לייבא מטופל אחד <code style="background:var(--sf2);padding:1px 5px;border-radius:4px;">{...}</code> '+
+      'או מספר מטופלים <code style="background:var(--sf2);padding:1px 5px;border-radius:4px;">[{...},{...}]</code>.'+
+    '</div>'+
+    '<textarea id="import-json" style="width:100%;height:200px;border:1.5px solid var(--bd);border-radius:8px;padding:10px;font-family:monospace;font-size:12px;resize:vertical;outline:none;direction:ltr;box-sizing:border-box;" placeholder=\'[{"name":"ישראל ישראלי","phone":"0501234567","age":"35","problem":"כאב גב","patType":"adult","healthConditions":["לב"],"takingMedication":false,"medications":""}]\'></textarea>'+
+    '<div id="import-err" style="font-size:12px;color:var(--r500);display:none;"></div>'+
+    '<div style="display:flex;gap:8px;">'+
+      '<button id="import-do" class="btn bp" style="flex:1;margin-top:0;padding:11px;font-size:13px;">ייבא</button>'+
+      '<button id="import-cancel" class="btn bs" style="flex:1;margin-top:0;padding:11px;font-size:13px;">ביטול</button>'+
+    '</div>'+
+  '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('import-cancel').onclick=function(){ov.remove();};
+  document.getElementById('import-do').onclick=async function(){
+    var raw=document.getElementById('import-json').value.trim();
+    var err=document.getElementById('import-err');
+    err.style.display='none';
+    if(!raw){err.textContent='נא להדביק JSON';err.style.display='block';return;}
+    var data;
+    try{data=JSON.parse(raw);}catch(e){err.textContent='שגיאת JSON: '+e.message;err.style.display='block';return;}
+    if(!Array.isArray(data))data=[data];
+    var btn=document.getElementById('import-do');btn.disabled=true;btn.textContent='מייבא...';
+    var imported=0,skipped=0,errors=[];
+    for(var i=0;i<data.length;i++){
+      var d=data[i];
+      if(!d||!d.name){errors.push('שורה '+(i+1)+': חסר שם');skipped++;continue;}
+      // Skip if patient with same phone already exists
+      if(d.phone&&(window.pts||[]).some(function(ex){return ex.phone&&ex.phone.replace(/\D/g,'')===String(d.phone).replace(/\D/g,'');})){
+        errors.push(d.name+': כבר קיים לפי טלפון — דולג');skipped++;continue;
+      }
+      var cfg=window.appCfg||defCfg();
+      var p={
+        id:String(Date.now()+i),
+        name:String(d.name).replace(/[0-9]/g,'').trim(),
+        phone:d.phone?String(d.phone).replace(/\D/g,''):'',
+        age:d.age?String(d.age):'',
+        email:d.email||'',
+        problem:d.problem||'',
+        customPrice:(d.customPrice!==undefined&&d.customPrice!==''&&d.customPrice!==null)?parseInt(d.customPrice):null,
+        color:(window.pts||[]).length%4,
+        patType:(d.patType==='baby'?'baby':'adult'),
+        treatType:'single',series:null,
+        healthConditions:Array.isArray(d.healthConditions)?d.healthConditions:[],
+        healthOther:d.healthOther||'',
+        takingMedication:d.takingMedication!=null?!!d.takingMedication:null,
+        medications:d.medications||'',
+        treatments:[]
+      };
+      // If treatments array supplied, import them too
+      if(Array.isArray(d.treatments)&&d.treatments.length){
+        p.treatments=d.treatments.map(function(t,ti){
+          return {
+            num:t.num||ti+1,
+            date:t.date||'',
+            paid:t.paid||false,
+            amount:t.amount||parseInt(cfg.priceSingle)||350,
+            payMethod:t.payMethod||'',
+            intakeData:t.intakeData||{},
+            found:t.found||'',
+            tcs:t.tcs||'',
+            recommend:t.recommend||'',
+            done:t.done||false
+          };
+        });
+      }
+      try{
+        window.pts=[...(window.pts||[]),p];
+        await window.fbSaveP(p);
+        imported++;
+      }catch(e){errors.push(d.name+': שגיאה בשמירה — '+e.message);skipped++;}
+    }
+    btn.disabled=false;btn.textContent='ייבא';
+    var summary='יובאו '+imported+' מטופלים'+(skipped?' ('+skipped+' דולגו)':'')+'.'+(errors.length?'\n\nפרטים:\n'+errors.join('\n'):'');
+    alert(summary);
+    if(imported>0){render();ov.remove();}
+  };
 }
 
 function openGcal(){if(!lastAppt)return;var p=findP(lastAppt.patientId);var h=parseInt(lastAppt.time.split(':')[0]),mm=parseInt(lastAppt.time.split(':')[1]);var d=sToD(lastAppt.date);var pad=function(n){return String(n).padStart(2,'0');};var fmt=function(d2,h2,m2){return d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate())+'T'+pad(h2)+pad(m2)+'00';};var dur2=parseInt((window.appCfg||{}).duration||60);var em=h*60+mm+dur2;window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('טיפול — '+(p?p.name:''))+'&dates='+fmt(d,h,mm)+'/'+fmt(d,Math.floor(em/60),em%60)+'&details='+encodeURIComponent(p?p.problem:''),'_blank');}
