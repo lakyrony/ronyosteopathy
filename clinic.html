@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.5</title>
+<title>קליניקה v6.6</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -51,6 +51,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 #alerts-panel{display:contents}
 .ap-group{display:contents}
 .ap-head,.ap-sub,.ap-empty{display:none}
+/* The "show panel" pill and the hide-blocked warning are desktop-only — never on mobile */
+@media(max-width:899px){
+  #ap-show-btn{display:none!important}
+  #ap-blocked-msg{display:none!important}
+}
 .arow{padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:12px;border-bottom:1px solid}
 .arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
 .arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
@@ -593,7 +598,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.5</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.6</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -609,7 +614,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.5</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.6</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -1910,36 +1915,34 @@ function renderDayPanel(){
     // Status badge
     if(hasTreat){var tb=document.createElement('span');tb.className='badge bg';tb.style.cssText='font-size:9px;flex-shrink:0;margin-left:4px;';tb.textContent='✓ תועד';row.appendChild(tb);}
     else if(hd){var hdb=document.createElement('span');hdb.className='badge br';hdb.style.cssText='flex-shrink:0;margin-left:4px;';hdb.textContent='חוב';row.appendChild(hdb);}
-    // Treatment button — explicit, flex-shrink:0
-    // Treatment button — top right
+    // Actions — grouped in a single tidy column so they line up neatly on every width
+    var actions=document.createElement('div');
+    actions.style.cssText='flex-shrink:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;margin-right:6px;';
     var tfBtn=document.createElement('button');
     tfBtn.className='pbtn '+(isApptPast?'pbtn-gray':'pbtn-g');
-    tfBtn.style.cssText='white-space:nowrap;flex-shrink:0;align-self:flex-start;';
+    tfBtn.style.cssText='white-space:nowrap;text-align:center;';
     tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';
-    row.appendChild(tfBtn);
-    // Cancel button — separate, small, below name area (not next to treatment)
+    actions.appendChild(tfBtn);
     if(!isApptPast){
-      var cancelWrap=document.createElement('div');
-      cancelWrap.style.cssText='flex-shrink:0;display:flex;align-items:center;';
-      var delBtn=document.createElement('button');
-      delBtn.className='pbtn pbtn-r';
-      delBtn.style.cssText='font-size:9px;padding:2px 5px;opacity:0.7;';
-      delBtn.textContent='✕';
-      delBtn.title='ביטול תור';
-      (function(aid2,pid2){delBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();delAppt(aid2,pid2);});})(a.id,a.patientId);
-      cancelWrap.appendChild(delBtn);
-      row.appendChild(cancelWrap);
-    }
-    // Add a small "edit time" button next to cancel (only for future appts)
-    if(!isApptPast){
+      // edit + cancel sit side by side, under the treatment button
+      var subRow=document.createElement('div');
+      subRow.style.cssText='display:flex;gap:4px;';
       var editBtn=document.createElement('button');
       editBtn.className='pbtn pbtn-ac';
-      editBtn.style.cssText='font-size:10px;padding:2px 8px;align-self:flex-start;';
+      editBtn.style.cssText='flex:1;font-size:10px;padding:3px 6px;text-align:center;white-space:nowrap;';
       editBtn.textContent='✎ זמן';
       editBtn.title='ערוך זמן תור';
       (function(aid2){editBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();editApptTime(aid2);});})(a.id);
-      row.appendChild(editBtn);
+      var delBtn=document.createElement('button');
+      delBtn.className='pbtn pbtn-r';
+      delBtn.style.cssText='font-size:11px;padding:3px 9px;';
+      delBtn.textContent='✕';
+      delBtn.title='ביטול תור';
+      (function(aid2,pid2){delBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();delAppt(aid2,pid2);});})(a.id,a.patientId);
+      subRow.appendChild(editBtn);subRow.appendChild(delBtn);
+      actions.appendChild(subRow);
     }
+    row.appendChild(actions);
     // IMPORTANT: use capture-based approach to avoid closure issues
     (function(pid,aid){
       tfBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();openTreatFlow(pid,aid);});
