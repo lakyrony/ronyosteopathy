@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.3</title>
+<title>קליניקה v6.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -123,7 +123,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .wcal-day:last-child{border-right:none}
 .wcal-hline{border-bottom:1px solid var(--bdl);box-sizing:border-box}
 .wcal-half-hline{border-bottom:1px dashed var(--bdl);box-sizing:border-box;opacity:0.5}
-.wcal-off{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(0,0,0,0.025),rgba(0,0,0,0.025) 6px,transparent 6px,transparent 12px);pointer-events:none}
+.wcal-off{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(120,90,50,0.12),rgba(120,90,50,0.12) 6px,rgba(245,238,220,0.55) 6px,rgba(245,238,220,0.55) 12px);pointer-events:none;border-top:1px dashed rgba(120,90,50,0.25);border-bottom:1px dashed rgba(120,90,50,0.25)}
 .wcal-past{position:absolute;left:0;right:0;background:rgba(120,110,90,0.07);pointer-events:none}
 .wcal-now{position:absolute;left:0;right:0;height:2px;background:#e53e3e;z-index:5;pointer-events:none}
 .wcal-now::before{content:'';position:absolute;right:-4px;top:-3px;width:8px;height:8px;background:#e53e3e;border-radius:50%}
@@ -359,11 +359,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   }
   #ap-show-btn:hover{background:var(--g700)}
   /* When alerts hidden: the alerts column stays in the grid (so the main screens
-     don't reflow), it's just visually empty. The main content shifts toward the
-     nav (right side in RTL) instead of staying centered. */
+     don't reflow), it's just visually empty. The main content position never changes
+     — it's permanently right-shifted with a gap from the nav. */
   body.alerts-hidden #alerts-panel{visibility:hidden}
   body.alerts-hidden #ap-show-btn{display:block}
-  body.alerts-hidden .screen{margin-right:0!important;margin-left:auto!important}
   .ap-group{display:flex;flex-direction:column;gap:8px}
   .ap-sub{
     display:block;
@@ -415,7 +414,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     position:relative!important;
     min-height:0!important;
   }
-  .screen{padding:20px 28px!important;padding-bottom:20px!important;max-width:900px;margin-left:auto;margin-right:auto}
+  /* Content is always shifted toward the right nav with a fixed 56px gap, regardless of
+     whether the alerts panel is visible — so it doesn't "jump" when the panel is toggled. */
+  .screen{padding:20px 28px!important;padding-bottom:20px!important;max-width:900px;margin-left:auto!important;margin-right:56px!important}
   .bnav{
     grid-column:1!important;
     grid-row:3!important;
@@ -579,7 +580,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.3</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.4</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -595,7 +596,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.3</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.4</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -680,8 +681,14 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           <div class="set-item"><div class="set-item-lbl">מחיר טיפול לתינוק (₪)</div>
             <input type="number" inputmode="numeric" id="set-price-baby" min="0" max="9999" value="300" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
-          <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול ראשון</div>
+            <select class="set-sel" id="set-dur-first"><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60">60 דק׳</option><option value="65">65 דק׳</option><option value="70">70 דק׳</option><option value="75" selected>75 דק׳</option><option value="80">80 דק׳</option><option value="90">90 דק׳</option></select>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול המשך</div>
             <select class="set-sel" id="set-dur"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
+          </div>
+          <div class="set-item" style="font-size:11px;color:var(--tm);padding:6px 13px 9px;line-height:1.4;">
+            ההגבלות לעיל חלות על טופס הזמנת תור (צד לקוח). בעת קביעת תור מהקליניקה אפשר להכניס שעה ומשך חופשיים.
           </div>
           <div class="set-item"><div class="set-item-lbl">הפסקה בין טיפולים</div>
             <select class="set-sel" id="set-break"><option value="0">ללא</option><option value="5">5 דק׳</option><option value="10">10 דק׳</option><option value="15" selected>15 דק׳</option><option value="20">20 דק׳</option><option value="30">30 דק׳</option></select>
@@ -782,7 +789,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">סוג מטופל</label>
           <div class="chips"><button class="chip active" id="np-adult">מבוגר</button><button class="chip" id="np-baby">תינוק</button></div>
         </div>
-        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות (ראשון/המשך)"/></div>
+        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות"/></div>
         <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:0 0 10px;line-height:1.5;">ℹ️ מטופל חדש מתחיל תמיד בטיפול יחיד. אפשר לפתוח סדרה מתוך כרטיס המטופל לאחר הטיפול הראשון.</div>
         <button class="btn bp" id="btn-add-patient">הוסף מטופל</button>
       </div>
@@ -798,7 +805,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="ep-ph" type="tel" inputmode="numeric"/></div>
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
-        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות (ראשון/המשך)"/></div>
+        <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות"/></div>
         <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:-5px 0 12px;line-height:1.5;">ℹ️ אם תוזן ערך, ייכפה על כל הטיפולים — מבטל את הלוגיקה של ראשון/המשך וגם את מחיר הסדרה.</div>
         <button class="btn bp" id="btn-save-edit">שמור</button>
         <button class="btn bd2" id="btn-del-pt">מחק מטופל</button>
@@ -833,7 +840,15 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           </div>
         </div>
         <div class="fm"><label class="fl">תאריך *</label><input class="fi" id="na-dt" type="date"/></div>
-        <div class="fm"><label class="fl">שעה *</label><select class="fsl" id="na-tm"></select></div>
+        <div class="fm">
+          <label class="fl">שעה *</label>
+          <input class="fi" id="na-tm" type="time" step="300" style="margin-bottom:6px;"/>
+          <div id="na-tm-hints" style="font-size:11px;color:var(--tm);line-height:1.5;"></div>
+        </div>
+        <div class="fm">
+          <label class="fl">משך טיפול (דק׳) — אופציונלי</label>
+          <input class="fi" id="na-dur" type="number" min="10" max="240" step="5" placeholder="ברירת מחדל לפי סוג הטיפול"/>
+        </div>
         <div class="fm"><label class="fl">הערות</label><input class="fi" id="na-nt" type="text" placeholder="הערה..."/></div>
         <div id="na-err" style="font-size:12px;margin-top:3px;display:none;"></div>
         <button class="btn bp" id="btn-save-appt">קבע תור</button>
@@ -954,12 +969,12 @@ function syncPublicAvailability(){
       // Only include future taken slots within the public window (14 days) to keep doc small
       var ts=todayStr();
       var maxDate=new Date();maxDate.setDate(maxDate.getDate()+14);var maxStr=dstr(maxDate);
-      var taken=(window.apts||[]).filter(function(a){return a.date>=ts&&a.date<=maxStr;}).map(function(a){return {date:a.date,time:a.time,duration:a.duration||cfg.durationFollowup||60};});
+      var taken=(window.apts||[]).filter(function(a){return a.date>=ts&&a.date<=maxStr;}).map(function(a){return {date:a.date,time:a.time,duration:a.duration||cfg.duration||60};});
       await setDoc(doc(db,'publicData','main'),{
         schedule:cfg.schedule||{},
         scheduleOverrides:cfg.scheduleOverrides||{},
-        duration:cfg.durationFollowup||cfg.duration||60,
-        durationFirst:cfg.durationFirst||cfg.durationFollowup||75,
+        duration:cfg.duration||60,
+        durationFirst:cfg.durationFirst||75,
         breakMins:cfg.breakMins||0,
         taken:taken,
         publicDaysAhead:14,
@@ -1078,7 +1093,8 @@ function defCfg(){
   return {
     // Pricing model: single (adults) + baby + series (per-patient via seriesTypes)
     priceSingle:350,priceBaby:300,
-    // Single treatment duration (fixed 60 in slot calc; this is just for UI/billing context)
+    // Durations: first treatment (longer, includes intake) + follow-up (regular)
+    durationFirst:75,
     duration:60,
     // Break between treatments (mins) — applied after each treatment block
     breakMins:15,
@@ -1104,18 +1120,20 @@ function defCfg(){
     }
   };
 }
-// Migration: collapse old first/followup fields into single + baby pricing
+// Migration: collapse old first/followup pricing fields into single + baby pricing
+// (durationFirst is intentionally preserved — first-treatment duration is a real setting)
 function migrateCfg(c){
   if(!c)return c;
   // priceSingle: prefer new field; fall back to old priceFollowup, then price
   if(c.priceSingle===undefined)c.priceSingle=c.priceFollowup||c.price||350;
   if(c.priceBaby===undefined)c.priceBaby=c.priceSingle;
   if(c.duration===undefined)c.duration=c.durationFollowup||60;
+  if(c.durationFirst===undefined)c.durationFirst=Math.max(parseInt(c.duration)||60,75);
   if(c.breakMins===undefined)c.breakMins=0;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
-  // Strip retired keys so saveSettings doesn't keep re-saving them
+  // Strip retired pricing keys (durationFollowup → duration; durationFirst is kept)
   delete c.priceFirst;delete c.priceFollowup;
-  delete c.durationFirst;delete c.durationFollowup;
+  delete c.durationFollowup;
   return c;
 }
 // Per-patient price resolution
@@ -1134,6 +1152,8 @@ function getTreatmentPrice(p,treatmentNum,cfg){
 }
 function getTreatmentDuration(p,treatmentNum,cfg){
   cfg=cfg||window.appCfg||defCfg();
+  // Treatment #1 uses the (longer) first-treatment duration; treatments 2+ use the follow-up duration
+  if(treatmentNum===1||treatmentNum==='1')return parseInt(cfg.durationFirst)||parseInt(cfg.duration)||75;
   return parseInt(cfg.duration)||60;
 }
 window.appCfg=defCfg();
@@ -1202,13 +1222,14 @@ function getSlots(ds){
   if(!day||!day.active||!day.ranges||!day.ranges.length)return [];
   var cfg=window.appCfg||defCfg();
   var brk=parseInt(cfg.breakMins||0);
-  var TREAT=60;            // 1 hour treatment minimum
+  var TREAT=60;            // slot window: 1-hour treatment minimum (for fitting in working hours)
   var STEP=60;             // hourly cadence between slots
-  // Each existing appt blocks treatment + trailing break (i.e., when the therapist becomes free)
+  // Each existing appt blocks ITS ACTUAL duration + trailing break (then the therapist is free)
   var apts=(window.apts||[]).filter(function(a){return a.date===ds;})
     .map(function(a){
       var s=hmToMin(a.time);
-      return {s:s,e:s+Math.max(TREAT,parseInt(a.duration||TREAT))+brk};
+      var dur=parseInt(a.duration)||TREAT;
+      return {s:s,e:s+dur+brk};
     })
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
@@ -2871,6 +2892,7 @@ function applySettings(){
   var c=migrateCfg(window.appCfg||defCfg());window.appCfg=c;
   var sps=document.getElementById('set-price-single');if(sps)sps.value=c.priceSingle||350;
   var spb=document.getElementById('set-price-baby');if(spb)spb.value=c.priceBaby||300;
+  var sdf=document.getElementById('set-dur-first');if(sdf)sdf.value=c.durationFirst||75;
   var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
   var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||15;
   var bot=c.bot||{},msg=c.messages||{};
@@ -2946,6 +2968,7 @@ async function saveSettings(){
   var c=window.appCfg||defCfg();
   var sps=document.getElementById('set-price-single');if(sps)c.priceSingle=Math.min(9999,parseInt(sps.value)||350);
   var spb=document.getElementById('set-price-baby');if(spb)c.priceBaby=Math.min(9999,parseInt(spb.value)||300);
+  var sdf=document.getElementById('set-dur-first');if(sdf)c.durationFirst=parseInt(sdf.value)||75;
   var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
   var sbr=document.getElementById('set-break');if(sbr)c.breakMins=parseInt(sbr.value)||0;
   // Maintain legacy price for backward compat (public booking page used to read cfg.price)
@@ -3094,22 +3117,34 @@ async function doDelete(){
 }
 
 // ---- ADD PATIENT ----
+// Therapist mode: na-tm is a free time input. This function now shows hints (the
+// suggested slots derived from settings) below the input — clicking a chip fills it in.
 function rebuildTimeSelect(ds){
-  var sel=document.getElementById('na-tm');if(!sel)return;
+  var hints=document.getElementById('na-tm-hints');
+  var tmInput=document.getElementById('na-tm');
+  if(!hints||!tmInput)return;
   var dateStr=ds||document.getElementById('na-dt').value||todayStr();
   var ad=adMap();var takenAtDate=(ad[dateStr]||[]).map(function(a){return a.time;});
   var now=new Date();var nowM=now.getHours()*60+now.getMinutes();
   var slots=getSlots(dateStr).filter(function(s){
     if(takenAtDate.includes(s))return false;
-    // For today, filter out past times
     if(dateStr===todayStr()){
       var sh=parseInt(s.split(':')[0]),sm=parseInt(s.split(':')[1]);
       if(sh*60+sm<=nowM)return false;
     }
     return true;
   });
-  sel.innerHTML=slots.length?slots.map(function(s){return '<option>'+s+'</option>';}).join(''):'<option value="">אין שעות פנויות</option>';
-  var err=document.getElementById('na-err');if(!slots.length&&err){err.style.color='var(--r500)';err.textContent='אין שעות פנויות ביום זה';err.style.display='block';}else if(err)err.style.display='none';
+  if(slots.length){
+    hints.innerHTML='<span style="color:var(--tm);">מוצע: </span>'+slots.map(function(s){
+      return '<button type="button" class="na-tm-chip" data-t="'+s+'" style="background:var(--g50);border:1px solid var(--g200);color:var(--g700);border-radius:14px;padding:2px 9px;margin:2px 3px 2px 0;font-size:11px;cursor:pointer;font-family:Heebo,sans-serif;">'+s+'</button>';
+    }).join('');
+    hints.querySelectorAll('.na-tm-chip').forEach(function(b){
+      b.onclick=function(){tmInput.value=this.dataset.t;};
+    });
+  }else{
+    hints.innerHTML='<span style="color:var(--a700);">אין שעות מוצעות ביום זה — אפשר להזין שעה חופשית.</span>';
+  }
+  var err=document.getElementById('na-err');if(err)err.style.display='none';
 }
 
 var _naPatType='adult';
@@ -3150,6 +3185,8 @@ function openNewAppt(){
   var sel=document.getElementById('na-pt');
   sel.innerHTML='<option value="">בחר מטופל...</option>'+(window.pts||[]).sort(function(a,b){return a.name.localeCompare(b.name,'he');}).map(function(p){return '<option value="'+p.id+'">'+p.name+(p.patType==='baby'?' 👶':'')+'</option>';}).join('');
   document.getElementById('na-dt').value=todayStr();
+  document.getElementById('na-tm').value='';
+  var dEl=document.getElementById('na-dur');if(dEl)dEl.value='';
   rebuildTimeSelect();
   document.getElementById('gcal-btn').classList.add('hidden');
   var err=document.getElementById('na-err');err.style.display='none';
@@ -3160,25 +3197,36 @@ function openNewApptAt(ds,time){openNewAppt();document.getElementById('na-dt').v
 function openNewApptForDay(){var slots=getSlots(dstr(selDate));if(!slots.length){alert('אין שעות עבודה ביום זה. ניתן לשנות בהגדרות.');return;}openNewApptAt(dstr(selDate),slots[0]);}
 
 async function addAppointment(){
-  var pid=String(document.getElementById('na-pt').value);var date=document.getElementById('na-dt').value;var time=document.getElementById('na-tm').value;
+  var pid=String(document.getElementById('na-pt').value);
+  var date=document.getElementById('na-dt').value;
+  var time=document.getElementById('na-tm').value;
+  var durOverrideEl=document.getElementById('na-dur');
+  var durOverride=durOverrideEl?parseInt(durOverrideEl.value)||0:0;
   var err=document.getElementById('na-err');
   if(!pid){err.style.color='var(--r500)';err.textContent='נא לבחור מטופל';err.style.display='block';return;}
   if(!date){err.style.color='var(--r500)';err.textContent='נא לבחור תאריך';err.style.display='block';return;}
+  if(!time){err.style.color='var(--r500)';err.textContent='נא לבחור שעה';err.style.display='block';return;}
   if(date<todayStr()){err.style.color='var(--r500)';err.textContent='לא ניתן לקבוע תור בתאריך שעבר';err.style.display='block';return;}
-  if(date===todayStr()&&time){
+  if(date===todayStr()){
     var nh=new Date().getHours(),nm=new Date().getMinutes();
     var th=parseInt(time.split(':')[0]),tm2=parseInt(time.split(':')[1]);
     if(th*60+tm2<=nh*60+nm){err.style.color='var(--r500)';err.textContent='השעה '+time+' כבר עברה היום';err.style.display='block';return;}
   }
-  var availSlots=getSlots(date);
-  if(availSlots.length===0){err.style.color='var(--r500)';err.textContent='היום הנבחר אינו יום עבודה';err.style.display='block';return;}
-  if(!availSlots.includes(time)){err.style.color='var(--r500)';err.textContent='השעה '+time+' אינה בשעות הזמינות';err.style.display='block';return;}
-  var ad=adMap();if((ad[date]||[]).some(function(a){return a.time===time;})){err.style.color='var(--r500)';err.textContent='כבר יש תור בשעה '+time;err.style.display='block';return;}
-  err.style.color='var(--ac)';err.textContent='✓ התור נקבע בהצלחה!';err.style.display='block';
-  // Stamp the appointment with the duration it will block — first treatment is longer
+  // Therapist override: free time + free duration allowed (no working-hours / slot-cadence restriction).
+  // Only hard rule: no overlap with another appointment.
   var p=findP(pid);
   var nextNum=p?((p.treatments||[]).length+1):1;
-  var aDur=getTreatmentDuration(p||{},nextNum);
+  var aDur=durOverride>0?durOverride:getTreatmentDuration(p||{},nextNum);
+  var cfg=window.appCfg||defCfg();
+  var brk=parseInt(cfg.breakMins||0);
+  var newS=hmToMin(time),newE=newS+aDur;
+  var ad=adMap();
+  var conflict=(ad[date]||[]).find(function(a){
+    var s=hmToMin(a.time);var e=s+(parseInt(a.duration)||60)+brk;
+    return newS<e&&s<newE+brk;
+  });
+  if(conflict){err.style.color='var(--r500)';err.textContent='חופף לתור קיים בשעה '+conflict.time;err.style.display='block';return;}
+  err.style.color='var(--ac)';err.textContent='✓ התור נקבע בהצלחה!';err.style.display='block';
   var a={id:String(Date.now()),patientId:pid,date:date,time:time,duration:aDur,notes:document.getElementById('na-nt').value};
   window.apts=[...(window.apts||[]),a];lastAppt=a;await window.fbSaveA(a);
   selDate=sToD(date);navDate=new Date(selDate);
@@ -3330,10 +3378,9 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('del-ov').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 
   // Settings
-  ['set-price-single','set-price-baby','set-dur','set-break'].forEach(function(id){
+  ['set-price-single','set-price-baby','set-dur-first','set-dur','set-break'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.onchange=function(){autoSave();};
   });
-  // (was: set-dur — that element no longer exists; handler caused all later setup to fail)
   document.getElementById('btn-add-ser-type').onclick=function(){showScreen('add-series-type');};
   document.getElementById('btn-save-ser-type').onclick=function(){addSeriesType();};
   document.getElementById('btn-clean-appts').onclick=function(){cleanOrphanAppts();};

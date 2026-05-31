@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.12</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.13</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -421,9 +421,15 @@ function getSlots(ds){
   var day=ovr||((availability.schedule||{})[d.getDay()]);
   if(!day||!day.active||!day.ranges||!day.ranges.length)return[];
   var brk=parseInt(availability.breakMins||0);
-  var TREAT=60,STEP=60;
+  // Public bookings are first treatments — the slot window must accommodate durationFirst
+  // so we never offer a start time that would run past closing.
+  var TREAT=parseInt(availability.durationFirst)||parseInt(availability.duration)||60;
+  var STEP=60;
+  // Each existing appt blocks ITS ACTUAL duration + trailing break (so the next slot
+  // appears as soon as the therapist is free). E.g., 50-min appt at 09:00 + 15-min break
+  // → next slot at 10:05. 60-min appt at 09:00 + 15-min break → next slot at 10:15.
   var apts=(availability.taken||[]).filter(function(a){return a.date===ds;})
-    .map(function(a){var s=hmToMin(a.time);return {s:s,e:s+Math.max(TREAT,parseInt(a.duration||TREAT))+brk};})
+    .map(function(a){var s=hmToMin(a.time);var dur=parseInt(a.duration)||TREAT;return {s:s,e:s+dur+brk};})
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
