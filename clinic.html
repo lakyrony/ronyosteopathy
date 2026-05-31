@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.2</title>
+<title>קליניקה v6.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -358,9 +358,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     box-shadow:var(--sh);font-weight:700;letter-spacing:0.5px;
   }
   #ap-show-btn:hover{background:var(--g700)}
-  body.alerts-hidden #alerts-panel{display:none!important}
-  body.alerts-hidden #mview{grid-template-columns:250px 1fr 0!important}
+  /* When alerts hidden: the alerts column stays in the grid (so the main screens
+     don't reflow), it's just visually empty. The main content shifts toward the
+     nav (right side in RTL) instead of staying centered. */
+  body.alerts-hidden #alerts-panel{visibility:hidden}
   body.alerts-hidden #ap-show-btn{display:block}
+  body.alerts-hidden .screen{margin-right:0!important;margin-left:auto!important}
   .ap-group{display:flex;flex-direction:column;gap:8px}
   .ap-sub{
     display:block;
@@ -576,7 +579,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.2</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.3</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -592,7 +595,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.2</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.3</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -671,17 +674,14 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
       <div class="set-col">
         <div class="set-group">
           <div class="set-group-hdr">⚙️ כללי</div>
-          <div class="set-item"><div class="set-item-lbl">מחיר טיפול ראשון (₪)</div>
-            <input type="number" inputmode="numeric" id="set-price-first" min="0" max="9999" value="400" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          <div class="set-item"><div class="set-item-lbl">מחיר טיפול בודד (₪)</div>
+            <input type="number" inputmode="numeric" id="set-price-single" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
-          <div class="set-item"><div class="set-item-lbl">מחיר טיפול המשך (₪)</div>
-            <input type="number" inputmode="numeric" id="set-price-followup" min="0" max="9999" value="350" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          <div class="set-item"><div class="set-item-lbl">מחיר טיפול לתינוק (₪)</div>
+            <input type="number" inputmode="numeric" id="set-price-baby" min="0" max="9999" value="300" style="width:90px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
-          <div class="set-item"><div class="set-item-lbl">משך טיפול ראשון</div>
-            <select class="set-sel" id="set-dur-first"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60">60 דק׳</option><option value="75" selected>75 דק׳</option><option value="90">90 דק׳</option></select>
-          </div>
-          <div class="set-item"><div class="set-item-lbl">משך טיפול המשך</div>
-            <select class="set-sel" id="set-dur-followup"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
+          <div class="set-item"><div class="set-item-lbl">משך טיפול</div>
+            <select class="set-sel" id="set-dur"><option value="40">40 דק׳</option><option value="45">45 דק׳</option><option value="50">50 דק׳</option><option value="55">55 דק׳</option><option value="60" selected>60 דק׳</option></select>
           </div>
           <div class="set-item"><div class="set-item-lbl">הפסקה בין טיפולים</div>
             <select class="set-sel" id="set-break"><option value="0">ללא</option><option value="5">5 דק׳</option><option value="10">10 דק׳</option><option value="15" selected>15 דק׳</option><option value="20">20 דק׳</option><option value="30">30 דק׳</option></select>
@@ -1076,14 +1076,14 @@ var DEF_FORMS={
 
 function defCfg(){
   return {
-    // New pricing model: first vs followup, plus optional per-patient override
-    priceFirst:400,priceFollowup:350,
-    // Duration model: first vs followup (longer for first intake)
-    durationFirst:75,durationFollowup:60,
+    // Pricing model: single (adults) + baby + series (per-patient via seriesTypes)
+    priceSingle:350,priceBaby:300,
+    // Single treatment duration (fixed 60 in slot calc; this is just for UI/billing context)
+    duration:60,
     // Break between treatments (mins) — applied after each treatment block
     breakMins:15,
-    // Legacy fields kept for backward compat — copied at load time
-    price:350,duration:60,
+    // Legacy fields kept for backward compat
+    price:350,
     schedule:{
       0:{active:true,ranges:[{s:'10:00',e:'18:00'}]},1:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
       2:{active:true,ranges:[{s:'10:00',e:'18:00'}]},3:{active:true,ranges:[{s:'10:00',e:'18:00'}]},
@@ -1104,18 +1104,21 @@ function defCfg(){
     }
   };
 }
-// Migration: legacy single price/duration → split fields, when only old fields exist
+// Migration: collapse old first/followup fields into single + baby pricing
 function migrateCfg(c){
   if(!c)return c;
-  if(c.priceFollowup===undefined && c.price!==undefined)c.priceFollowup=c.price;
-  if(c.priceFirst===undefined)c.priceFirst=c.priceFollowup||c.price||400;
-  if(c.durationFollowup===undefined && c.duration!==undefined)c.durationFollowup=c.duration;
-  if(c.durationFirst===undefined)c.durationFirst=c.durationFollowup||c.duration||60;
+  // priceSingle: prefer new field; fall back to old priceFollowup, then price
+  if(c.priceSingle===undefined)c.priceSingle=c.priceFollowup||c.price||350;
+  if(c.priceBaby===undefined)c.priceBaby=c.priceSingle;
+  if(c.duration===undefined)c.duration=c.durationFollowup||60;
   if(c.breakMins===undefined)c.breakMins=0;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
+  // Strip retired keys so saveSettings doesn't keep re-saving them
+  delete c.priceFirst;delete c.priceFollowup;
+  delete c.durationFirst;delete c.durationFollowup;
   return c;
 }
-// Price/duration resolution per treatment — single source of truth
+// Per-patient price resolution
 function getTreatmentPrice(p,treatmentNum,cfg){
   cfg=cfg||window.appCfg||defCfg();
   // Per-patient override wins
@@ -1124,14 +1127,14 @@ function getTreatmentPrice(p,treatmentNum,cfg){
   if(p&&p.treatType==='series'&&p.series&&p.series.active!==false&&(p.series.used||0)<(p.series.count||0)){
     return Math.round(p.series.price/Math.max(1,p.series.count));
   }
-  // First treatment
-  if(treatmentNum===1)return parseInt(cfg.priceFirst)||400;
-  return parseInt(cfg.priceFollowup)||350;
+  // Baby patients use the baby price
+  if(p&&p.patType==='baby')return parseInt(cfg.priceBaby)||parseInt(cfg.priceSingle)||350;
+  // Adult single
+  return parseInt(cfg.priceSingle)||350;
 }
 function getTreatmentDuration(p,treatmentNum,cfg){
   cfg=cfg||window.appCfg||defCfg();
-  if(treatmentNum===1||(p&&(!p.treatments||p.treatments.length===0)))return parseInt(cfg.durationFirst)||75;
-  return parseInt(cfg.durationFollowup)||60;
+  return parseInt(cfg.duration)||60;
 }
 window.appCfg=defCfg();
 
@@ -1187,38 +1190,41 @@ function scheduleForDate(ds){
   var d=sToD(ds);
   return (cfg.schedule||{})[d.getDay()]||{active:false,ranges:[]};
 }
-// Slot generator — cascading slots with a FIXED step of 60 min + break.
-// Per the therapist's rule: each appointment is treated as 1 hour + break for
-// the purpose of finding the next available slot, regardless of any duration
-// override in settings. A slot is only emitted if a full hour fits before the
-// range end. Existing appointments shift the cascade: after one ends, the next
-// candidate resumes from (appt end + break) and cascades from there.
+// Slot generator — therapist's spec:
+//   • Default cadence: every round hour from the range start (9, 10, 11, ... no break between)
+//   • When an appointment exists, the next available slot is (appt.start + 60 + break),
+//     and the cadence continues hourly from there.
+//   • A slot is only valid if a full hour fits before the range end.
+// Implementation: cursor advances by STEP=60 each successful slot; on conflict, jumps to
+// appt.end (which includes its trailing break) and continues cascading from there.
 function getSlots(ds){
   var day=scheduleForDate(ds);
   if(!day||!day.active||!day.ranges||!day.ranges.length)return [];
   var cfg=window.appCfg||defCfg();
   var brk=parseInt(cfg.breakMins||0);
-  var TREAT=60; // fixed hour per the therapist's rule
-  var STEP=TREAT+brk;
-  // Existing appts on this date — block at least TREAT minutes each (longer if stored)
+  var TREAT=60;            // 1 hour treatment minimum
+  var STEP=60;             // hourly cadence between slots
+  // Each existing appt blocks treatment + trailing break (i.e., when the therapist becomes free)
   var apts=(window.apts||[]).filter(function(a){return a.date===ds;})
-    .map(function(a){return {s:hmToMin(a.time),e:hmToMin(a.time)+Math.max(TREAT,parseInt(a.duration||TREAT))};})
+    .map(function(a){
+      var s=hmToMin(a.time);
+      return {s:s,e:s+Math.max(TREAT,parseInt(a.duration||TREAT))+brk};
+    })
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
     var rs=hmToMin(r.s),re=hmToMin(r.e);
-    var cursor=rs;
+    var cursor=rs,safety=0;
     var rangeApts=apts.filter(function(a){return a.s<re&&a.e>rs;});
-    while(true){
-      // If cursor overlaps an existing appt, jump past it + break
-      var inAppt=null;
+    while(cursor+TREAT<=re && safety++<200){
+      // Slot [cursor, cursor+TREAT) conflicts with appt block [a.s, a.e) iff
+      // cursor < a.e AND a.s < cursor + TREAT (strict on both sides → back-to-back is OK)
+      var hit=null;
       for(var i=0;i<rangeApts.length;i++){
         var a=rangeApts[i];
-        if(cursor<a.e&&cursor+TREAT>a.s){inAppt=a;break;}
+        if(cursor<a.e&&a.s<cursor+TREAT){hit=a;break;}
       }
-      if(inAppt){cursor=inAppt.e+brk;continue;}
-      // Need a full hour before the range end
-      if(cursor+TREAT>re)break;
+      if(hit){cursor=hit.e;continue;}
       slots.push(minToHM(cursor));
       cursor+=STEP;
     }
@@ -1983,7 +1989,7 @@ function openPatient(id){
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
     '<div class="ir"><span class="il">סוג מטופל</span><span class="iv">'+(p.patType==='baby'?'תינוק':'מבוגר')+'</span></div>'+
     '<div class="ir"><span class="il">סוג טיפול</span><span class="iv">'+(p.treatType==='series'?'סדרה':'יחיד')+'</span></div>'+
-    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">'+(function(){var cfg=window.appCfg||defCfg();var nextNum=(p.treatments||[]).length+1;var pr=getTreatmentPrice(p,nextNum,cfg);var note='';if(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')note=' (מותאם אישית)';else if(p.treatType==='series'&&p.series&&p.series.active!==false)note=' (סדרה)';else if(nextNum===1)note=' (ראשון)';else note=' (המשך)';return '₪'+pr.toLocaleString()+note;})()+'</span></div>'+
+    '<div class="ir"><span class="il">מחיר לטיפול</span><span class="iv">'+(function(){var cfg=window.appCfg||defCfg();var nextNum=(p.treatments||[]).length+1;var pr=getTreatmentPrice(p,nextNum,cfg);var note='';if(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')note=' (מותאם אישית)';else if(p.treatType==='series'&&p.series&&p.series.active!==false)note=' (סדרה)';else if(p.patType==='baby')note=' (תינוק)';else note=' (בודד)';return '₪'+pr.toLocaleString()+note;})()+'</span></div>'+
     (((p.healthConditions&&p.healthConditions.length)||p.healthOther)?
       '<div style="margin-top:10px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
       '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:5px;">🏥 מצבים רפואיים</div>'+
@@ -2863,11 +2869,10 @@ async function endSeries(pid){
 // ---- SETTINGS ----
 function applySettings(){
   var c=migrateCfg(window.appCfg||defCfg());window.appCfg=c;
-  var spf=document.getElementById('set-price-first');if(spf)spf.value=c.priceFirst||400;
-  var spu=document.getElementById('set-price-followup');if(spu)spu.value=c.priceFollowup||350;
-  var sdf=document.getElementById('set-dur-first');if(sdf)sdf.value=c.durationFirst||75;
-  var sdu=document.getElementById('set-dur-followup');if(sdu)sdu.value=c.durationFollowup||60;
-  var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||0;
+  var sps=document.getElementById('set-price-single');if(sps)sps.value=c.priceSingle||350;
+  var spb=document.getElementById('set-price-baby');if(spb)spb.value=c.priceBaby||300;
+  var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
+  var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||15;
   var bot=c.bot||{},msg=c.messages||{};
   var dm=defCfg().messages;
   var be=document.getElementById('set-bot-enabled');if(be)be.className='day-tog '+(bot.enabled?'on':'off');
@@ -2939,13 +2944,12 @@ function delRange(di,ri){var c=window.appCfg||defCfg();c.schedule[di].ranges.spl
 
 async function saveSettings(){
   var c=window.appCfg||defCfg();
-  var spf=document.getElementById('set-price-first');if(spf)c.priceFirst=Math.min(9999,parseInt(spf.value)||400);
-  var spu=document.getElementById('set-price-followup');if(spu)c.priceFollowup=Math.min(9999,parseInt(spu.value)||350);
-  var sdf=document.getElementById('set-dur-first');if(sdf)c.durationFirst=parseInt(sdf.value)||75;
-  var sdu=document.getElementById('set-dur-followup');if(sdu)c.durationFollowup=parseInt(sdu.value)||60;
+  var sps=document.getElementById('set-price-single');if(sps)c.priceSingle=Math.min(9999,parseInt(sps.value)||350);
+  var spb=document.getElementById('set-price-baby');if(spb)c.priceBaby=Math.min(9999,parseInt(spb.value)||300);
+  var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
   var sbr=document.getElementById('set-break');if(sbr)c.breakMins=parseInt(sbr.value)||0;
-  // Maintain legacy fields for compatibility with the public booking page (still uses cfg.duration)
-  c.price=c.priceFollowup;c.duration=c.durationFollowup;
+  // Maintain legacy price for backward compat (public booking page used to read cfg.price)
+  c.price=c.priceSingle;
   if(!c.bot)c.bot={};if(!c.messages)c.messages={};
   var bp=document.getElementById('set-bot-phone');if(bp)c.bot.phone=bp.value.trim();
   var rh=document.getElementById('set-reminder-hours');if(rh)c.bot.reminderHours=Math.min(168,Math.max(1,parseInt(rh.value)||24));
@@ -3058,7 +3062,10 @@ function openEdit(id){
   // customPrice is the new field; old patients used p.price — show whichever is set
   var cust=(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')?p.customPrice:(p.price&&p.price!==350?p.price:'');
   document.getElementById('ep-px').value=cust;
-  document.getElementById('back-editpt').onclick=function(){openPatient(id);};showScreen('edit-patient');
+  // Back button uses goBack() (wired once on DOMContentLoaded). Don't override it here —
+  // overriding broke navHistory: a direct openPatient() pushed 'edit-patient' onto history,
+  // so the next "back" returned to edit instead of leaving the patient file.
+  showScreen('edit-patient');
 }
 async function saveEdit(){
   var id=String(document.getElementById('ep-id').value);var p=findP(id);if(!p)return;
@@ -3323,10 +3330,10 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('del-ov').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 
   // Settings
-  ['set-price-first','set-price-followup','set-dur-first','set-dur-followup','set-break'].forEach(function(id){
+  ['set-price-single','set-price-baby','set-dur','set-break'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.onchange=function(){autoSave();};
   });
-  document.getElementById('set-dur').onchange=function(){autoSave();};
+  // (was: set-dur — that element no longer exists; handler caused all later setup to fail)
   document.getElementById('btn-add-ser-type').onclick=function(){showScreen('add-series-type');};
   document.getElementById('btn-save-ser-type').onclick=function(){addSeriesType();};
   document.getElementById('btn-clean-appts').onclick=function(){cleanOrphanAppts();};

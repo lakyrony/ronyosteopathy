@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.11</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.12</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -411,7 +411,7 @@ function todayD(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),
 function todayStr(){return dstr(todayD());}
 function monthAhead(n){var d=new Date();d.setMonth(d.getMonth()+n);return d;}
 
-// Cascading slot generator — fixed hour + break per the therapist's rule
+// Slot generator — hourly cadence, jumps (60 + break) after each existing appt
 function hmToMin(s){if(!s)return 0;var p=String(s).split(':');return parseInt(p[0])*60+parseInt(p[1]||0);}
 function minToHM(m){return S2(Math.floor(m/60))+':'+S2(m%60);}
 function getSlots(ds){
@@ -421,24 +421,22 @@ function getSlots(ds){
   var day=ovr||((availability.schedule||{})[d.getDay()]);
   if(!day||!day.active||!day.ranges||!day.ranges.length)return[];
   var brk=parseInt(availability.breakMins||0);
-  var TREAT=60;
-  var STEP=TREAT+brk;
+  var TREAT=60,STEP=60;
   var apts=(availability.taken||[]).filter(function(a){return a.date===ds;})
-    .map(function(a){return {s:hmToMin(a.time),e:hmToMin(a.time)+Math.max(TREAT,parseInt(a.duration||TREAT))};})
+    .map(function(a){var s=hmToMin(a.time);return {s:s,e:s+Math.max(TREAT,parseInt(a.duration||TREAT))+brk};})
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
     var rs=hmToMin(r.s),re=hmToMin(r.e);
-    var cursor=rs;
+    var cursor=rs,safety=0;
     var rangeApts=apts.filter(function(a){return a.s<re&&a.e>rs;});
-    while(true){
-      var inAppt=null;
+    while(cursor+TREAT<=re && safety++<200){
+      var hit=null;
       for(var i=0;i<rangeApts.length;i++){
         var a=rangeApts[i];
-        if(cursor<a.e&&cursor+TREAT>a.s){inAppt=a;break;}
+        if(cursor<a.e&&a.s<cursor+TREAT){hit=a;break;}
       }
-      if(inAppt){cursor=inAppt.e+brk;continue;}
-      if(cursor+TREAT>re)break;
+      if(hit){cursor=hit.e;continue;}
       slots.push(minToHM(cursor));
       cursor+=STEP;
     }
