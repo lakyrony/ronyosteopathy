@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.13</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.15</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -429,7 +429,7 @@ function getSlots(ds){
   // appears as soon as the therapist is free). E.g., 50-min appt at 09:00 + 15-min break
   // → next slot at 10:05. 60-min appt at 09:00 + 15-min break → next slot at 10:15.
   var apts=(availability.taken||[]).filter(function(a){return a.date===ds;})
-    .map(function(a){var s=hmToMin(a.time);var dur=parseInt(a.duration)||TREAT;return {s:s,e:s+dur+brk};})
+    .map(function(a){var s=hmToMin(a.time);var dur=parseInt(a.duration)||TREAT;return {s:s,e:s+dur+brk,eNoBrk:s+dur};})
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
   (day.ranges||[]).forEach(function(r){
@@ -446,7 +446,23 @@ function getSlots(ds){
       slots.push(minToHM(cursor));
       cursor+=STEP;
     }
+    // ---- CONTINUE THE DAY AFTER THE LAST APPOINTMENT ----
+    // After the last booked appointment, the next free slot is (its end + break). Offer it
+    // even if the treatment booked there would run PAST the closing time — as long as it
+    // still STARTS at/before closing. Self-limiting: once the next start passes closing,
+    // no further slot is offered.
+    if(rangeApts.length){
+      var lastEnd=0;
+      rangeApts.forEach(function(a){if(a.e>lastEnd)lastEnd=a.e;}); // a.e already includes the break
+      var cand=lastEnd;
+      var lastSlot=slots.length?hmToMin(slots[slots.length-1]):(rs-1);
+      var overlaps=rangeApts.some(function(a){return cand<a.eNoBrk&&a.s<cand+TREAT;});
+      if(cand>lastSlot && cand>=rs && cand<=re && !overlaps && slots.indexOf(minToHM(cand))<0){
+        slots.push(minToHM(cand));
+      }
+    }
   });
+  slots.sort(function(a,b){return hmToMin(a)-hmToMin(b);});
   return slots;
 }
 

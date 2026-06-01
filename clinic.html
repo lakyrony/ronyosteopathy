@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.7</title>
+<title>קליניקה v6.10</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -598,7 +598,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.7</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.10</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -614,7 +614,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.7</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.10</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -731,9 +731,16 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           <button class="set-form-btn" data-type="baby" data-form="followup">👶 טופס המשך — תינוק <span style="color:var(--ac)">›</span></button>
         </div>
         <div class="set-group">
+          <div class="set-group-hdr">📝 טופס סיכום טיפול</div>
+          <button class="set-form-btn" data-type="adult" data-form="summary">👤 סיכום טיפול — מבוגר <span style="color:var(--ac)">›</span></button>
+          <button class="set-form-btn" data-type="baby" data-form="summary">👶 סיכום טיפול — תינוק <span style="color:var(--ac)">›</span></button>
+        </div>
+        <div class="set-group">
           <div class="set-group-hdr">🛠 כלים</div>
           <div style="padding:8px 13px 13px;display:flex;flex-direction:column;gap:7px;">
             <button class="btn bs" id="btn-clean-appts" style="margin-top:0;">🧹 הסר תורים ללא מטופל</button>
+            <button class="btn bs" id="btn-dedupe-pts" style="margin-top:0;">👥 הסר מטופלים כפולים</button>
+            <button class="btn bs" id="btn-mark-all-paid" style="margin-top:0;">✅ סמן את כל הטיפולים כשולם</button>
             <button class="btn bs" id="pwa-install-btn" style="display:none;">📲 הוסף למסך הבית</button>
             <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ שיתוף ↗ ← "הוסף למסך הבית"</div>
             <div id="autosave-msg" style="text-align:center;font-size:12px;color:var(--ac);opacity:0;transition:opacity 0.3s;">✓ נשמר</div>
@@ -779,7 +786,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="ct">סוג סדרה חדש</div>
         <div class="fm"><label class="fl">שם *</label><input class="fi" id="st-name" type="text" placeholder="לדוגמה: סדרת גב"/></div>
         <div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="st-count" type="number" inputmode="numeric" value="5" min="2" max="20"/></div>
-        <div class="fm"><label class="fl">מחיר לסדרה (₪)</label><input class="fi" id="st-price" type="number" inputmode="numeric" placeholder="1500"/></div>
+        <div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="st-price" type="number" inputmode="numeric" placeholder="280"/></div>
+        <div id="st-total-disp" style="font-size:12px;color:var(--tm);margin:-4px 2px 10px;">סה״כ לסדרה: ₪0</div>
         <button class="btn bp" id="btn-save-ser-type">הוסף</button>
       </div>
     </div>
@@ -1098,6 +1106,13 @@ var DEF_FORMS={
     followup:[
       {id:'fu1',label:'תלונה היום',multi:false},{id:'fu2',label:'VAS',multi:false},
       {id:'fu3',label:'שינויים מהטיפול הקודם',multi:false},{id:'fu4',label:'הערות',multi:true}
+    ],
+    summary:[
+      {id:'tcs',label:'TCS',multi:true},
+      {id:'done',label:'מה בוצע בטיפול',multi:true},
+      {id:'found',label:'ממצאים',multi:true},
+      {id:'recommend',label:'המלצות',multi:true},
+      {id:'exercises',label:'תרגילים',multi:false}
     ]
   },
   baby:{
@@ -1116,6 +1131,13 @@ var DEF_FORMS={
     followup:[
       {id:'bf1',label:'שינויים מהטיפול הקודם',multi:false},{id:'bf2',label:'הזנה',multi:false},
       {id:'bf3',label:'שינה',multi:false},{id:'bf4',label:'הערות',multi:true}
+    ],
+    summary:[
+      {id:'tcs',label:'TCS',multi:true},
+      {id:'done',label:'מה בוצע בטיפול',multi:true},
+      {id:'found',label:'ממצאים',multi:true},
+      {id:'recommend',label:'המלצות',multi:true},
+      {id:'exercises',label:'תרגילים',multi:false}
     ]
   }
 };
@@ -1140,8 +1162,8 @@ function defCfg(){
     // Per-date schedule overrides — key is YYYY-MM-DD, value is {active, ranges} that overrides the weekday default
     scheduleOverrides:{},
     seriesTypes:[{id:'st1',name:'סדרת בסיס',count:5,price:1500},{id:'st2',name:'סדרה אינטנסיבית',count:10,price:2800}],
-    forms:{adult:{intake:DEF_FORMS.adult.intake,followup:DEF_FORMS.adult.followup},
-           baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup}},
+    forms:{adult:{intake:DEF_FORMS.adult.intake,followup:DEF_FORMS.adult.followup,summary:DEF_FORMS.adult.summary},
+           baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup,summary:DEF_FORMS.baby.summary}},
     bot:{enabled:false,phone:'',reminderHours:24,autoSend:false},
     messages:{
       reminder:'שלום {שם} 🌿\nתזכורת לתור שלך ב-{תאריך} בשעה {שעה}.\nנתראה!',
@@ -1162,6 +1184,18 @@ function migrateCfg(c){
   if(c.durationFirst===undefined)c.durationFirst=Math.max(parseInt(c.duration)||60,75);
   if(c.breakMins===undefined)c.breakMins=0;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
+  // Ensure the (newer) treatment-summary form exists for both patient types
+  if(c.forms){
+    ['adult','baby'].forEach(function(tp){
+      if(c.forms[tp]&&!c.forms[tp].summary)c.forms[tp].summary=DEF_FORMS[tp].summary.map(function(f){return {id:f.id,label:f.label,multi:f.multi};});
+    });
+  }
+  // Series types: derive per-treatment price (pricePer) from total when missing
+  if(Array.isArray(c.seriesTypes)){
+    c.seriesTypes.forEach(function(t){
+      if(t.pricePer===undefined&&t.price&&t.count)t.pricePer=Math.round(t.price/t.count);
+    });
+  }
   // Strip retired pricing keys (durationFollowup → duration; durationFirst is kept)
   delete c.priceFirst;delete c.priceFollowup;
   delete c.durationFollowup;
@@ -1172,8 +1206,9 @@ function getTreatmentPrice(p,treatmentNum,cfg){
   cfg=cfg||window.appCfg||defCfg();
   // Per-patient override wins
   if(p&&p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')return parseInt(p.customPrice)||0;
-  // Active series — distribute series price across its treatments
+  // Active series — per-treatment price (explicit pricePer wins; else total/count)
   if(p&&p.treatType==='series'&&p.series&&p.series.active!==false&&(p.series.used||0)<(p.series.count||0)){
+    if(p.series.pricePer!==undefined&&p.series.pricePer!==null&&p.series.pricePer!=='')return parseInt(p.series.pricePer)||0;
     return Math.round(p.series.price/Math.max(1,p.series.count));
   }
   // Baby patients use the baby price
@@ -1207,8 +1242,8 @@ function tfSaveDraft(pid,tNum){
     document.querySelectorAll('[id^="if-"]').forEach(function(el){
       data[el.id.slice(3)]=el.value;
     });
-    ['sum-tcs','sum-done','sum-found','sum-rec','sum-ex'].forEach(function(id){
-      var el=document.getElementById(id);if(el)data['__'+id]=el.value;
+    document.querySelectorAll('[id^="sum-"]').forEach(function(el){
+      if(el.tagName==='TEXTAREA'||(el.tagName==='INPUT'&&el.type!=='button'))data['__'+el.id]=el.value;
     });
     localStorage.setItem(tfAutosaveKey(pid,tNum),JSON.stringify({t:Date.now(),data:data}));
     var ind=document.getElementById('tf-autosave-ind');
@@ -1261,7 +1296,7 @@ function getSlots(ds){
     .map(function(a){
       var s=hmToMin(a.time);
       var dur=parseInt(a.duration)||TREAT;
-      return {s:s,e:s+dur+(a.skipBreak?0:brk)};
+      return {s:s,e:s+dur+(a.skipBreak?0:brk),eNoBrk:s+dur};
     })
     .sort(function(a,b){return a.s-b.s;});
   var slots=[];
@@ -1281,7 +1316,24 @@ function getSlots(ds){
       slots.push(minToHM(cursor));
       cursor+=STEP;
     }
+    // ---- CONTINUE THE DAY AFTER THE LAST APPOINTMENT ----
+    // After the last booked appointment, the next free slot is (its end + break). Offer it
+    // even if the treatment booked there would run PAST the closing time — as long as it
+    // still STARTS at/before closing. This lets the therapist keep extending the day (e.g.
+    // a 17:00 booking opens 18:15). It is self-limiting: once the next start passes closing
+    // no further slot is offered.
+    if(rangeApts.length){
+      var lastEnd=0;
+      rangeApts.forEach(function(a){if(a.e>lastEnd)lastEnd=a.e;}); // a.e already includes the break
+      var cand=lastEnd;
+      var lastSlot=slots.length?hmToMin(slots[slots.length-1]):(rs-1);
+      var overlaps=rangeApts.some(function(a){return cand<a.eNoBrk&&a.s<cand+TREAT;});
+      if(cand>lastSlot && cand>=rs && cand<=re && !overlaps && slots.indexOf(minToHM(cand))<0){
+        slots.push(minToHM(cand));
+      }
+    }
   });
+  slots.sort(function(a,b){return hmToMin(a)-hmToMin(b);});
   return slots;
 }
 
@@ -2056,6 +2108,7 @@ function openPatient(id){
   infoCard.innerHTML='<div class="pfh">'+
     '<div class="pfav '+avCls(p)+'" style="'+avSz(52)+'">'+p.name.charAt(0)+'</div>'+
     '<div style="flex:1;"><div class="pfn">'+p.name+(p.patType==='baby'?' 👶':'')+'</div><div class="pfs">'+(p.phone||'')+'</div></div>'+
+    (p.phone?'<button class="pbtn" id="pf-wa-btn" title="שליחת הודעת וואטסאפ" style="background:#25D366;color:#fff;border:none;">💬 וואטסאפ</button>':'')+
     '<button class="pbtn pbtn-gray" id="pf-edit-btn">עריכה</button>'+
     '</div>'+
     (hd&&window.innerWidth<900?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
@@ -2076,6 +2129,7 @@ function openPatient(id){
       '<div style="font-size:13px;color:var(--tp);">'+(p.medications||'כן')+'</div>'+
       '</div>':'');
   infoCard.querySelector('#pf-edit-btn').addEventListener('click',function(){openEdit(id);});
+  var waBtn=infoCard.querySelector('#pf-wa-btn');if(waBtn)waBtn.addEventListener('click',function(){openWaMenu(id);});
   pfile.appendChild(infoCard);
   if(hd&&window.innerWidth>=900&&fpat){
     var debtRow=document.createElement('div');
@@ -2094,7 +2148,7 @@ function openPatient(id){
     sCard.innerHTML='<div class="ct" style="display:flex;justify-content:space-between;align-items:center;"><span>🔁 סדרה פעילה</span></div><div class="ser-card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'+
       '<div style="font-size:13px;font-weight:700;color:var(--g700);">'+p.series.name+'</div>'+
-      '<div style="font-size:11px;color:var(--tm);">'+p.series.used+'/'+p.series.count+' · ₪'+Math.round(p.series.price/p.series.count)+'/טיפול</div></div>'+
+      '<div style="font-size:11px;color:var(--tm);">'+p.series.used+'/'+p.series.count+' · ₪'+((p.series.pricePer!==undefined&&p.series.pricePer!==null&&p.series.pricePer!=='')?parseInt(p.series.pricePer):Math.round(p.series.price/Math.max(1,p.series.count)))+'/טיפול</div></div>'+
       '<div class="ptrack"><div class="pfill" style="width:'+pct+'%"></div></div>'+
       '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tm);margin-top:3px;"><span>נפתחה: '+(p.series.openDate||'')+'</span><span>'+pct+'%</span></div>'+
       '<div style="display:flex;gap:6px;margin-top:10px;">'+
@@ -2439,7 +2493,10 @@ function buildTF(p,a,tdate,treatNum){
   var tNum=existingT?existingT.num:(((p.treatments||[]).length+1));
   var isEdit=TF.editDate!==null;
   var isFirst=tNum===1;
-  document.getElementById('tf-pt').textContent=p.name+(p.patType==='baby'?' 👶':'');
+  var tfPtEl=document.getElementById('tf-pt');
+  tfPtEl.textContent=p.name+(p.patType==='baby'?' 👶':'');
+  tfPtEl.style.cursor='pointer';tfPtEl.title='פתח כרטיס מטופל';
+  tfPtEl.onclick=function(){openPatient(p.id);};
   document.getElementById('tf-tm').textContent=(a?a.date+' · '+a.time:tdate)+' · '+(isEdit?'עריכת טיפול '+tNum:isFirst?'טיפול ראשון':'טיפול '+tNum);
 
   // Intake form - use stored formKey if exists (survives renumbering)
@@ -2548,7 +2605,7 @@ function buildTF(p,a,tdate,treatNum){
   intakeEl.appendChild(contBtn);
 
   // Summary form
-  buildSummaryForm(p,existingT);
+  buildSummaryForm(p,existingT,draft);
 
   // Wire autosave on EVERY input/textarea in the treatment-flow screen.
   // Use a single debounced handler so we don't write to localStorage on every keystroke.
@@ -2561,7 +2618,7 @@ function buildTF(p,a,tdate,treatNum){
   tfSetTab('intake');
 }
 
-function buildSummaryForm(p,existingT){
+function buildSummaryForm(p,existingT,draft){
   var ed=existingT||{};
   // Determine the treatment number this summary belongs to
   var thisNum=ed.num||((p.treatments||[]).length+1);
@@ -2578,13 +2635,29 @@ function buildSummaryForm(p,existingT){
     sumEl.insertAdjacentHTML('beforeend','<div style="background:var(--a50);border:1px solid var(--a100);border-radius:var(--rsm);padding:7px 10px;font-size:11px;color:var(--a700);margin-bottom:10px;">🔁 סדרה פעילה — '+used+'/'+total+' · מחיר לטיפול ₪'+price.toLocaleString()+'</div>');
   }
 
+  // Treatment-summary fields are configurable in Settings (per patient type).
+  var cfgS=window.appCfg||defCfg();
+  var sType=p.patType==='baby'?'baby':'adult';
+  var sumFields=((cfgS.forms||{})[sType]||{}).summary||DEF_FORMS[sType].summary||[];
+  var escT=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
+  var sVal=function(fid){
+    // priority: explicit summaryData → legacy standard key → restored draft
+    if(ed.summaryData&&ed.summaryData[fid]!==undefined)return ed.summaryData[fid];
+    if(ed[fid]!==undefined&&ed[fid]!==null&&ed[fid]!=='')return ed[fid];
+    if(draft&&draft['__sum-'+fid]!==undefined&&!ed.num)return draft['__sum-'+fid];
+    return '';
+  };
   var secDiv=document.createElement('div');secDiv.className='tf-sec';
-  secDiv.innerHTML='<div class="tf-sec-ttl">סיכום טיפול</div>'+
-    '<div class="if-field"><label class="if-label">TCS</label><textarea class="if-input" id="sum-tcs" style="min-height:50px;">'+(ed.tcs||'')+'</textarea></div>'+
-    '<div class="if-field"><label class="if-label">מה בוצע בטיפול</label><textarea class="if-input" id="sum-done" style="min-height:80px;">'+(ed.done||'')+'</textarea></div>'+
-    '<div class="if-field"><label class="if-label">ממצאים</label><textarea class="if-input" id="sum-found" style="min-height:60px;">'+(ed.found||'')+'</textarea></div>'+
-    '<div class="if-field"><label class="if-label">המלצות</label><textarea class="if-input" id="sum-rec" style="min-height:60px;">'+(ed.recommend||'')+'</textarea></div>'+
-    '<div class="if-field"><label class="if-label">תרגילים</label><input class="if-input" id="sum-ex" value="'+(ed.exercises||'')+'" type="text"/></div>';
+  var html='<div class="tf-sec-ttl">סיכום טיפול</div>';
+  sumFields.forEach(function(f){
+    var v=sVal(f.id),lbl=escT(f.label);
+    if(f.multi){
+      html+='<div class="if-field"><label class="if-label">'+lbl+'</label><textarea class="if-input" id="sum-'+f.id+'" style="min-height:60px;">'+escT(v)+'</textarea></div>';
+    }else{
+      html+='<div class="if-field"><label class="if-label">'+lbl+'</label><input class="if-input" id="sum-'+f.id+'" type="text" value="'+escT(v).replace(/"/g,'&quot;')+'"/></div>';
+    }
+  });
+  secDiv.innerHTML=html;
   sumEl.appendChild(secDiv);
 
   var payDiv=document.createElement('div');payDiv.className='tf-sec';
@@ -2650,11 +2723,18 @@ async function tfSave(){
   var a=TF.apptId?(window.apts||[]).find(function(x){return String(x.id)===String(TF.apptId);}):null;
   var tdate=TF.editDate||(a?a.date:todayStr());
   var intakeData=tfGetIntakeData();
-  var tcs=(document.getElementById('sum-tcs')||{value:''}).value;
-  var done=(document.getElementById('sum-done')||{value:''}).value;
-  var found=(document.getElementById('sum-found')||{value:''}).value;
-  var rec=(document.getElementById('sum-rec')||{value:''}).value;
-  var ex=(document.getElementById('sum-ex')||{value:''}).value;
+  // Read the (configurable) treatment-summary fields dynamically
+  var cfgSum=window.appCfg||defCfg();
+  var sTypeSum=p.patType==='baby'?'baby':'adult';
+  var sumFieldsSave=((cfgSum.forms||{})[sTypeSum]||{}).summary||DEF_FORMS[sTypeSum].summary||[];
+  var summaryData={};
+  sumFieldsSave.forEach(function(f){var el=document.getElementById('sum-'+f.id);if(el)summaryData[f.id]=el.value;});
+  // Standard keys kept in sync for existing displays/reports
+  var tcs=summaryData.tcs!==undefined?summaryData.tcs:(document.getElementById('sum-tcs')||{value:''}).value;
+  var done=summaryData.done!==undefined?summaryData.done:'';
+  var found=summaryData.found!==undefined?summaryData.found:'';
+  var rec=summaryData.recommend!==undefined?summaryData.recommend:'';
+  var ex=summaryData.exercises!==undefined?summaryData.exercises:'';
   var paidBtn=document.getElementById('sum-paid-btn');
   var paid=paidBtn?paidBtn.classList.contains('active'):true;
   var methodEl=document.querySelector('#sum-method-wrap .chip.active');
@@ -2670,7 +2750,7 @@ async function tfSave(){
   var formKey=tNumSave===1?'intake':'followup';
   var fields=((cfg.forms||{})[formType]||{})[formKey]||DEF_FORMS[formType][formKey]||[];
   var mainComplaint=fields.length&&intakeData[fields[0].id]?intakeData[fields[0].id]:'';
-  var tobj={num:tNumSave,date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,paid:paid,amount:price,method:paid?method:''};
+  var tobj={num:tNumSave,date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,summaryData:summaryData,paid:paid,amount:price,method:paid?method:''};
   if(existingIdx>=0){
     p.treatments[existingIdx]=tobj;
   } else {
@@ -2885,36 +2965,49 @@ function openSeriesEditor(pid){
   var sheet=document.createElement('div');
   sheet.style.cssText='background:var(--sf);border-radius:var(--rlg);padding:22px 18px;width:100%;max-width:380px;box-shadow:var(--sh);';
   var title=existing?'עריכת סדרה':'פתיחת סדרה חדשה';
+  var perOf=function(t){return (t.pricePer!==undefined&&t.pricePer!==null&&t.pricePer!=='')?parseInt(t.pricePer):Math.round((t.price||0)/Math.max(1,t.count||1));};
   var typeOpts=types.map(function(t){
     var sel=existing&&existing.typeId===t.id?' selected':'';
-    return '<option value="'+t.id+'"'+sel+'>'+t.name+' · '+t.count+' טיפולים · ₪'+t.price.toLocaleString()+'</option>';
+    return '<option value="'+t.id+'"'+sel+'>'+t.name+' · '+t.count+' טיפולים · ₪'+perOf(t).toLocaleString()+' לטיפול</option>';
   }).join('');
+  var initCount=existing?existing.count:types[0].count;
+  var initPer=existing?perOf(existing):perOf(types[0]);
   sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:12px;text-align:center;">'+title+'</div>'+
     '<div class="fm"><label class="fl">סוג סדרה</label><select class="fsl" id="se-type">'+typeOpts+'</select></div>'+
-    '<div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="se-count" type="number" min="1" max="60" value="'+(existing?existing.count:types[0].count)+'"/></div>'+
-    '<div class="fm"><label class="fl">מחיר כולל לסדרה (₪)</label><input class="fi" id="se-price" type="number" min="0" value="'+(existing?existing.price:types[0].price)+'"/></div>'+
+    '<div class="fm"><label class="fl">מספר טיפולים</label><input class="fi" id="se-count" type="number" min="1" max="60" value="'+initCount+'"/></div>'+
+    '<div class="fm"><label class="fl">מחיר לטיפול (₪)</label><input class="fi" id="se-price" type="number" min="0" value="'+initPer+'"/></div>'+
+    '<div id="se-total-disp" style="font-size:12px;color:var(--tm);margin:-4px 2px 10px;">סה״כ לסדרה: ₪'+(initCount*initPer).toLocaleString()+'</div>'+
     (existing?'<div class="fm"><label class="fl">בוצעו עד כה</label><input class="fi" id="se-used" type="number" min="0" max="'+existing.count+'" value="'+(existing.used||0)+'"/></div>':'')+
     '<div style="display:flex;gap:8px;margin-top:8px;">'+
     '<button class="btn bs" id="se-cancel" style="flex:1;margin-top:0;">ביטול</button>'+
     '<button class="btn bp" id="se-save" style="flex:1;margin-top:0;">'+(existing?'שמור':'פתח סדרה')+'</button>'+
     '</div>';
   ov.appendChild(sheet);document.body.appendChild(ov);
-  // When type changes — auto-fill count/price from the type
+  // Live "total per series" display
+  var seTotal=function(){
+    var d=document.getElementById('se-total-disp');if(!d)return;
+    var c=parseInt((document.getElementById('se-count')||{}).value)||0;
+    var pr=parseInt((document.getElementById('se-price')||{}).value)||0;
+    d.textContent='סה״כ לסדרה: ₪'+(c*pr).toLocaleString();
+  };
+  // When type changes — auto-fill count/per-treatment price from the type
   document.getElementById('se-type').addEventListener('change',function(){
     var t=types.find(function(x){return x.id===this.value;}.bind(this));
-    if(t){document.getElementById('se-count').value=t.count;document.getElementById('se-price').value=t.price;}
+    if(t){document.getElementById('se-count').value=t.count;document.getElementById('se-price').value=perOf(t);seTotal();}
   });
+  document.getElementById('se-count').addEventListener('input',seTotal);
+  document.getElementById('se-price').addEventListener('input',seTotal);
   document.getElementById('se-cancel').addEventListener('click',function(){ov.remove();});
   ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
   document.getElementById('se-save').addEventListener('click',async function(){
     var typeId=document.getElementById('se-type').value;
     var t=types.find(function(x){return x.id===typeId;});if(!t){alert('בחר סוג סדרה');return;}
     var count=parseInt(document.getElementById('se-count').value)||t.count;
-    var price=parseInt(document.getElementById('se-price').value)||t.price;
+    var per=parseInt(document.getElementById('se-price').value);if(isNaN(per))per=perOf(t);
     var used=existing?(parseInt(document.getElementById('se-used').value)||0):0;
     if(used>count)used=count;
     p.treatType='series';
-    p.series={typeId:t.id,name:t.name,count:count,price:price,used:used,
+    p.series={typeId:t.id,name:t.name,count:count,pricePer:per,price:per*count,used:used,
       openDate:existing?(existing.openDate||todayStr()):todayStr(),
       active:used<count};
     if(!p.series.active)p.series.endDate=todayStr();
@@ -3100,27 +3193,77 @@ function renderSerTypes(){
   if(!types.length){el.innerHTML='<div style="padding:8px 13px;font-size:12px;color:var(--tm);">אין סדרות</div>';return;}
   el.innerHTML='';
   types.forEach(function(t){
+    var per=(t.pricePer!==undefined&&t.pricePer!==null&&t.pricePer!=='')?parseInt(t.pricePer):Math.round((t.price||0)/Math.max(1,t.count||1));
     var div=document.createElement('div');div.className='ser-type-item';
-    div.innerHTML='<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+t.name+'</div><div style="font-size:11px;color:var(--tm);">'+t.count+' טיפולים · ₪'+(t.price||0).toLocaleString()+'</div></div>'+
+    div.innerHTML='<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+t.name+'</div><div style="font-size:11px;color:var(--tm);">'+t.count+' טיפולים · ₪'+per.toLocaleString()+' לטיפול · סה״כ ₪'+(t.price||0).toLocaleString()+'</div></div>'+
       '<button class="pbtn pbtn-r" data-id="'+t.id+'">מחק</button>';
     div.querySelector('.pbtn-r').addEventListener('click',function(){delSerType(this.dataset.id);});
     el.appendChild(div);
   });
 }
+// Live "total per series" display while typing the per-treatment price / count
+function updateSerTypeTotal(){
+  var disp=document.getElementById('st-total-disp');if(!disp)return;
+  var count=parseInt((document.getElementById('st-count')||{}).value)||0;
+  var per=parseInt((document.getElementById('st-price')||{}).value)||0;
+  disp.textContent='סה״כ לסדרה: ₪'+(count*per).toLocaleString();
+}
 async function addSeriesType(){
   var name=document.getElementById('st-name').value.trim();if(!name){alert('נא להזין שם');return;}
-  var t={id:'st'+Date.now(),name:name,count:parseInt(document.getElementById('st-count').value)||5,price:parseInt(document.getElementById('st-price').value)||0};
+  var count=parseInt(document.getElementById('st-count').value)||5;
+  var per=parseInt(document.getElementById('st-price').value)||0;
+  var t={id:'st'+Date.now(),name:name,count:count,pricePer:per,price:per*count};
   window.appCfg.seriesTypes=[...(window.appCfg.seriesTypes||[]),t];
   await window.fbSaveCfg(window.appCfg);showScreen('settings');
 }
 async function delSerType(id){if(!confirm('למחוק?'))return;window.appCfg.seriesTypes=(window.appCfg.seriesTypes||[]).filter(function(t){return t.id!==id;});await window.fbSaveCfg(window.appCfg);renderSerTypes();}
 async function cleanOrphanAppts(){var ids=new Set((window.pts||[]).map(function(p){return String(p.id);}));var orphans=(window.apts||[]).filter(function(a){return !ids.has(String(a.patientId));});if(!orphans.length){alert('אין תורים לא משויכים ✓');return;}if(!confirm('נמצאו '+orphans.length+' תורים ללא מטופל. למחוק?'))return;for(var i=0;i<orphans.length;i++){window.apts=window.apts.filter(function(a){return a.id!==orphans[i].id;});await window.fbDelA(orphans[i].id);}alert('נוקה ✓');render();}
+// Remove duplicate patients (same phone, or same name when no phone). Keeps the record
+// with the MOST treatments (falls back to the first); deletes the rest.
+async function dedupePatients(){
+  var pts=(window.pts||[]).slice();
+  var groups={};
+  pts.forEach(function(p){
+    var key=(p.phone&&p.phone.replace(/\D/g,''))?('ph:'+p.phone.replace(/\D/g,'')):('nm:'+(p.name||'').trim());
+    (groups[key]=groups[key]||[]).push(p);
+  });
+  var toDelete=[];
+  Object.keys(groups).forEach(function(k){
+    var g=groups[k];if(g.length<2)return;
+    // keep the one with most treatments
+    g.sort(function(a,b){return (b.treatments||[]).length-(a.treatments||[]).length;});
+    toDelete=toDelete.concat(g.slice(1));
+  });
+  if(!toDelete.length){alert('לא נמצאו מטופלים כפולים ✓');return;}
+  if(!confirm('נמצאו '+toDelete.length+' רשומות כפולות. למחוק אותן? (נשמרת הרשומה עם הכי הרבה טיפולים)'))return;
+  for(var i=0;i<toDelete.length;i++){
+    var id=toDelete[i].id;
+    window.pts=(window.pts||[]).filter(function(x){return String(x.id)!==String(id);});
+    await window.fbDelP(id);
+  }
+  alert('נמחקו '+toDelete.length+' כפולים ✓');render();
+}
+// Mark every treatment of every patient as paid (cash by default for blanks).
+async function markAllPaid(){
+  var pts=(window.pts||[]);
+  var changed=0,patientsTouched=0;
+  if(!confirm('לסמן את כל הטיפולים של כל המטופלים כ"שולם"?'))return;
+  for(var i=0;i<pts.length;i++){
+    var p=pts[i],touched=false;
+    (p.treatments||[]).forEach(function(t){
+      if(!t.paid){t.paid=true;if(!t.method)t.method='מזומן';changed++;touched=true;}
+    });
+    if(touched){patientsTouched++;await window.fbSaveP(p);}
+  }
+  alert(changed?('סומנו '+changed+' טיפולים כשולם ('+patientsTouched+' מטופלים) ✓'):'כל הטיפולים כבר מסומנים כשולם ✓');
+  render();
+}
 
 // ---- FORM EDITOR ----
 var efType=null,efForm=null;
 function editForm(type,form){
   efType=type;efForm=form;
-  var titles={adult:{intake:'טופס ראשוני — מבוגר',followup:'טופס המשך — מבוגר'},baby:{intake:'טופס ראשוני — תינוק',followup:'טופס המשך — תינוק'}};
+  var titles={adult:{intake:'טופס ראשוני — מבוגר',followup:'טופס המשך — מבוגר',summary:'סיכום טיפול — מבוגר'},baby:{intake:'טופס ראשוני — תינוק',followup:'טופס המשך — תינוק',summary:'סיכום טיפול — תינוק'}};
   document.getElementById('ef-title').textContent=titles[type][form];
   renderFormFields();showScreen('edit-form');
 }
@@ -3456,10 +3599,15 @@ function openImportPatients(){
     for(var i=0;i<data.length;i++){
       var d=data[i];
       if(!d||!d.name){errors.push('שורה '+(i+1)+': חסר שם');skipped++;continue;}
-      // Skip if patient with same phone already exists
-      if(d.phone&&(window.pts||[]).some(function(ex){return ex.phone&&ex.phone.replace(/\D/g,'')===String(d.phone).replace(/\D/g,'');})){
-        errors.push(d.name+': כבר קיים לפי טלפון — דולג');skipped++;continue;
-      }
+      // Skip duplicates: match by phone when present, otherwise by (trimmed) name.
+      var dPhone=d.phone?String(d.phone).replace(/\D/g,''):'';
+      var dName=String(d.name).trim();
+      var dup=(window.pts||[]).some(function(ex){
+        var exPhone=ex.phone?String(ex.phone).replace(/\D/g,''):'';
+        if(dPhone&&exPhone)return exPhone===dPhone;        // both have phones → compare phones
+        return (ex.name||'').trim()===dName;               // otherwise compare names
+      });
+      if(dup){errors.push(d.name+': כבר קיים — דולג');skipped++;continue;}
       var cfg=window.appCfg||defCfg();
       var p={
         id:String(Date.now()+i),
@@ -3486,12 +3634,14 @@ function openImportPatients(){
             date:t.date||'',
             paid:t.paid||false,
             amount:t.amount||parseInt(cfg.priceSingle)||350,
-            payMethod:t.payMethod||'',
+            method:t.method||t.payMethod||(t.paid?'מזומן':''),
             intakeData:t.intakeData||{},
+            summaryData:t.summaryData||{},
             found:t.found||'',
             tcs:t.tcs||'',
             recommend:t.recommend||'',
-            done:t.done||false
+            exercises:t.exercises||'',
+            done:t.done||''
           };
         });
       }
@@ -3509,6 +3659,81 @@ function openImportPatients(){
 }
 
 function openGcal(){if(!lastAppt)return;var p=findP(lastAppt.patientId);var h=parseInt(lastAppt.time.split(':')[0]),mm=parseInt(lastAppt.time.split(':')[1]);var d=sToD(lastAppt.date);var pad=function(n){return String(n).padStart(2,'0');};var fmt=function(d2,h2,m2){return d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate())+'T'+pad(h2)+pad(m2)+'00';};var dur2=parseInt((window.appCfg||{}).duration||60);var em=h*60+mm+dur2;window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('טיפול — '+(p?p.name:''))+'&dates='+fmt(d,h,mm)+'/'+fmt(d,Math.floor(em/60),em%60)+'&details='+encodeURIComponent(p?p.problem:''),'_blank');}
+
+// ---- WHATSAPP (free "click to chat" — no API, no cost) ----
+// Builds a wa.me link that opens WhatsApp with the message pre-typed. The therapist
+// reviews and taps send manually (this is the free path; fully-automatic sending needs
+// a paid WhatsApp Business API).
+function waPhone(raw){
+  var d=String(raw||'').replace(/\D/g,'');
+  if(!d)return '';
+  if(d.indexOf('00972')===0)d=d.slice(2);      // 00972XXXXXXXXX → 972XXXXXXXXX
+  if(d.indexOf('972')===0)return d;             // already international
+  if(d.charAt(0)==='0')return '972'+d.slice(1); // 05XXXXXXXX → 9725XXXXXXXX
+  return '972'+d;
+}
+function waFillTpl(tpl,p,extra){
+  extra=extra||{};
+  return String(tpl||'')
+    .replace(/\{שם\}/g,(p&&p.name)||'')
+    .replace(/\{תאריך\}/g,extra.date||'')
+    .replace(/\{שעה\}/g,extra.time||'')
+    .replace(/\{סכום\}/g,(extra.amount!=null&&extra.amount!=='')?extra.amount:'');
+}
+function openWa(phone,text){
+  var ph=waPhone(phone);
+  if(!ph){alert('אין מספר טלפון תקין למטופל זה.');return;}
+  window.open('https://wa.me/'+ph+(text?'?text='+encodeURIComponent(text):''),'_blank');
+}
+function openWaMenu(pid){
+  var p=findP(pid);if(!p)return;
+  if(!p.phone){alert('למטופל זה אין מספר טלפון. הוסף מספר דרך "עריכה".');return;}
+  var cfg=window.appCfg||defCfg();var msgs=cfg.messages||defCfg().messages;
+  var ts=todayStr();
+  var now=new Date();var nowM=now.getHours()*60+now.getMinutes();
+  var next=(window.apts||[]).filter(function(a){
+      if(String(a.patientId)!==String(pid))return false;
+      if(a.date>ts)return true;
+      if(a.date<ts)return false;
+      return (parseInt(a.time.split(':')[0])*60+parseInt(a.time.split(':')[1]))>=nowM;
+    }).sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time);})[0];
+  var nd=next?next.date.split('-').reverse().join('/'):'';
+  var nt=next?next.time:'';
+  var debt=(p.treatments||[]).filter(function(t){return !t.paid;}).reduce(function(s,t){return s+(t.amount||0);},0);
+  var ex={date:nd,time:nt,amount:debt};
+  var old=document.getElementById('wa-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='wa-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  var rows='';
+  function row(label,sub,tpl,disabled){
+    var t=waFillTpl(tpl,p,ex);
+    var dataT=t.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    return '<button class="wa-row" data-msg="'+dataT+'" '+(disabled?'disabled':'')+' style="display:block;width:100%;text-align:right;border:1.5px solid var(--bd);background:#fff;border-radius:10px;padding:11px 13px;margin-bottom:9px;cursor:pointer;'+(disabled?'opacity:.45;cursor:not-allowed;':'')+'">'+
+      '<div style="font-weight:700;font-size:14px;color:var(--tp);">'+label+'</div>'+
+      '<div style="font-size:11px;color:var(--tm);margin-top:2px;">'+sub+'</div></button>';
+  }
+  rows+=row('💬 צ׳אט ריק','פתיחת וואטסאפ ללא טקסט','',false);
+  rows+=row('⏰ תזכורת לתור', next?('לתור ב-'+nd+' '+nt):'אין תור עתידי — לא ניתן', msgs.reminder, !next);
+  rows+=row('💰 בקשת תשלום', debt>0?('חוב פתוח: ₪'+debt.toLocaleString()):'אין חוב פתוח', msgs.payment, debt<=0);
+  rows+=row('🌿 תודה אחרי טיפול','הודעת תודה לאחר הביקור', msgs.followup,false);
+  rows+=row('📞 שאלת שלום / מעקב','בדיקת הרגשה כמה ימים אחרי', msgs.wellbeing,false);
+  ov.innerHTML='<div style="background:var(--bg2,#fff);border-radius:16px;max-width:380px;width:100%;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow:auto;">'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="font-size:17px;font-weight:800;color:var(--tp);flex:1;">💬 וואטסאפ — '+p.name+'</div></div>'+
+    '<div style="font-size:12px;color:var(--tm);margin-bottom:14px;">בחר/י הודעה. היא תיפתח מוכנה בוואטסאפ — צריך רק ללחוץ שליחה. (שירות חינמי)</div>'+
+    rows+
+    '<button id="wa-cancel" style="width:100%;margin-top:4px;background:var(--r50,#f3f3f3);border:none;border-radius:10px;padding:11px;font-size:14px;cursor:pointer;color:var(--tp);">ביטול</button>'+
+    '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('wa-cancel').addEventListener('click',function(){ov.remove();});
+  Array.prototype.forEach.call(ov.querySelectorAll('.wa-row'),function(btn){
+    if(btn.disabled)return;
+    btn.addEventListener('click',function(){
+      openWa(p.phone,btn.getAttribute('data-msg')||'');
+      ov.remove();
+    });
+  });
+}
 
 // ---- SCREEN NAVIGATION ----
 function showScreen(name,skipHistory){
@@ -3669,7 +3894,10 @@ document.addEventListener('DOMContentLoaded',function(){
   });
   document.getElementById('btn-add-ser-type').onclick=function(){showScreen('add-series-type');};
   document.getElementById('btn-save-ser-type').onclick=function(){addSeriesType();};
+  ['st-count','st-price'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',updateSerTypeTotal);});
   document.getElementById('btn-clean-appts').onclick=function(){cleanOrphanAppts();};
+  document.getElementById('btn-dedupe-pts').onclick=function(){dedupePatients();};
+  document.getElementById('btn-mark-all-paid').onclick=function(){markAllPaid();};
   document.getElementById('set-bot-enabled').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.enabled=!c.bot.enabled;this.className='day-tog '+(c.bot.enabled?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('set-bot-autosend').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.autoSend=!c.bot.autoSend;this.className='day-tog '+(c.bot.autoSend?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('pwa-install-btn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;this.style.display='none';}};
