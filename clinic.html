@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.11</title>
+<title>קליניקה v6.12</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -598,7 +598,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.11</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.12</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -614,7 +614,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.11</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.12</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -1204,11 +1204,9 @@ function migrateCfg(c){
 // Per-patient price resolution
 function getTreatmentPrice(p,treatmentNum,cfg){
   cfg=cfg||window.appCfg||defCfg();
-  // Per-patient override wins
-  if(p&&p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')return parseInt(p.customPrice)||0;
-  // Active series — per-treatment price.
-  // Priority: patient's explicit per-treatment → linked series-type's per-treatment
-  // (so updating the type propagates to patients) → patient total/count.
+  // An ACTIVE SERIES always wins — the custom price applies only to single treatments.
+  // Priority within a series: patient's explicit per-treatment → linked series-type's
+  // per-treatment (so updating the type propagates to patients) → patient total/count.
   if(p&&p.treatType==='series'&&p.series&&p.series.active!==false&&(p.series.used||0)<(p.series.count||0)){
     if(p.series.pricePer!==undefined&&p.series.pricePer!==null&&p.series.pricePer!=='')return parseInt(p.series.pricePer)||0;
     var st=(cfg.seriesTypes||[]).find(function(x){return x.id===p.series.typeId;});
@@ -1218,6 +1216,8 @@ function getTreatmentPrice(p,treatmentNum,cfg){
     }
     return Math.round(p.series.price/Math.max(1,p.series.count));
   }
+  // Per-patient custom price — single treatments only (does NOT override a series)
+  if(p&&p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')return parseInt(p.customPrice)||0;
   // Baby patients use the baby price
   if(p&&p.patType==='baby')return parseInt(cfg.priceBaby)||parseInt(cfg.priceSingle)||350;
   // Adult single
@@ -1267,6 +1267,16 @@ function todayStr(){var d=new Date();return d.getFullYear()+'-'+S2(d.getMonth()+
 function S2(n){return String(n).padStart(2,'0');}
 function dstr(d){return d.getFullYear()+'-'+S2(d.getMonth()+1)+'-'+S2(d.getDate());}
 function sToD(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+// Canonical Israeli phone for matching: strip non-digits, drop +972/00972/972 country
+// code and any leading 0, so "+972-50-123" , "0501234567" and "972501234567" all match.
+function normPhone(raw){
+  var d=String(raw||'').replace(/\D/g,'');
+  if(!d)return '';
+  if(d.indexOf('00972')===0)d=d.slice(5);
+  else if(d.indexOf('972')===0)d=d.slice(3);
+  if(d.charAt(0)==='0')d=d.slice(1);
+  return d;
+}
 function adMap(){var m={};(window.apts||[]).forEach(function(a){if(!m[a.date])m[a.date]=[];m[a.date].push(a);});return m;}
 function findP(id){return (window.pts||[]).find(function(x){return String(x.id)===String(id);});}
 function avCls(p){if(!p)return 'avg';if(p.patType==='baby')return 'avp';return AVC[(p.color||0)%4];}
@@ -1525,8 +1535,8 @@ async function approveBooking(id){
   if(!b)return;
   if(!confirm('לאשר תור עבור '+b.name+' בתאריך '+b.date+' בשעה '+b.time+'?'))return;
   try{
-    // 1. Check if patient exists by phone match
-    var existing=(window.pts||[]).find(function(p){return p.phone&&b.phone&&p.phone.replace(/\D/g,'')===b.phone.replace(/\D/g,'');});
+    // 1. Check if patient exists by phone match (country-code agnostic)
+    var existing=(window.pts||[]).find(function(p){return normPhone(p.phone)&&normPhone(b.phone)&&normPhone(p.phone)===normPhone(b.phone);});
     var pid;
     if(existing){
       pid=existing.id;
@@ -2013,10 +2023,10 @@ function renderDayPanel(){
     // IMPORTANT: use capture-based approach to avoid closure issues
     (function(pid,aid){
       tfBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();openTreatFlow(pid,aid);});
-      // Entire row click (excluding buttons) → treatment flow (not patient card)
+      // Row/name click → PATIENT CARD; only the "הצג/טיפול" button opens the treatment.
       row.addEventListener('click',function(e){
         if(e.target.tagName==='BUTTON')return;
-        openTreatFlow(pid,aid);
+        openPatient(pid);
       });
     })(String(a.patientId),String(a.id));
     list.appendChild(row);
@@ -3255,7 +3265,7 @@ async function dedupePatients(){
   var pts=(window.pts||[]).slice();
   var groups={};
   pts.forEach(function(p){
-    var key=(p.phone&&p.phone.replace(/\D/g,''))?('ph:'+p.phone.replace(/\D/g,'')):('nm:'+(p.name||'').trim());
+    var key=normPhone(p.phone)?('ph:'+normPhone(p.phone)):('nm:'+(p.name||'').trim());
     (groups[key]=groups[key]||[]).push(p);
   });
   var toDelete=[];
@@ -3630,11 +3640,11 @@ function openImportPatients(){
     for(var i=0;i<data.length;i++){
       var d=data[i];
       if(!d||!d.name){errors.push('שורה '+(i+1)+': חסר שם');skipped++;continue;}
-      // Skip duplicates: match by phone when present, otherwise by (trimmed) name.
-      var dPhone=d.phone?String(d.phone).replace(/\D/g,''):'';
+      // Skip duplicates: match by phone when present (country-code agnostic), else by name.
+      var dPhone=normPhone(d.phone);
       var dName=String(d.name).trim();
       var dup=(window.pts||[]).some(function(ex){
-        var exPhone=ex.phone?String(ex.phone).replace(/\D/g,''):'';
+        var exPhone=normPhone(ex.phone);
         if(dPhone&&exPhone)return exPhone===dPhone;        // both have phones → compare phones
         return (ex.name||'').trim()===dName;               // otherwise compare names
       });
