@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.13</title>
+<title>קליניקה v6.14</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,7 +601,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.13</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.14</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -617,7 +617,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.13</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.14</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -838,7 +838,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <input type="hidden" id="ep-id"/>
         <div class="fm"><label class="fl">שם מלא</label><input class="fi" id="ep-nm" type="text"/></div>
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="ep-ph" type="tel" inputmode="numeric"/></div>
-        <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
+        <div class="fm"><label class="fl">גיל</label>
+          <div style="display:flex;gap:6px;">
+            <input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120" step="0.5" style="flex:1;"/>
+            <select class="fi" id="ep-ag-unit" style="width:120px;display:none;"><option value="שבועות">שבועות</option><option value="חודשים">חודשים</option><option value="שנים">שנים</option></select>
+          </div>
+        </div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
         <div class="fm" id="ep-parents-fm" style="display:none;"><label class="fl">שם ההורים</label><input class="fi" id="ep-parents" type="text" placeholder="לדוגמה: שם האם ושם האב"/></div>
         <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות"/></div>
@@ -968,33 +973,35 @@ import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,browserLocal
 import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
 var fb=initializeApp(FC);var auth=getAuth(fb);var db=getFirestore(fb);var prov=new GoogleAuthProvider();
+// Set persistence + provider params ONCE at init. Doing setPersistence inside the click
+// handler (before opening the popup) added an async gap that made mobile Safari treat the
+// popup as non-user-initiated and block it — forcing the broken cross-domain redirect.
+prov.setCustomParameters({prompt:'select_account'});
+setPersistence(auth,browserLocalPersistence).catch(function(e){console.warn('persistence:',e&&e.message);});
 var uid=null,unsubP=null,unsubA=null;
 function setSt(c,t){document.getElementById('sdot').className='sdot '+c;document.getElementById('stxt').textContent=t;}
 
 // btn-signin wired in DOMContentLoaded below
 var isIosSafari=/iphone|ipad|ipod/i.test(navigator.userAgent)&&/safari/i.test(navigator.userAgent)&&!/chrome/i.test(navigator.userAgent);
 
-window._doSignIn=async function(){
-  try{
-    await setPersistence(auth,browserLocalPersistence);
-    // Popup first on ALL devices: it completes inside the top origin (via postMessage),
-    // avoiding the cross-domain redirect that mobile Safari (ITP) storage-partitions and
-    // loses — which was bouncing users back to the login screen on phones.
-    prov.setCustomParameters({prompt:'select_account'});
-    try{
-      await signInWithPopup(auth,prov);
-    }catch(popErr){
-      var c=(popErr&&popErr.code)||'';
-      // Popup genuinely unavailable (blocked, in-app browser, etc.) → fall back to redirect.
-      if(c==='auth/popup-blocked'||c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request'||c==='auth/operation-not-supported-in-this-environment'||c==='auth/internal-error'){
-        await signInWithRedirect(auth,prov);
-      } else { throw popErr; }
+window._doSignIn=function(){
+  // IMPORTANT: open the popup SYNCHRONOUSLY in the click handler (no awaits first) so the
+  // browser keeps the user-activation and doesn't block it. Popup keeps the OAuth flow in
+  // the top origin (no full-page cross-domain redirect that mobile Safari/ITP loses).
+  signInWithPopup(auth,prov).catch(function(popErr){
+    var c=(popErr&&popErr.code)||'';
+    if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return; // user closed it
+    if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){
+      // Popup truly unavailable (e.g. in-app browser) → last-resort redirect.
+      signInWithRedirect(auth,prov).catch(function(rErr){
+        var el=document.getElementById('lerr');if(el){el.textContent='שגיאה: '+(rErr&&rErr.message||rErr);el.style.display='block';}
+      });
+      return;
     }
-  }catch(e){
     var el=document.getElementById('lerr');
-    if(el){el.textContent='שגיאה: '+e.message;el.style.display='block';}
-    console.error('Sign in error:',e);
-  }
+    if(el){el.textContent='שגיאה: '+(popErr&&popErr.message||popErr);el.style.display='block';}
+    console.error('Sign in error:',popErr);
+  });
 };
 
 // Handle redirect result on page load (for iOS Safari after redirect)
@@ -3458,8 +3465,20 @@ async function saveFormFields(){
 function openEdit(id){
   var p=findP(id);if(!p)return;
   document.getElementById('ep-id').value=id;document.getElementById('ep-nm').value=p.name;
-  document.getElementById('ep-ph').value=p.phone||'';document.getElementById('ep-ag').value=p.age||'';
+  document.getElementById('ep-ph').value=p.phone||'';
   document.getElementById('ep-pr').value=p.problem||'';
+  // Age: babies use a number + unit (weeks/months); adults are plain years.
+  var agEl=document.getElementById('ep-ag'),agU=document.getElementById('ep-ag-unit');
+  var ageStr=String(p.age||'');
+  var ageNum=(ageStr.match(/[\d.]+/)||[''])[0];
+  if(p.patType==='baby'){
+    agU.style.display='block';
+    agU.value=/שבוע/.test(ageStr)?'שבועות':(/חודש/.test(ageStr)?'חודשים':(/שנ/.test(ageStr)?'שנים':'חודשים'));
+    agEl.value=ageNum;
+  }else{
+    agU.style.display='none';
+    agEl.value=ageNum||ageStr;
+  }
   // customPrice is the new field; old patients used p.price — show whichever is set
   var cust=(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')?p.customPrice:(p.price&&p.price!==350?p.price:'');
   document.getElementById('ep-px').value=cust;
@@ -3492,7 +3511,9 @@ function syncEpMedUI(){
 async function saveEdit(){
   var id=String(document.getElementById('ep-id').value);var p=findP(id);if(!p)return;
   p.name=document.getElementById('ep-nm').value.trim()||p.name;p.phone=document.getElementById('ep-ph').value.trim();
-  p.age=document.getElementById('ep-ag').value;p.problem=document.getElementById('ep-pr').value.trim();
+  var agV=document.getElementById('ep-ag').value.trim();var agUv=document.getElementById('ep-ag-unit').value;
+  p.age=(p.patType==='baby')?(agV?(agV+' '+agUv):''):agV;
+  p.problem=document.getElementById('ep-pr').value.trim();
   var raw=document.getElementById('ep-px').value.trim();
   p.customPrice=raw?(parseInt(raw)||null):null;
   // Clear legacy field so it doesn't override the new model
