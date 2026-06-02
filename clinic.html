@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.12</title>
+<title>קליניקה v6.13</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -205,6 +205,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .chips{display:flex;gap:5px;flex-wrap:wrap}
 .chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1.5px solid var(--bd);cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
 .chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.ep-hc{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:var(--rsm);border:1.5px solid var(--bd);background:var(--sf2);cursor:pointer;font-size:12.5px;color:var(--tp);user-select:none}
+.ep-hc.checked{border-color:var(--ac);background:var(--g50);font-weight:600}
+.ep-hc input[type=checkbox]{accent-color:var(--ac);width:15px;height:15px;flex-shrink:0;cursor:pointer}
 /* Buttons */
 .btn{width:100%;padding:11px;border-radius:var(--rmd);border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px}
 .bp{background:linear-gradient(135deg,var(--g500),var(--g600));color:#fff}
@@ -598,7 +601,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.12</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.13</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -614,7 +617,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.12</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.13</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -837,8 +840,30 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">טלפון</label><input class="fi" id="ep-ph" type="tel" inputmode="numeric"/></div>
         <div class="fm"><label class="fl">גיל</label><input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120"/></div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
+        <div class="fm" id="ep-parents-fm" style="display:none;"><label class="fl">שם ההורים</label><input class="fi" id="ep-parents" type="text" placeholder="לדוגמה: שם האם ושם האב"/></div>
         <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="ep-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות"/></div>
-        <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:-5px 0 12px;line-height:1.5;">ℹ️ אם תוזן ערך, ייכפה על כל הטיפולים — מבטל את הלוגיקה של ראשון/המשך וגם את מחיר הסדרה.</div>
+        <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:-5px 0 12px;line-height:1.5;">ℹ️ אם תוזן ערך, ייכפה על טיפול בודד (מבטל את הלוגיקה של ראשון/המשך). מחיר סדרה גובר עליו.</div>
+        <div class="fm"><label class="fl">מצבים רפואיים</label>
+          <div id="ep-health" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <label class="ep-hc"><input type="checkbox" value="סוכרת"/> סוכרת</label>
+            <label class="ep-hc"><input type="checkbox" value="לחץ דם גבוה"/> לחץ דם גבוה</label>
+            <label class="ep-hc"><input type="checkbox" value="מחלת לב"/> מחלת לב</label>
+            <label class="ep-hc"><input type="checkbox" value="בעיות נשימה"/> בעיות נשימה</label>
+            <label class="ep-hc"><input type="checkbox" value="מחלות אוטואימוניות"/> מחלות אוטואימוניות</label>
+            <label class="ep-hc"><input type="checkbox" value="מצבים נוירולוגיים"/> מצבים נוירולוגיים</label>
+            <label class="ep-hc"><input type="checkbox" value="מחלת כבד/כליה"/> מחלת כבד/כליה</label>
+            <label class="ep-hc"><input type="checkbox" value="הפרעות הורמונליות"/> הפרעות הורמונליות</label>
+            <label class="ep-hc" style="grid-column:1/-1;"><input type="checkbox" value="מחלות זיהומיות פעילות"/> מחלות זיהומיות פעילות</label>
+          </div>
+        </div>
+        <div class="fm"><label class="fl">מצבים רפואיים נוספים</label><input class="fi" id="ep-health-other" type="text" placeholder="פירוט נוסף (אופציונלי)"/></div>
+        <div class="fm"><label class="fl">נטילת תרופות קבועה</label>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="chip" id="ep-med-yes">כן</button>
+            <button type="button" class="chip" id="ep-med-no">לא</button>
+          </div>
+        </div>
+        <div class="fm" id="ep-meds-wrap" style="display:none;"><label class="fl">פירוט תרופות</label><textarea class="fi" id="ep-meds" style="min-height:58px;resize:vertical;" placeholder="שמות התרופות..."></textarea></div>
         <button class="btn bp" id="btn-save-edit">שמור</button>
         <button class="btn bd2" id="btn-del-pt">מחק מטופל</button>
       </div>
@@ -951,13 +976,19 @@ var isIosSafari=/iphone|ipad|ipod/i.test(navigator.userAgent)&&/safari/i.test(na
 
 window._doSignIn=async function(){
   try{
-    // Use local persistence for better iOS compatibility
     await setPersistence(auth,browserLocalPersistence);
-    if(isIosSafari){
-      // iOS Safari: use redirect (popup blocked)
-      await signInWithRedirect(auth,prov);
-    } else {
+    // Popup first on ALL devices: it completes inside the top origin (via postMessage),
+    // avoiding the cross-domain redirect that mobile Safari (ITP) storage-partitions and
+    // loses — which was bouncing users back to the login screen on phones.
+    prov.setCustomParameters({prompt:'select_account'});
+    try{
       await signInWithPopup(auth,prov);
+    }catch(popErr){
+      var c=(popErr&&popErr.code)||'';
+      // Popup genuinely unavailable (blocked, in-app browser, etc.) → fall back to redirect.
+      if(c==='auth/popup-blocked'||c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request'||c==='auth/operation-not-supported-in-this-environment'||c==='auth/internal-error'){
+        await signInWithRedirect(auth,prov);
+      } else { throw popErr; }
     }
   }catch(e){
     var el=document.getElementById('lerr');
@@ -2135,6 +2166,7 @@ function openPatient(id){
     '</div>'+
     (hd&&window.innerWidth<900?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
     '<div class="ir"><span class="il">גיל</span><span class="iv">'+(p.age||'—')+'</span></div>'+
+    (p.patType==='baby'?'<div class="ir"><span class="il">שם ההורים</span><span class="iv">'+(p.parentsName||'—')+'</span></div>':'')+
     (p.email?'<div class="ir"><span class="il">אימייל</span><span class="iv" style="direction:ltr;text-align:right;">'+p.email+'</span></div>':'')+
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
     '<div class="ir"><span class="il">סוג מטופל</span><span class="iv">'+(p.patType==='baby'?'תינוק':'מבוגר')+'</span></div>'+
@@ -3431,10 +3463,31 @@ function openEdit(id){
   // customPrice is the new field; old patients used p.price — show whichever is set
   var cust=(p.customPrice!==undefined&&p.customPrice!==null&&p.customPrice!=='')?p.customPrice:(p.price&&p.price!==350?p.price:'');
   document.getElementById('ep-px').value=cust;
+  // Parents' name — babies only
+  var pf=document.getElementById('ep-parents-fm');var pin=document.getElementById('ep-parents');
+  if(pf&&pin){pf.style.display=(p.patType==='baby')?'block':'none';pin.value=p.parentsName||'';}
+  // Health conditions checkboxes
+  var hc=p.healthConditions||[];
+  document.querySelectorAll('#ep-health input[type=checkbox]').forEach(function(cb){
+    cb.checked=hc.indexOf(cb.value)>=0;
+    cb.parentNode.classList.toggle('checked',cb.checked);
+  });
+  var ho=document.getElementById('ep-health-other');if(ho)ho.value=p.healthOther||'';
+  // Medication yes/no + details
+  _epMed=(p.takingMedication===true)?true:(p.takingMedication===false?false:null);
+  var meds=document.getElementById('ep-meds');if(meds)meds.value=p.medications||'';
+  syncEpMedUI();
   // Back button uses goBack() (wired once on DOMContentLoaded). Don't override it here —
   // overriding broke navHistory: a direct openPatient() pushed 'edit-patient' onto history,
   // so the next "back" returned to edit instead of leaving the patient file.
   showScreen('edit-patient');
+}
+var _epMed=null;
+function syncEpMedUI(){
+  var y=document.getElementById('ep-med-yes'),n=document.getElementById('ep-med-no'),w=document.getElementById('ep-meds-wrap');
+  if(y)y.classList.toggle('active',_epMed===true);
+  if(n)n.classList.toggle('active',_epMed===false);
+  if(w)w.style.display=(_epMed===true)?'block':'none';
 }
 async function saveEdit(){
   var id=String(document.getElementById('ep-id').value);var p=findP(id);if(!p)return;
@@ -3444,6 +3497,14 @@ async function saveEdit(){
   p.customPrice=raw?(parseInt(raw)||null):null;
   // Clear legacy field so it doesn't override the new model
   if(p.customPrice===null)delete p.price; else p.price=p.customPrice;
+  // Parents' name (babies)
+  if(p.patType==='baby'){var pin=document.getElementById('ep-parents');if(pin)p.parentsName=pin.value.trim();}
+  // Health conditions + medications
+  var conds=[];document.querySelectorAll('#ep-health input[type=checkbox]:checked').forEach(function(cb){conds.push(cb.value);});
+  p.healthConditions=conds;
+  var ho=document.getElementById('ep-health-other');p.healthOther=ho?ho.value.trim():'';
+  p.takingMedication=_epMed;
+  var meds=document.getElementById('ep-meds');p.medications=(_epMed===true&&meds)?meds.value.trim():'';
   await window.fbSaveP(p);openPatient(id);
 }
 function confirmDel(){var id=String(document.getElementById('ep-id').value);var p=findP(id);delPid=id;document.getElementById('del-sub').textContent='האם למחוק את '+(p?p.name:'המטופל')+'?\nלא ניתן לביטול.';document.getElementById('del-ov').classList.remove('hidden');}
@@ -3925,6 +3986,12 @@ document.addEventListener('DOMContentLoaded',function(){
   // Edit patient
   document.getElementById('btn-save-edit').onclick=function(){saveEdit();};
   document.getElementById('btn-del-pt').onclick=function(){confirmDel();};
+  var epMedYes=document.getElementById('ep-med-yes'),epMedNo=document.getElementById('ep-med-no');
+  if(epMedYes)epMedYes.onclick=function(){_epMed=(_epMed===true)?null:true;syncEpMedUI();};
+  if(epMedNo)epMedNo.onclick=function(){_epMed=(_epMed===false)?null:false;syncEpMedUI();};
+  document.querySelectorAll('#ep-health input[type=checkbox]').forEach(function(cb){
+    cb.addEventListener('change',function(){this.parentNode.classList.toggle('checked',this.checked);});
+  });
   document.getElementById('btn-confirm-del').onclick=function(){doDelete();};
   document.getElementById('btn-cancel-del').onclick=function(){document.getElementById('del-ov').classList.add('hidden');};
   document.getElementById('del-ov').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
