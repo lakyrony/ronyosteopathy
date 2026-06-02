@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.14</title>
+<title>קליניקה v6.15</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,7 +601,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.14</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.15</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -617,7 +617,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.14</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.15</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -970,9 +970,13 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();def
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,browserLocalPersistence,setPersistence,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import{getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,initializeFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
-var fb=initializeApp(FC);var auth=getAuth(fb);var db=getFirestore(fb);var prov=new GoogleAuthProvider();
+var fb=initializeApp(FC);var auth=getAuth(fb);var prov=new GoogleAuthProvider();
+// Force long-polling: Firestore's default streaming (WebChannel) stalls for minutes on
+// iOS Safari and some networks, which triggered the "פסק זמן — בדוק חיבור" timeout.
+// Long-polling is reliable everywhere. Fall back to getFirestore if init already happened.
+var db;try{db=initializeFirestore(fb,{experimentalForceLongPolling:true});}catch(e){db=getFirestore(fb);}
 // Set persistence + provider params ONCE at init. Doing setPersistence inside the click
 // handler (before opening the popup) added an async gap that made mobile Safari treat the
 // popup as non-user-initiated and block it — forcing the broken cross-domain redirect.
@@ -1116,8 +1120,9 @@ onAuthStateChanged(auth,async function(user){
     unsubP=onSnapshot(collection(db,'users',uid,'patients'),function(s){window.pts=s.docs.map(function(d){return d.data();});pr=true;go();},function(e){console.error('Firestore patients error:',e);pr=true;window.pts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
     unsubA=onSnapshot(collection(db,'users',uid,'appointments'),function(s){window.apts=s.docs.map(function(d){return d.data();});ar=true;go();syncPublicAvailability();},function(e){console.error('Firestore appointments error:',e);ar=true;window.apts=[];go();setSt('rd','שגיאת חיבור — בדוק הרשאות Firestore');});
     startBookingsListener();
-    // Timeout fallback — if no response after 8 seconds, show error
-    setTimeout(function(){if(!pr||!ar){pr=true;ar=true;window.pts=window.pts||[];window.apts=window.apts||[];go();setSt('rd','פסק זמן — בדוק חיבור');}},8000);
+    // Timeout fallback — show the UI after 12s if the first sync is slow (gentle, not alarming;
+    // long-polling should make this rare). Real data re-renders automatically when it arrives.
+    setTimeout(function(){if(!pr||!ar){pr=true;ar=true;window.pts=window.pts||[];window.apts=window.apts||[];go();setSt('ye','עדיין מסתנכרן… אם נמשך, רענן את הדף');}},12000);
   } else {uid=null;document.getElementById('lview').classList.remove('hidden');document.getElementById('mview').classList.add('hidden');}
 });
 </script>
