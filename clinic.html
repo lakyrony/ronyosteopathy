@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.15</title>
+<title>קליניקה v6.16</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,9 +601,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.15</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.16</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
-  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
+  <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
+       so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
+  <div id="gis-btn" style="display:flex;justify-content:center;min-height:44px;margin-bottom:10px;"></div>
+  <button id="btn-signin" class="btn bgoog" style="width:100%;max-width:280px;margin-top:0;display:none;" onclick="try{if(window._doSignIn)window._doSignIn();else alert('טוען...');}catch(e){alert(e.message);}">
     <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     כניסה עם חשבון גוגל
   </button>
@@ -617,7 +620,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.15</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.16</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -967,9 +970,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 var deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;var b=document.getElementById('pwa-install-btn');if(b)b.style.display='block';});
 </script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,browserLocalPersistence,setPersistence,GoogleAuthProvider,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,browserLocalPersistence,setPersistence,GoogleAuthProvider,signInWithCredential,onAuthStateChanged,signOut as fbOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import{getFirestore,initializeFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
 var fb=initializeApp(FC);var auth=getAuth(fb);var prov=new GoogleAuthProvider();
@@ -1008,6 +1012,37 @@ window._doSignIn=function(){
   });
 };
 
+// ---- Google Identity Services (primary sign-in) ----
+// GIS returns the Google ID token straight to THIS page, then we exchange it for a Firebase
+// credential. No firebaseapp.com handler/redirect → works on iPhone Safari with "Prevent
+// Cross-Site Tracking" ON. Falls back to the popup button if GIS can't load.
+var GIS_CLIENT_ID='650293359009-9l6qg3aqjok2g2of4dmg652tl1f0bcai.apps.googleusercontent.com';
+var _gisTries=0;
+function initGIS(){
+  if(!(window.google&&google.accounts&&google.accounts.id)){
+    if(++_gisTries>30){var fb2=document.getElementById('btn-signin');if(fb2)fb2.style.display='block';return;} // GIS failed to load → show popup fallback
+    return setTimeout(initGIS,200);
+  }
+  try{
+    google.accounts.id.initialize({
+      client_id:GIS_CLIENT_ID,
+      ux_mode:'popup',
+      callback:function(resp){
+        try{
+          var cred=GoogleAuthProvider.credential(resp.credential);
+          signInWithCredential(auth,cred).catch(function(e){
+            var el=document.getElementById('lerr');if(el){el.textContent='שגיאה: '+(e&&e.message||e);el.style.display='block';}
+            console.error('signInWithCredential error:',e);
+          });
+        }catch(e){console.error('GIS callback error:',e);}
+      }
+    });
+    var c=document.getElementById('gis-btn');
+    if(c){c.innerHTML='';google.accounts.id.renderButton(c,{theme:'filled_blue',size:'large',type:'standard',text:'signin_with',shape:'pill',locale:'he',width:280});}
+  }catch(e){console.error('GIS init error:',e);var fb3=document.getElementById('btn-signin');if(fb3)fb3.style.display='block';}
+}
+initGIS();
+
 // Handle redirect result on page load (for iOS Safari after redirect)
 getRedirectResult(auth).then(function(result){
   if(result&&result.user)console.log('Redirect login success:',result.user.email);
@@ -1029,6 +1064,8 @@ window.doSignOut=async function(){
   var cal=document.getElementById('screen-calendar');if(cal)cal.classList.add('active');
   document.getElementById('lview').classList.remove('hidden');
   document.getElementById('mview').classList.add('hidden');
+  // Re-render the Google button on the login screen
+  try{if(window.google&&google.accounts&&google.accounts.id){google.accounts.id.disableAutoSelect();initGIS();}}catch(e){}
 };
 
 window.fbSaveP=async function(p){if(!uid)return;await setDoc(doc(db,'users',uid,'patients',String(p.id)),p);};
