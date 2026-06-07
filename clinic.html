@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.16</title>
+<title>קליניקה v6.17</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,7 +601,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.16</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.17</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -620,7 +620,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.16</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.17</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -1835,7 +1835,7 @@ function renderWeek(){
       var actHTML='<div class="wcal-act">'+
         '<button class="wcal-treat" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="פתח טיפול">📋</button>'+
         (isPastAppt?'':'<button class="wcal-edit" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="ערוך זמן תור">✎</button>')+
-        (isPastAppt?'':'<button class="wcal-del" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="ביטול תור">✕</button>')+
+        '<button class="wcal-del" data-aid="'+a.id+'" data-pid="'+a.patientId+'" title="ביטול תור">✕</button>'+
         '</div>';
       evHTML+='<div class="wcal-ev '+cls+'" data-pid="'+a.patientId+'" data-aid="'+a.id+'" '+
         'style="top:'+top+'px;height:'+hgt+'px;left:2px;right:2px;" '+
@@ -1995,8 +1995,8 @@ function renderWeekDayPanel(){
     var tfBtn=document.createElement('button');tfBtn.className='pbtn '+(isApptPast?'pbtn-gray':'pbtn-g');tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';tfBtn.style.cssText='flex-shrink:0;white-space:nowrap;';
     (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(a.patientId,a.id);
     row.appendChild(tfBtn);
-    if(!isApptPast){var db=document.createElement('button');db.className='pbtn pbtn-r';db.textContent='✕';db.title='ביטול תור';
-      (function(pid2,aid2){db.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(a.patientId,a.id);row.appendChild(db);}
+    var db=document.createElement('button');db.className='pbtn pbtn-r';db.textContent='✕';db.title=isApptPast?'ביטול/מחיקת תור שעבר':'ביטול תור';
+    (function(pid2,aid2){db.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(a.patientId,a.id);row.appendChild(db);
     // Row/name click → patient card; only the "הצג/טיפול" button opens the treatment.
     (function(pid2){row.addEventListener('click',function(e){if(e.target.tagName==='BUTTON')return;openPatient(pid2);});})(a.patientId);
     weekDp.appendChild(row);
@@ -2080,25 +2080,27 @@ function renderDayPanel(){
     tfBtn.style.cssText='white-space:nowrap;text-align:center;';
     tfBtn.textContent=isApptPast?'הצג':'טיפול ▶';
     actions.appendChild(tfBtn);
+    // edit + cancel sit side by side, under the treatment button.
+    // Past appointments get a cancel (✕) button too — for forgotten/moved appointments.
+    var subRow=document.createElement('div');
+    subRow.style.cssText='display:flex;gap:4px;';
     if(!isApptPast){
-      // edit + cancel sit side by side, under the treatment button
-      var subRow=document.createElement('div');
-      subRow.style.cssText='display:flex;gap:4px;';
       var editBtn=document.createElement('button');
       editBtn.className='pbtn pbtn-ac';
       editBtn.style.cssText='flex:1;font-size:10px;padding:3px 6px;text-align:center;white-space:nowrap;';
       editBtn.textContent='✎ זמן';
       editBtn.title='ערוך זמן תור';
       (function(aid2){editBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();editApptTime(aid2);});})(a.id);
-      var delBtn=document.createElement('button');
-      delBtn.className='pbtn pbtn-r';
-      delBtn.style.cssText='font-size:11px;padding:3px 9px;';
-      delBtn.textContent='✕';
-      delBtn.title='ביטול תור';
-      (function(aid2,pid2){delBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();delAppt(aid2,pid2);});})(a.id,a.patientId);
-      subRow.appendChild(editBtn);subRow.appendChild(delBtn);
-      actions.appendChild(subRow);
+      subRow.appendChild(editBtn);
     }
+    var delBtn=document.createElement('button');
+    delBtn.className='pbtn pbtn-r';
+    delBtn.style.cssText=(isApptPast?'flex:1;':'')+'font-size:11px;padding:3px 9px;text-align:center;';
+    delBtn.textContent=isApptPast?'✕ בטל תור':'✕';
+    delBtn.title=isApptPast?'ביטול/מחיקת תור שעבר':'ביטול תור';
+    (function(aid2,pid2){delBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();delAppt(aid2,pid2);});})(a.id,a.patientId);
+    subRow.appendChild(delBtn);
+    actions.appendChild(subRow);
     row.appendChild(actions);
     // IMPORTANT: use capture-based approach to avoid closure issues
     (function(pid,aid){
@@ -3742,6 +3744,7 @@ function openImportPatients(){
       'או מספר מטופלים <code style="background:var(--sf2);padding:1px 5px;border-radius:4px;">[{...},{...}]</code>.'+
     '</div>'+
     '<textarea id="import-json" style="width:100%;height:200px;border:1.5px solid var(--bd);border-radius:8px;padding:10px;font-family:monospace;font-size:12px;resize:vertical;outline:none;direction:ltr;box-sizing:border-box;" placeholder=\'[{"name":"ישראל ישראלי","phone":"0501234567","age":"35","problem":"כאב גב","patType":"adult","healthConditions":["לב"],"takingMedication":false,"medications":""}]\'></textarea>'+
+    '<label class="ep-hc" style="border:none;background:none;padding:2px 0;cursor:pointer;"><input type="checkbox" id="import-update"/> 🔄 עדכן מטופלים שכבר קיימים (לפי טלפון/שם) — ימלא פרטים וטיפולים חסרים</label>'+
     '<div id="import-err" style="font-size:12px;color:var(--r500);display:none;"></div>'+
     '<div style="display:flex;gap:8px;">'+
       '<button id="import-do" class="btn bp" style="flex:1;margin-top:0;padding:11px;font-size:13px;">ייבא</button>'+
@@ -3759,21 +3762,49 @@ function openImportPatients(){
     var data;
     try{data=JSON.parse(raw);}catch(e){err.textContent='שגיאת JSON: '+e.message;err.style.display='block';return;}
     if(!Array.isArray(data))data=[data];
+    var updateMode=!!(document.getElementById('import-update')||{}).checked;
     var btn=document.getElementById('import-do');btn.disabled=true;btn.textContent='מייבא...';
-    var imported=0,skipped=0,errors=[];
+    var cfg=window.appCfg||defCfg();
+    var mapTreatments=function(arr){
+      return arr.map(function(t,ti){return {
+        num:t.num||ti+1,date:t.date||'',paid:t.paid||false,
+        amount:t.amount||parseInt(cfg.priceSingle)||350,
+        method:t.method||t.payMethod||(t.paid?'מזומן':''),
+        intakeData:t.intakeData||{},summaryData:t.summaryData||{},
+        found:t.found||'',tcs:t.tcs||'',recommend:t.recommend||'',exercises:t.exercises||'',done:t.done||''
+      };});
+    };
+    var imported=0,updated=0,skipped=0,errors=[];
     for(var i=0;i<data.length;i++){
       var d=data[i];
       if(!d||!d.name){errors.push('שורה '+(i+1)+': חסר שם');skipped++;continue;}
-      // Skip duplicates: match by phone when present (country-code agnostic), else by name.
       var dPhone=normPhone(d.phone);
       var dName=String(d.name).trim();
-      var dup=(window.pts||[]).some(function(ex){
+      // Match an existing patient by phone (country-code agnostic), else by name.
+      var existing=(window.pts||[]).find(function(ex){
         var exPhone=normPhone(ex.phone);
-        if(dPhone&&exPhone)return exPhone===dPhone;        // both have phones → compare phones
-        return (ex.name||'').trim()===dName;               // otherwise compare names
+        if(dPhone&&exPhone)return exPhone===dPhone;
+        return (ex.name||'').trim()===dName;
       });
-      if(dup){errors.push(d.name+': כבר קיים — דולג');skipped++;continue;}
-      var cfg=window.appCfg||defCfg();
+      var mapped=(Array.isArray(d.treatments)&&d.treatments.length)?mapTreatments(d.treatments):null;
+      if(existing){
+        if(!updateMode){errors.push(d.name+': כבר קיים — דולג');skipped++;continue;}
+        // UPDATE in place — keep id/color/series so appointments & series stay intact
+        existing.name=String(d.name).replace(/[0-9]/g,'').trim()||existing.name;
+        if(d.phone&&!existing.phone)existing.phone=String(d.phone).replace(/\D/g,''); // fill only if missing (don't reformat a matching number)
+        if(d.age!=null&&d.age!=='')existing.age=String(d.age);
+        if(d.email)existing.email=d.email;
+        if(d.problem)existing.problem=d.problem;
+        if(Array.isArray(d.healthConditions))existing.healthConditions=d.healthConditions;
+        if(d.healthOther!=null)existing.healthOther=d.healthOther;
+        if(d.takingMedication!=null)existing.takingMedication=!!d.takingMedication;
+        if(d.medications!=null)existing.medications=d.medications;
+        if(d.parentsName)existing.parentsName=d.parentsName;
+        if(d.patType)existing.patType=(d.patType==='baby'?'baby':'adult');
+        if(mapped)existing.treatments=mapped;
+        try{await window.fbSaveP(existing);updated++;}catch(e){errors.push(d.name+': שגיאה — '+e.message);skipped++;}
+        continue;
+      }
       var p={
         id:String(Date.now()+i),
         name:String(d.name).replace(/[0-9]/g,'').trim(),
@@ -3781,6 +3812,7 @@ function openImportPatients(){
         age:d.age?String(d.age):'',
         email:d.email||'',
         problem:d.problem||'',
+        parentsName:d.parentsName||'',
         customPrice:(d.customPrice!==undefined&&d.customPrice!==''&&d.customPrice!==null)?parseInt(d.customPrice):null,
         color:(window.pts||[]).length%4,
         patType:(d.patType==='baby'?'baby':'adult'),
@@ -3789,27 +3821,8 @@ function openImportPatients(){
         healthOther:d.healthOther||'',
         takingMedication:d.takingMedication!=null?!!d.takingMedication:null,
         medications:d.medications||'',
-        treatments:[]
+        treatments:mapped||[]
       };
-      // If treatments array supplied, import them too
-      if(Array.isArray(d.treatments)&&d.treatments.length){
-        p.treatments=d.treatments.map(function(t,ti){
-          return {
-            num:t.num||ti+1,
-            date:t.date||'',
-            paid:t.paid||false,
-            amount:t.amount||parseInt(cfg.priceSingle)||350,
-            method:t.method||t.payMethod||(t.paid?'מזומן':''),
-            intakeData:t.intakeData||{},
-            summaryData:t.summaryData||{},
-            found:t.found||'',
-            tcs:t.tcs||'',
-            recommend:t.recommend||'',
-            exercises:t.exercises||'',
-            done:t.done||''
-          };
-        });
-      }
       try{
         window.pts=[...(window.pts||[]),p];
         await window.fbSaveP(p);
@@ -3817,9 +3830,9 @@ function openImportPatients(){
       }catch(e){errors.push(d.name+': שגיאה בשמירה — '+e.message);skipped++;}
     }
     btn.disabled=false;btn.textContent='ייבא';
-    var summary='יובאו '+imported+' מטופלים'+(skipped?' ('+skipped+' דולגו)':'')+'.'+(errors.length?'\n\nפרטים:\n'+errors.join('\n'):'');
+    var summary='יובאו '+imported+' מטופלים'+(updated?', עודכנו '+updated:'')+(skipped?' ('+skipped+' דולגו)':'')+'.'+(errors.length?'\n\nפרטים:\n'+errors.join('\n'):'');
     alert(summary);
-    if(imported>0){render();ov.remove();}
+    if(imported>0||updated>0){render();ov.remove();}
   };
 }
 
