@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.17</title>
+<title>קליניקה v6.18</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,7 +601,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.17</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.18</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -620,7 +620,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.17</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.18</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -2293,11 +2293,11 @@ function openPatient(id){
     tfBtn.textContent=doc?(isPastRow?'✓ הצג':'✓ תועד'):(isPastRow?'⚠ לתיעוד':'פתח טיפול');
     (function(pid2,aid2){tfBtn.addEventListener('click',function(e){e.stopPropagation();openTreatFlow(pid2,aid2);});})(id,a.id);
     row.appendChild(dateS);row.appendChild(timeS);row.appendChild(tfBtn);
-    if(!isPastRow){
-      var delB=document.createElement('button');delB.className='pbtn pbtn-r';delB.style.marginRight='auto';delB.textContent='ביטול';
-      (function(pid2,aid2){delB.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(id,a.id);
-      row.appendChild(delB);
-    }
+    // Cancel button — for future AND past appointments (forgotten / moved appointments)
+    var delB=document.createElement('button');delB.className='pbtn pbtn-r';delB.style.marginRight='auto';delB.textContent='ביטול';
+    delB.title=isPastRow?'ביטול/מחיקת תור שעבר':'ביטול תור';
+    (function(pid2,aid2){delB.addEventListener('click',function(e){e.stopPropagation();delAppt(aid2,pid2);});})(id,a.id);
+    row.appendChild(delB);
     return row;
   }
   if(upcoming.length){
