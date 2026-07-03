@@ -521,8 +521,8 @@ function takenAt(ds){
 function availableSlots(ds){
   var ts=todayStr();
   if(ds<ts)return[];
-  // Public window: book at most 14 days ahead
-  var maxAhead=new Date();maxAhead.setDate(maxAhead.getDate()+14);
+  // Public window: book at most 7 days ahead (one week from today)
+  var maxAhead=new Date();maxAhead.setDate(maxAhead.getDate()+7);
   if(ds>dstr(maxAhead))return[];
   // getSlots already excludes taken+buffer; only filter today's past hours
   var all=getSlots(ds);
@@ -541,10 +541,10 @@ function renderCalendar(){
   var y=viewMonth.getFullYear(),m=viewMonth.getMonth();
   document.getElementById('calt').textContent=HM[m]+' '+y;
 
-  // Limit navigation: cannot go back, and cannot go past the month containing now+14d
+  // Limit navigation: cannot go back, and cannot go past the month containing now+7d
   var today=todayD();
   var minM=new Date(today.getFullYear(),today.getMonth(),1);
-  var lastBookable=new Date();lastBookable.setDate(lastBookable.getDate()+14);
+  var lastBookable=new Date();lastBookable.setDate(lastBookable.getDate()+7);
   var maxM=new Date(lastBookable.getFullYear(),lastBookable.getMonth(),1);
   document.getElementById('cal-next').disabled=viewMonth<=minM;
   document.getElementById('cal-prev').disabled=viewMonth>=maxM;

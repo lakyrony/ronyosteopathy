@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="קליניקה">
-<meta name="theme-color" content="#1e7a4a">
+<meta name="theme-color" content="#52442e">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.19</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>קליניקה v6.20</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -24,12 +26,17 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-size:15px;direction:rtl}
-#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--bg)}
+body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl;
+  background:
+    radial-gradient(900px 480px at 90% -10%,rgba(210,196,158,.30),transparent 60%),
+    radial-gradient(700px 420px at 5% 5%,rgba(203,222,211,.25),transparent 60%),
+    var(--bg)}
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:transparent}
 /* Header */
 .hdr{background:linear-gradient(135deg,var(--g600),var(--g500) 60%,var(--t500));padding:12px 15px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .hlogo{display:flex;align-items:center;gap:9px}
-.hicon{width:33px;height:33px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.hicon{width:36px;height:36px;background:#fbf7f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.18);flex-shrink:0}
+.hicon img{width:100%;height:100%;object-fit:cover;display:block}
 .htitle{color:#fff;font-size:16px;font-weight:700}
 .hsub{color:rgba(255,255,255,0.75);font-size:11px}
 .hacts{display:flex;gap:5px}
@@ -75,6 +82,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 3px;background:none;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-size:10px;color:var(--tm)}
 .ni.active{color:var(--ac)}
 .ni svg{width:20px;height:20px}
+/* Mobile: pill highlight behind the active tab icon */
+@media(max-width:899px){
+  .ni svg{padding:3px 12px;box-sizing:content-box;border-radius:14px;transition:background 0.2s}
+  .ni.active svg{background:var(--g100)}
+  .ni.active{color:var(--g700);font-weight:700}
+}
 /* Cards */
 .card{background:var(--sf);border-radius:var(--rlg);border:1px solid var(--bdl);padding:13px;margin-bottom:9px;box-shadow:var(--sh)}
 .ct{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:9px}
@@ -465,14 +478,15 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
     overflow-y:auto!important;
   }
   .bnav::before{
-    content:'🌿  קליניקה';
+    content:'';
     display:block;
-    padding:0 22px 18px;
-    font-size:17px;
-    font-weight:700;
-    color:var(--g700);
+    height:62px;
+    margin:0 16px 8px;
+    padding-bottom:14px;
+    background:url('logo_long.png') no-repeat center top/contain;
+    mix-blend-mode:multiply;
     border-bottom:1px solid var(--bdl);
-    margin-bottom:8px;
+    box-sizing:content-box;
   }
   .ni{
     flex:none!important;
@@ -581,9 +595,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .slbl{font-size:11px}
   .srow{grid-template-columns:1fr 1fr 1fr 1fr}
 
-  /* Nav sidebar font */
-  .bnav::before{font-size:16px;padding:0 20px 18px}
-
   /* Forms */
   .fi,.fsl,.ftx{font-size:14px;padding:10px 14px}
   .fl{font-size:12px}
@@ -607,9 +618,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 
 <!-- Login -->
 <div id="lview" class="login-sc">
-  <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.19</div>
-  <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
+  <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.20</span></div>
+  <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
   <div id="gis-btn" style="display:flex;justify-content:center;min-height:44px;margin-bottom:10px;"></div>
@@ -626,8 +637,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <div id="mview" class="hidden">
   <div class="hdr">
     <div class="hlogo">
-      <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.19</span></div><div class="hsub" id="uname">...</div></div>
+      <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.20</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
