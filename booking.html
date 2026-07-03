@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.15</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.19</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -309,7 +309,7 @@ body{
             <input class="fi" id="f-hc-other" type="text" placeholder="מצב רפואי אחר שאינו ברשימה..." style="margin-top:8px"/>
           </div>
 
-          <div class="fm" style="margin-bottom:0">
+          <div class="fm">
             <label class="fl">נטילת תרופות קבועה <span class="opt-badge">אופציונלי</span></label>
             <div class="yn-chips">
               <button type="button" class="yn-chip" id="med-no" onclick="setMeds(false)">לא</button>
@@ -317,6 +317,17 @@ body{
             </div>
             <div id="med-details-wrap" style="display:none;margin-top:10px;">
               <textarea class="ftx" id="f-meds" placeholder="אנא ציין/י שמות התרופות..."></textarea>
+            </div>
+          </div>
+
+          <div class="fm" style="margin-bottom:0">
+            <label class="fl">ניתוחים או אשפוזים בשנתיים האחרונות <span class="opt-badge">אופציונלי</span></label>
+            <div class="yn-chips">
+              <button type="button" class="yn-chip" id="surg-no" onclick="setSurg(false)">לא</button>
+              <button type="button" class="yn-chip" id="surg-yes" onclick="setSurg(true)">כן</button>
+            </div>
+            <div id="surg-details-wrap" style="display:none;margin-top:10px;">
+              <textarea class="ftx" id="f-surg" placeholder="אנא פרט/י — איזה ניתוח או אשפוז ומתי..."></textarea>
             </div>
           </div>
         </div>
@@ -403,6 +414,7 @@ var HM=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','�
 var DS=['א','ב','ג','ד','ה','ו','ש'];
 var DFL=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 var medsYes=null; // null=not answered, true/false
+var surgYes=null; // surgeries/hospitalizations in the last 2 years — null=not answered
 
 // ---- Helpers ----
 function S2(n){return String(n).padStart(2,'0');}
@@ -646,6 +658,13 @@ window.setMeds=function(yes){
   document.getElementById('med-details-wrap').style.display=yes?'block':'none';
 };
 
+window.setSurg=function(yes){
+  surgYes=yes;
+  document.getElementById('surg-yes').classList.toggle('active',yes===true);
+  document.getElementById('surg-no').classList.toggle('active',yes===false);
+  document.getElementById('surg-details-wrap').style.display=yes?'block':'none';
+};
+
 // Checkbox visual toggle for health conditions
 document.addEventListener('change',function(e){
   if(e.target.type==='checkbox'&&e.target.closest('#health-conditions')){
@@ -703,6 +722,8 @@ document.getElementById('btn-step-2').addEventListener('click',function(){
   if(hcOther)healthParts.push(hcOther);
   if(medsYes===true){var meds=document.getElementById('f-meds').value.trim();healthParts.push('תרופות: '+(meds||'כן'));}
   else if(medsYes===false){healthParts.push('ללא תרופות קבועות');}
+  if(surgYes===true){var surg=document.getElementById('f-surg').value.trim();healthParts.push('ניתוחים/אשפוזים בשנתיים האחרונות: '+(surg||'כן'));}
+  else if(surgYes===false){healthParts.push('ללא ניתוחים/אשפוזים בשנתיים האחרונות');}
   if(healthParts.length){
     document.getElementById('sum-health').textContent=healthParts.join(' • ');
     document.getElementById('sum-health-row').style.display='flex';
@@ -743,6 +764,8 @@ document.getElementById('btn-confirm').addEventListener('click',async function()
       healthOther:document.getElementById('f-hc-other').value.trim(),
       takingMedication:medsYes,
       medications:medsYes?document.getElementById('f-meds').value.trim():'',
+      recentSurgeries:surgYes,
+      surgeryDetails:surgYes?document.getElementById('f-surg').value.trim():'',
       date:dstr(d),
       time:selTime,
       status:'pending',

@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="קליניקה">
 <meta name="theme-color" content="#1e7a4a">
 <link rel="manifest" href="manifest.json">
-<title>קליניקה v6.18</title>
+<title>קליניקה v6.19</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -60,6 +60,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 .arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
 .arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
 .arow svg{width:14px;height:14px;flex-shrink:0}
+/* Booking-request alert — deliberately loud (mobile + desktop): the therapist must not miss it */
+.arow.booking{background:#0f7a3d;border:none;color:#fff;font-weight:800;font-size:13.5px;padding:13px 15px;cursor:pointer;border-radius:12px;margin:8px 10px;box-shadow:0 3px 12px rgba(15,122,61,.35);animation:bkPulse 1.6s ease-in-out infinite}
+.arow.booking svg{width:17px;height:17px}
+.arow.booking .alink{color:#fff;background:rgba(255,255,255,.22);border-radius:8px;padding:3px 10px;text-decoration:none}
+@keyframes bkPulse{0%,100%{background:#0f7a3d}50%{background:#18a355}}
 .alink{margin-right:auto;font-weight:600;text-decoration:underline;cursor:pointer}
 /* Screens */
 .screens{flex:1;overflow:hidden;position:relative}
@@ -408,6 +413,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   .abar .arow{padding:11px 14px;font-size:12.5px}
   .abar .arow:first-child{border-radius:10px 10px 0 0}
   .abar .arow:last-child{border-radius:0 0 10px 10px;border-bottom:none}
+  /* Booking alert keeps its loud style inside the desktop panel too */
+  .abar .arow.booking{padding:14px;font-size:13.5px;border-radius:12px!important;margin:0 0 8px}
   #fpat{
     position:static;
     border-radius:10px;
@@ -601,7 +608,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
 <!-- Login -->
 <div id="lview" class="login-sc">
   <div style="font-size:56px;margin-bottom:18px">🌿</div>
-  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.18</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:6px">קליניקה v6.19</div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:32px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -620,7 +627,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon">🌿</div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.18</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.19</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -774,8 +781,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
           </div>
           <div style="padding:12px 13px;display:flex;flex-direction:column;gap:12px;">
             <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:9px 11px;font-size:11px;color:var(--g700);line-height:1.6;">
-              💡 ניתן להשתמש במשתנים: <b>{שם}</b> · <b>{תאריך}</b> · <b>{שעה}</b> · <b>{סכום}</b> — הבוט ימלא אותם אוטומטית לפי המטופל.
+              💡 ניתן להשתמש במשתנים: <b>{שם}</b> · <b>{שם פרטי}</b> · <b>{תאריך}</b> · <b>{שעה}</b> · <b>{סכום}</b> — ימולאו אוטומטית לפי המטופל.<br>
+              🚻 התאמת מגדר: כותבים <b>{מרגיש/מרגישה}</b> — לזכר תישלח המילה הראשונה, לנקבה השנייה (עובד על כל צמד מילים).<br>
+              👶 אצל תינוק ההודעה פונה אוטומטית לשם ההורים (מומלץ למלא "שם ההורים" בכרטיס המטופל).
             </div>
+            <div><label class="fl">אישור קביעת תור</label><textarea class="ftx msg-tpl" id="msg-booked" onchange="autoSave()"></textarea></div>
             <div><label class="fl">תזכורת לתור</label><textarea class="ftx msg-tpl" id="msg-reminder" onchange="autoSave()"></textarea></div>
             <div><label class="fl">תזכורת תשלום</label><textarea class="ftx msg-tpl" id="msg-payment" onchange="autoSave()"></textarea></div>
             <div><label class="fl">סיכום לאחר טיפול</label><textarea class="ftx msg-tpl" id="msg-followup" onchange="autoSave()"></textarea></div>
@@ -827,6 +837,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
         <div class="fm"><label class="fl">סוג מטופל</label>
           <div class="chips"><button class="chip active" id="np-adult">מבוגר</button><button class="chip" id="np-baby">תינוק</button></div>
         </div>
+        <div class="fm"><label class="fl">מגדר</label>
+          <div class="chips"><button type="button" class="chip" id="np-male" onclick="npSetGender('m')">זכר</button><button type="button" class="chip" id="np-female" onclick="npSetGender('f')">נקבה</button></div>
+        </div>
         <div class="fm"><label class="fl">מחיר מותאם אישית (₪)</label><input class="fi" id="np-px" type="number" inputmode="numeric" placeholder="ריק = לפי הגדרות"/></div>
         <div style="font-size:11px;color:var(--tm);background:var(--g50);border:1px solid var(--g200);border-radius:var(--rsm);padding:8px 11px;margin:0 0 10px;line-height:1.5;">ℹ️ מטופל חדש מתחיל תמיד בטיפול יחיד. אפשר לפתוח סדרה מתוך כרטיס המטופל לאחר הטיפול הראשון.</div>
         <button class="btn bp" id="btn-add-patient">הוסף מטופל</button>
@@ -846,6 +859,13 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tp);font-si
             <input class="fi" id="ep-ag" type="number" inputmode="numeric" min="0" max="120" step="0.5" style="flex:1;"/>
             <select class="fi" id="ep-ag-unit" style="width:120px;display:none;"><option value="שבועות">שבועות</option><option value="חודשים">חודשים</option><option value="שנים">שנים</option></select>
           </div>
+        </div>
+        <div class="fm"><label class="fl">מגדר</label>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="chip" id="ep-male" onclick="epSetGender('m')">זכר</button>
+            <button type="button" class="chip" id="ep-female" onclick="epSetGender('f')">נקבה</button>
+          </div>
+          <div style="font-size:10.5px;color:var(--tm);margin-top:4px;">משמש להתאמת נוסח ההודעות בוואטסאפ (מרגיש/מרגישה).</div>
         </div>
         <div class="fm"><label class="fl">בעיה עיקרית</label><input class="fi" id="ep-pr" type="text"/></div>
         <div class="fm" id="ep-parents-fm" style="display:none;"><label class="fl">שם ההורים</label><input class="fi" id="ep-parents" type="text" placeholder="לדוגמה: שם האם ושם האב"/></div>
@@ -1246,6 +1266,7 @@ function defCfg(){
            baby:{intake:DEF_FORMS.baby.intake,followup:DEF_FORMS.baby.followup,summary:DEF_FORMS.baby.summary}},
     bot:{enabled:false,phone:'',reminderHours:24,autoSend:false},
     messages:{
+      booked:'שלום {שם פרטי} 🌿\nהתור שלך נקבע בהצלחה ל-{תאריך} בשעה {שעה}.\nנתראה בקליניקה!',
       reminder:'שלום {שם} 🌿\nתזכורת לתור שלך ב-{תאריך} בשעה {שעה}.\nנתראה!',
       payment:'שלום {שם},\nרצינו להזכיר בעדינות על יתרת תשלום פתוחה בסך {סכום}₪.\nתודה רבה 🙏',
       followup:'שלום {שם},\nתודה שהגעת לטיפול היום. מקווה שתרגיש/י טוב יותר.\nלכל שאלה אני כאן 🌿',
@@ -1264,6 +1285,10 @@ function migrateCfg(c){
   if(c.durationFirst===undefined)c.durationFirst=Math.max(parseInt(c.duration)||60,75);
   if(c.breakMins===undefined)c.breakMins=0;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
+  // Booking-approved WhatsApp template (newer) — add the default when missing so
+  // configs saved before this feature keep all their existing messages untouched
+  if(!c.messages)c.messages={};
+  if(c.messages.booked===undefined)c.messages.booked='שלום {שם פרטי} 🌿\nהתור שלך נקבע בהצלחה ל-{תאריך} בשעה {שעה}.\nנתראה בקליניקה!';
   // Ensure the (newer) treatment-summary form exists for both patient types
   if(c.forms){
     ['adult','baby'].forEach(function(tp){
@@ -1519,8 +1544,8 @@ function renderAlerts(){
   // Pending booking requests from public form
   var pb=(window.pendingBookings||[]).filter(function(b){return b.status==='pending';});
   if(pb.length){
-    var txt=pb.length===1?'בקשת תור חדשה מ-'+(pb[0].name||'מטופל'):pb.length+' בקשות תור חדשות';
-    rows.push('<div class="arow" style="background:#e8f3ec;border-color:#a8d5b1;color:#2a5a3a;cursor:pointer;" id="alert-bookings"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg><span>'+txt+'</span><span class="alink">לצפייה ←</span></div>');
+    var txt=pb.length===1?'🔔 בקשת תור חדשה מ-'+(pb[0].name||'מטופל'):'🔔 '+pb.length+' בקשות תור חדשות';
+    rows.push('<div class="arow booking" id="alert-bookings"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="17" height="17"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg><span>'+txt+'</span><span class="alink">לצפייה ←</span></div>');
   }
   var drs=(window.pts||[]).filter(function(p){return p.treatments&&p.treatments.some(function(t){return !t.paid;});});
   if(drs.length){
@@ -1591,6 +1616,7 @@ function showBookingsList(){
       (b.problem?'<div style="font-size:12px;color:var(--ts);background:#fff;padding:7px 9px;border-radius:6px;border-right:3px solid var(--ac);margin-bottom:6px;"><b>סיבת פנייה:</b> '+b.problem+'</div>':'')+
       (((b.healthConditions&&b.healthConditions.length)||b.healthOther)?'<div style="font-size:12px;color:#7b1c1c;background:#fff5f5;padding:7px 9px;border-radius:6px;border-right:3px solid #e88;margin-bottom:6px;"><b>🏥 מצבים רפואיים:</b> '+((b.healthConditions||[]).join(', '))+(b.healthOther?(b.healthConditions&&b.healthConditions.length?', ':'')+b.healthOther:'')+'</div>':'')+
       (b.takingMedication===true?'<div style="font-size:12px;color:#7b1c1c;background:#fff5f5;padding:7px 9px;border-radius:6px;border-right:3px solid #e88;margin-bottom:6px;"><b>💊 תרופות:</b> '+(b.medications||'כן')+'</div>':'')+
+      (b.recentSurgeries===true?'<div style="font-size:12px;color:#7b1c1c;background:#fff5f5;padding:7px 9px;border-radius:6px;border-right:3px solid #e88;margin-bottom:6px;"><b>🏥 ניתוחים/אשפוזים (שנתיים אחרונות):</b> '+(b.surgeryDetails||'כן')+'</div>':'')+
       '<div style="display:flex;gap:6px;margin-top:8px;">'+
         '<button class="bk-approve" data-id="'+b._id+'" '+(taken?'disabled style="opacity:0.5;cursor:not-allowed;"':'')+' style="flex:1;background:var(--ac);color:#fff;border:none;border-radius:6px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:Heebo,sans-serif;">✓ אשר וקבע תור</button>'+
         '<button class="bk-reject" data-id="'+b._id+'" style="background:var(--r50);color:var(--r700);border:1px solid var(--r100);border-radius:6px;padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;">דחה</button>'+
@@ -1631,6 +1657,8 @@ async function approveBooking(id){
         healthOther:b.healthOther||'',
         takingMedication:b.takingMedication??null,
         medications:b.medications||'',
+        recentSurgeries:b.recentSurgeries??null,
+        surgeryDetails:b.surgeryDetails||'',
         price:cfg.price||350,color:(window.pts||[]).length%4,patType:b.patType||'adult',
         treatType:'single',series:null,treatments:[]};
       window.pts=[...(window.pts||[]),p];
@@ -1645,8 +1673,36 @@ async function approveBooking(id){
     await window.fbDelBooking(id);
     var ov=document.getElementById('bk-ov');if(ov)ov.remove();
     render();
-    alert('התור אושר ונוסף ליומן ✓');
+    showBookedWaPopup(pid,b);
   }catch(e){console.error(e);alert('שגיאה: '+e.message);}
+}
+
+// After approving a booking: success popup that offers to open WhatsApp with a
+// ready-made "your appointment is confirmed" message (from the msg-booked template)
+function showBookedWaPopup(pid,b){
+  var p=findP(pid);
+  var cfg=window.appCfg||defCfg();
+  var msgs=Object.assign({},defCfg().messages,cfg.messages||{});
+  var nd=(b.date||'').split('-').reverse().join('/');
+  var txt=waFillTpl(msgs.booked,p,{date:nd,time:b.time||''});
+  var hasPhone=!!(p&&p.phone);
+  var old=document.getElementById('bkw-ov');if(old)old.remove();
+  var ov=document.createElement('div');ov.id='bkw-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;';
+  ov.innerHTML='<div style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;">'+
+    '<div style="font-size:38px;margin-bottom:6px;">✅</div>'+
+    '<div style="font-size:16px;font-weight:800;color:var(--tp);margin-bottom:4px;">התור אושר ונוסף ליומן</div>'+
+    '<div style="font-size:12.5px;color:var(--tm);margin-bottom:14px;">'+((p&&p.name)||'')+' · '+nd+' · '+(b.time||'')+'</div>'+
+    (hasPhone?
+      '<div style="text-align:right;background:var(--sf2);border:1px solid var(--bdl);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ts);white-space:pre-wrap;margin-bottom:14px;line-height:1.6;">'+txt.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>'+
+      '<button id="bkw-send" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:Heebo,sans-serif;">💬 שלח אישור בוואטסאפ</button>':
+      '<div style="font-size:12px;color:var(--tm);margin-bottom:10px;">למטופל אין מספר טלפון — לא ניתן לשלוח וואטסאפ.</div>')+
+    '<button id="bkw-close" style="width:100%;margin-top:8px;background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:11px;font-size:13px;cursor:pointer;font-family:Heebo,sans-serif;">סגור</button></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('bkw-close').addEventListener('click',function(){ov.remove();});
+  var sb=document.getElementById('bkw-send');
+  if(sb)sb.addEventListener('click',function(){openWa(p.phone,txt);ov.remove();});
 }
 
 async function rejectBooking(id){
@@ -2217,6 +2273,7 @@ function openPatient(id){
     '</div>'+
     (hd&&window.innerWidth<900?'<div style="background:var(--r50);border:1px solid var(--r100);border-radius:var(--rsm);padding:8px 10px;margin-bottom:10px;font-size:12px;color:var(--r700);">⚠ חוב פתוח: ₪'+td.toLocaleString()+'</div>':'')+
     '<div class="ir"><span class="il">גיל</span><span class="iv">'+(p.age||'—')+'</span></div>'+
+    '<div class="ir"><span class="il">מגדר</span><span class="iv">'+(p.gender==='m'?'זכר':(p.gender==='f'?'נקבה':'—'))+'</span></div>'+
     (p.patType==='baby'?'<div class="ir"><span class="il">שם ההורים</span><span class="iv">'+(p.parentsName||'—')+'</span></div>':'')+
     (p.email?'<div class="ir"><span class="il">אימייל</span><span class="iv" style="direction:ltr;text-align:right;">'+p.email+'</span></div>':'')+
     '<div class="ir"><span class="il">בעיה עיקרית</span><span class="iv">'+(p.problem||'—')+'</span></div>'+
@@ -2232,6 +2289,11 @@ function openPatient(id){
       '<div style="margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
       '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:3px;">💊 תרופות</div>'+
       '<div style="font-size:13px;color:var(--tp);">'+(p.medications||'כן')+'</div>'+
+      '</div>':'')+
+    (p.recentSurgeries===true?
+      '<div style="margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rsm);border-right:3px solid #e88;">'+
+      '<div style="font-size:11px;font-weight:700;color:#9b1c1c;margin-bottom:3px;">🏥 ניתוחים/אשפוזים (שנתיים אחרונות)</div>'+
+      '<div style="font-size:13px;color:var(--tp);">'+(p.surgeryDetails||'כן')+'</div>'+
       '</div>':'');
   infoCard.querySelector('#pf-edit-btn').addEventListener('click',function(){openEdit(id);});
   var waBtn=infoCard.querySelector('#pf-wa-btn');if(waBtn)waBtn.addEventListener('click',function(){openWaMenu(id);});
@@ -3209,6 +3271,7 @@ function applySettings(){
   var ba=document.getElementById('set-bot-autosend');if(ba)ba.className='day-tog '+(bot.autoSend?'on':'off');
   var bp=document.getElementById('set-bot-phone');if(bp)bp.value=bot.phone||'';
   var rh=document.getElementById('set-reminder-hours');if(rh)rh.value=bot.reminderHours||24;
+  var mb=document.getElementById('msg-booked');if(mb)mb.value=msg.booked!==undefined?msg.booked:dm.booked;
   var mr=document.getElementById('msg-reminder');if(mr)mr.value=msg.reminder!==undefined?msg.reminder:dm.reminder;
   var mp=document.getElementById('msg-payment');if(mp)mp.value=msg.payment!==undefined?msg.payment:dm.payment;
   var mf=document.getElementById('msg-followup');if(mf)mf.value=msg.followup!==undefined?msg.followup:dm.followup;
@@ -3284,6 +3347,7 @@ async function saveSettings(){
   if(!c.bot)c.bot={};if(!c.messages)c.messages={};
   var bp=document.getElementById('set-bot-phone');if(bp)c.bot.phone=bp.value.trim();
   var rh=document.getElementById('set-reminder-hours');if(rh)c.bot.reminderHours=Math.min(168,Math.max(1,parseInt(rh.value)||24));
+  var mb2=document.getElementById('msg-booked');if(mb2)c.messages.booked=mb2.value;
   var mr=document.getElementById('msg-reminder');if(mr)c.messages.reminder=mr.value;
   var mp=document.getElementById('msg-payment');if(mp)c.messages.payment=mp.value;
   var mf=document.getElementById('msg-followup');if(mf)c.messages.followup=mf.value;
@@ -3540,6 +3604,9 @@ function openEdit(id){
   _epMed=(p.takingMedication===true)?true:(p.takingMedication===false?false:null);
   var meds=document.getElementById('ep-meds');if(meds)meds.value=p.medications||'';
   syncEpMedUI();
+  // Gender
+  _epGender=(p.gender==='m'||p.gender==='f')?p.gender:null;
+  syncEpGenderUI();
   // Back button uses goBack() (wired once on DOMContentLoaded). Don't override it here —
   // overriding broke navHistory: a direct openPatient() pushed 'edit-patient' onto history,
   // so the next "back" returned to edit instead of leaving the patient file.
@@ -3551,6 +3618,14 @@ function syncEpMedUI(){
   if(y)y.classList.toggle('active',_epMed===true);
   if(n)n.classList.toggle('active',_epMed===false);
   if(w)w.style.display=(_epMed===true)?'block':'none';
+}
+// Gender chips (edit-patient screen) — clicking the active chip again clears the selection
+var _epGender=null;
+function epSetGender(g){_epGender=(_epGender===g)?null:g;syncEpGenderUI();}
+function syncEpGenderUI(){
+  var m=document.getElementById('ep-male'),f=document.getElementById('ep-female');
+  if(m)m.classList.toggle('active',_epGender==='m');
+  if(f)f.classList.toggle('active',_epGender==='f');
 }
 async function saveEdit(){
   var id=String(document.getElementById('ep-id').value);var p=findP(id);if(!p)return;
@@ -3570,6 +3645,7 @@ async function saveEdit(){
   var ho=document.getElementById('ep-health-other');p.healthOther=ho?ho.value.trim():'';
   p.takingMedication=_epMed;
   var meds=document.getElementById('ep-meds');p.medications=(_epMed===true&&meds)?meds.value.trim():'';
+  p.gender=_epGender;
   await window.fbSaveP(p);openPatient(id);
 }
 function confirmDel(){var id=String(document.getElementById('ep-id').value);var p=findP(id);delPid=id;document.getElementById('del-sub').textContent='האם למחוק את '+(p?p.name:'המטופל')+'?\nלא ניתן לביטול.';document.getElementById('del-ov').classList.remove('hidden');}
@@ -3617,6 +3693,15 @@ function rebuildTimeSelect(ds){
     hints.innerHTML='<span style="color:var(--a700);">אין שעות מוצעות ביום זה — אפשר להזין שעה חופשית.</span>';
   }
   var err=document.getElementById('na-err');if(err)err.style.display='none';
+}
+
+// Gender chips (new-patient screen)
+var npGender=null;
+function npSetGender(g){
+  npGender=(npGender===g)?null:g;
+  var m=document.getElementById('np-male'),f=document.getElementById('np-female');
+  if(m)m.classList.toggle('active',npGender==='m');
+  if(f)f.classList.toggle('active',npGender==='f');
 }
 
 var _naPatType='adult';
@@ -3720,11 +3805,14 @@ async function addPatient(){
   var px=document.getElementById('np-px').value.trim();
   // Business rule: new patients always start as single; series may be added later from the patient file.
   var p={id:String(Date.now()),name:name,phone:phone,age:age,problem:document.getElementById('np-pr').value.trim(),
+    gender:npGender,
     customPrice:px?parseInt(px):null,color:(window.pts||[]).length%4,patType:npPatType,
     treatType:'single',series:null,treatments:[]};
   window.pts=[...(window.pts||[]),p];await window.fbSaveP(p);
   ['np-nm','np-ph','np-ag','np-pr','np-px'].forEach(function(id2){var el=document.getElementById(id2);if(el)el.value='';});
   npPatType='adult';
+  npGender=null;
+  document.getElementById('np-male').classList.remove('active');document.getElementById('np-female').classList.remove('active');
   document.getElementById('np-adult').classList.add('active');document.getElementById('np-baby').classList.remove('active');
   showScreen('patients');
 }
@@ -3850,13 +3938,36 @@ function waPhone(raw){
   if(d.charAt(0)==='0')return '972'+d.slice(1); // 05XXXXXXXX → 9725XXXXXXXX
   return '972'+d;
 }
+// Who the message actually addresses: babies → the parents (mom), everyone else → the patient
+function waTargetName(p){
+  if(p&&p.patType==='baby'&&(p.parentsName||'').trim())return p.parentsName.trim();
+  return (p&&p.name)||'';
+}
+// Gender for {male/female} template pairs: baby messages address the mother → feminine;
+// adults use the patient's own gender field; unknown → null (both forms shown)
+function waGender(p){
+  if(p&&p.patType==='baby')return 'f';
+  if(p&&(p.gender==='m'||p.gender==='f'))return p.gender;
+  return null;
+}
 function waFillTpl(tpl,p,extra){
   extra=extra||{};
-  return String(tpl||'')
-    .replace(/\{שם\}/g,(p&&p.name)||'')
+  var nm=waTargetName(p);
+  var first=(nm.split(/[\s,]+/)[0])||'';
+  var g=waGender(p);
+  var out=String(tpl||'')
+    .replace(/\{שם פרטי\}/g,first)
+    .replace(/\{שם\}/g,nm)
     .replace(/\{תאריך\}/g,extra.date||'')
     .replace(/\{שעה\}/g,extra.time||'')
     .replace(/\{סכום\}/g,(extra.amount!=null&&extra.amount!=='')?extra.amount:'');
+  // Gender pairs: {מרגיש/מרגישה} → male gets the 1st word, female the 2nd, unknown keeps both
+  out=out.replace(/\{([^{}\/]+)\/([^{}\/]+)\}/g,function(m,a,b){
+    if(g==='m')return a;
+    if(g==='f')return b;
+    return a+'/'+b;
+  });
+  return out;
 }
 function openWa(phone,text){
   var ph=waPhone(phone);
@@ -3866,7 +3977,7 @@ function openWa(phone,text){
 function openWaMenu(pid){
   var p=findP(pid);if(!p)return;
   if(!p.phone){alert('למטופל זה אין מספר טלפון. הוסף מספר דרך "עריכה".');return;}
-  var cfg=window.appCfg||defCfg();var msgs=cfg.messages||defCfg().messages;
+  var cfg=window.appCfg||defCfg();var msgs=Object.assign({},defCfg().messages,cfg.messages||{});
   var ts=todayStr();
   var now=new Date();var nowM=now.getHours()*60+now.getMinutes();
   var next=(window.apts||[]).filter(function(a){
@@ -3891,12 +4002,14 @@ function openWaMenu(pid){
       '<div style="font-size:11px;color:var(--tm);margin-top:2px;">'+sub+'</div></button>';
   }
   rows+=row('💬 צ׳אט ריק','פתיחת וואטסאפ ללא טקסט','',false);
+  rows+=row('✅ אישור קביעת תור', next?('לתור ב-'+nd+' '+nt):'אין תור עתידי — לא ניתן', msgs.booked, !next);
   rows+=row('⏰ תזכורת לתור', next?('לתור ב-'+nd+' '+nt):'אין תור עתידי — לא ניתן', msgs.reminder, !next);
   rows+=row('💰 בקשת תשלום', debt>0?('חוב פתוח: ₪'+debt.toLocaleString()):'אין חוב פתוח', msgs.payment, debt<=0);
   rows+=row('🌿 תודה אחרי טיפול','הודעת תודה לאחר הביקור', msgs.followup,false);
   rows+=row('📞 שאלת שלום / מעקב','בדיקת הרגשה כמה ימים אחרי', msgs.wellbeing,false);
   ov.innerHTML='<div style="background:var(--bg2,#fff);border-radius:16px;max-width:380px;width:100%;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow:auto;">'+
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="font-size:17px;font-weight:800;color:var(--tp);flex:1;">💬 וואטסאפ — '+p.name+'</div></div>'+
+    (p.patType==='baby'&&(p.parentsName||'').trim()?'<div style="font-size:11.5px;color:var(--ac);font-weight:600;margin-bottom:4px;">👶 ההודעות מנוסחות אל ההורים: '+p.parentsName+'</div>':'')+
     '<div style="font-size:12px;color:var(--tm);margin-bottom:14px;">בחר/י הודעה. היא תיפתח מוכנה בוואטסאפ — צריך רק ללחוץ שליחה. (שירות חינמי)</div>'+
     rows+
     '<button id="wa-cancel" style="width:100%;margin-top:4px;background:var(--r50,#f3f3f3);border:none;border-radius:10px;padding:11px;font-size:14px;cursor:pointer;color:var(--tp);">ביטול</button>'+
