@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.20</title>
+<title>קליניקה v6.21</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -619,7 +619,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.20</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.21</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -638,7 +638,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.20</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.21</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -709,13 +709,22 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
       <div class="card" style="padding:4px 13px;"><div id="plist"></div></div>
     </div>
 
-    <!-- Debts -->
+    <!-- Debts + Revenue -->
     <div class="screen" id="screen-debts">
       <div class="srow">
+        <div class="sbox"><div class="slbl">שולם החודש</div><div class="sval" style="color:#1e7a4a" id="stat-rev">₪0</div></div>
+        <div class="sbox"><div class="slbl">טיפולים החודש</div><div class="sval" id="stat-tc">0</div></div>
         <div class="sbox"><div class="slbl">סה"כ חובות</div><div class="sval red" id="stat-d">₪0</div></div>
         <div class="sbox"><div class="slbl">מטופלים חייבים</div><div class="sval" id="stat-n">0</div></div>
       </div>
-      <div class="card" style="padding:4px 13px;"><div id="dlist"></div></div>
+      <div class="card" style="padding:13px;">
+        <div class="ct">📊 הכנסות לפי חודש</div>
+        <div id="rev-months"></div>
+      </div>
+      <div class="card" style="padding:4px 13px;">
+        <div class="ct" style="padding-top:9px;">💰 חובות פתוחים</div>
+        <div id="dlist"></div>
+      </div>
     </div>
 
     <!-- Settings -->
@@ -765,6 +774,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
             <button class="btn bs" id="btn-clean-appts" style="margin-top:0;">🧹 הסר תורים ללא מטופל</button>
             <button class="btn bs" id="btn-dedupe-pts" style="margin-top:0;">👥 הסר מטופלים כפולים</button>
             <button class="btn bs" id="btn-mark-all-paid" style="margin-top:0;">✅ סמן את כל הטיפולים כשולם</button>
+            <button class="btn bs" id="btn-export-data" style="margin-top:0;">⬇ גיבוי / ייצוא כל הנתונים (JSON)</button>
             <button class="btn bs" id="pwa-install-btn" style="display:none;">📲 הוסף למסך הבית</button>
             <div id="pwa-ios-tip" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:10px 12px;font-size:12px;color:var(--g700);line-height:1.6;">📱 <b>אייפון:</b> לחץ שיתוף ↗ ← "הוסף למסך הבית"</div>
             <div id="autosave-msg" style="text-align:center;font-size:12px;color:var(--ac);opacity:0;transition:opacity 0.3s;">✓ נשמר</div>
@@ -984,7 +994,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <nav class="bnav">
     <button class="ni active" id="nav-cal"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>יומן</button>
     <button class="ni" id="nav-pts"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>מטופלים</button>
-    <button class="ni" id="nav-dbt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>חובות</button>
+    <button class="ni" id="nav-dbt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>כספים</button>
     <button class="ni" id="nav-set"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>הגדרות</button>
   </nav>
 </div>
@@ -2997,12 +3007,53 @@ function openFollowupBookingModal(pid,onDone){
   });
 }
 
-// ---- DEBTS ----
+// ---- DEBTS + REVENUE ----
 function renderDebts(){
   var drs=(window.pts||[]).filter(function(p){return p.treatments&&p.treatments.some(function(t){return !t.paid;});});
   var tot=drs.reduce(function(s,p){return s+p.treatments.filter(function(t){return !t.paid;}).reduce(function(ss,t){return ss+(t.amount||0);},0);},0);
   document.getElementById('stat-d').textContent='₪'+tot.toLocaleString();
   document.getElementById('stat-n').textContent=drs.length;
+
+  // Revenue: aggregate treatments by month (keyed YYYY-MM, by treatment date)
+  var byM={};
+  (window.pts||[]).forEach(function(p){(p.treatments||[]).forEach(function(t){
+    if(!t.date)return;
+    var mk=String(t.date).slice(0,7);
+    var m=byM[mk]||(byM[mk]={paid:0,due:0,count:0,methods:{}});
+    m.count++;
+    var amt=t.amount||0;
+    if(t.paid){m.paid+=amt;var mth=t.method||'אחר';m.methods[mth]=(m.methods[mth]||0)+amt;}
+    else m.due+=amt;
+  });});
+  var nowMk=todayStr().slice(0,7);
+  var cur=byM[nowMk]||{paid:0,due:0,count:0,methods:{}};
+  var sr=document.getElementById('stat-rev');if(sr)sr.textContent='₪'+cur.paid.toLocaleString();
+  var stc=document.getElementById('stat-tc');if(stc)stc.textContent=cur.count;
+  // Last 6 months, newest first
+  var revEl=document.getElementById('rev-months');
+  if(revEl){
+    var rows='';var d0=new Date();d0.setDate(1);
+    for(var i=0;i<6;i++){
+      var mk=d0.getFullYear()+'-'+S2(d0.getMonth()+1);
+      var m=byM[mk];
+      var lbl=HM[d0.getMonth()]+' '+d0.getFullYear();
+      var last=(i===5)?'border-bottom:none;':'';
+      if(m){
+        var methods=Object.keys(m.methods).map(function(k){return k+' ₪'+m.methods[k].toLocaleString();}).join(' · ');
+        rows+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdl);'+last+'">'+
+          '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+lbl+'</div>'+
+          (methods?'<div style="font-size:10.5px;color:var(--tm);margin-top:1px;">'+methods+'</div>':'')+'</div>'+
+          '<div style="font-size:11px;color:var(--tm);">'+m.count+' טיפולים</div>'+
+          (m.due>0?'<div style="font-size:12px;color:var(--r500);font-weight:600;">₪'+m.due.toLocaleString()+' פתוח</div>':'')+
+          '<div style="font-size:14px;font-weight:700;color:#1e7a4a;min-width:60px;text-align:left;">₪'+m.paid.toLocaleString()+'</div></div>';
+      } else {
+        rows+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdl);'+last+'">'+
+          '<div style="flex:1;font-size:13px;color:var(--tm);">'+lbl+'</div><div style="font-size:12px;color:var(--tm);">—</div></div>';
+      }
+      d0.setMonth(d0.getMonth()-1);
+    }
+    revEl.innerHTML=rows;
+  }
   var list=document.getElementById('dlist');
   if(!drs.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--tm);font-size:13px;">✓ אין חובות</div>';return;}
   list.innerHTML='';
@@ -3828,6 +3879,27 @@ async function addPatient(){
   showScreen('patients');
 }
 
+// ---- DATA EXPORT (backup) ----
+// Downloads a JSON file with everything: patients (incl. treatments), appointments
+// and settings. Read-only — touches nothing in Firestore.
+function exportAllData(){
+  try{
+    var data={
+      exportedAt:new Date().toISOString(),
+      app:'clinic',
+      patients:window.pts||[],
+      appointments:window.apts||[],
+      config:window.appCfg||{}
+    };
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='clinic-backup-'+todayStr()+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},3000);
+  }catch(e){alert('שגיאה בייצוא: '+e.message);}
+}
+
 // ---- PATIENT IMPORT (from Claude-generated JSON) ----
 // Format: array of patient objects. Each field is optional except "name".
 // Claude will generate this JSON from Word intake forms.
@@ -4206,6 +4278,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-clean-appts').onclick=function(){cleanOrphanAppts();};
   document.getElementById('btn-dedupe-pts').onclick=function(){dedupePatients();};
   document.getElementById('btn-mark-all-paid').onclick=function(){markAllPaid();};
+  document.getElementById('btn-export-data').onclick=function(){exportAllData();};
   document.getElementById('set-bot-enabled').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.enabled=!c.bot.enabled;this.className='day-tog '+(c.bot.enabled?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('set-bot-autosend').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.autoSend=!c.bot.autoSend;this.className='day-tog '+(c.bot.autoSend?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('pwa-install-btn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;this.style.display='none';}};
