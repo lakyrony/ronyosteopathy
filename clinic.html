@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.23</title>
+<title>קליניקה v6.24</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -67,6 +67,10 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 .arow.amber{background:var(--a50);border-color:var(--a100);color:var(--a700)}
 .arow.red{background:var(--r50);border-color:var(--r100);color:var(--r700)}
 .arow svg{width:14px;height:14px;flex-shrink:0}
+/* Goal-reached confetti */
+.conf-wrap{position:fixed;inset:0;pointer-events:none;z-index:12000;overflow:hidden}
+.conf-piece{position:absolute;top:-16px;width:9px;height:14px;border-radius:2px;animation:confFall linear forwards}
+@keyframes confFall{to{transform:translateY(105vh) rotate(720deg);opacity:0.6}}
 /* Booking-request alert — deliberately loud (mobile + desktop): the therapist must not miss it */
 .arow.booking{background:#0f7a3d;border:none;color:#fff;font-weight:800;font-size:13.5px;padding:13px 15px;cursor:pointer;border-radius:12px;margin:8px 10px;box-shadow:0 3px 12px rgba(15,122,61,.35);animation:bkPulse 1.6s ease-in-out infinite}
 .arow.booking svg{width:17px;height:17px}
@@ -619,7 +623,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.23</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.24</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -638,7 +642,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.23</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.24</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -2963,10 +2967,13 @@ async function tfSave(){
   var mainComplaint=fields.length&&intakeData[fields[0].id]?intakeData[fields[0].id]:'';
   var tobj={num:tNumSave,date:tdate,formKey:formKey,intakeData:intakeData,mainComplaint:mainComplaint,tcs:tcs,done:done,found:found,recommend:rec,exercises:ex,summaryData:summaryData,paid:paid,amount:price,method:paid?method:''};
   if(existingIdx>=0){
+    // Keep the original series attribution when editing an existing treatment
+    tobj.series=p.treatments[existingIdx].series||false;
     p.treatments[existingIdx]=tobj;
   } else {
-    p.treatments.push(tobj);
     var isSeries=p.treatType==='series'&&p.series&&p.series.active!==false;
+    tobj.series=isSeries; // mark for revenue-split attribution on the finances screen
+    p.treatments.push(tobj);
     if(isSeries&&!TF.editDate){
       p.series.used=(p.series.used||0)+1;
       // Series complete → fall back to single (followup pricing) for any future treatments
@@ -3068,10 +3075,71 @@ function renderDebts(){
   });
   var billedMonth=cur.paid+cur.due;
   var proj=billedMonth+futureExp;
+
+  // New patients per month (by date of their first treatment) — also feeds the milestone badge
+  var newByM={};
+  (window.pts||[]).forEach(function(p){
+    var fdates=(p.treatments||[]).map(function(t){return t.date;}).filter(Boolean).sort();
+    if(fdates.length){var fk=fdates[0].slice(0,7);newByM[fk]=(newByM[fk]||0)+1;}
+  });
+
+  // "Money on the table": free bookable slots left this month × average treatment price
+  var freeSlots=0;
+  (function(){
+    var nw=new Date();
+    var lastDay=new Date(nw.getFullYear(),nw.getMonth()+1,0);
+    var dIter=new Date(nw.getFullYear(),nw.getMonth(),nw.getDate());
+    var nowMin=nw.getHours()*60+nw.getMinutes();
+    var guard=0;
+    while(dIter<=lastDay&&guard++<32){
+      var dsI=dstr(dIter);
+      var sl=getSlots(dsI);
+      if(dsI===ts2)sl=sl.filter(function(t){return hmToMin(t)>nowMin;});
+      freeSlots+=sl.length;
+      dIter.setDate(dIter.getDate()+1);
+    }
+  })();
+  var cfgP=window.appCfg||defCfg();
+  var avgPrice=cur.count?Math.round(billedMonth/cur.count):(parseInt(cfgP.priceSingle)||350);
+  var potential=freeSlots*avgPrice;
+
+  // Committed pipeline: remaining treatments in active series
+  var serLeft=0,serVal=0;
+  (window.pts||[]).forEach(function(p){
+    if(p.treatType==='series'&&p.series&&p.series.active!==false){
+      var left=Math.max(0,(p.series.count||0)-(p.series.used||0));
+      if(left){serLeft+=left;serVal+=left*getTreatmentPrice(p,999);}
+    }
+  });
+
+  // Achievement badges
+  var badges=[];
+  var bestPrev=0;
+  Object.keys(byM).forEach(function(k){if(k<nowMk){var b=byM[k].paid+byM[k].due;if(b>bestPrev)bestPrev=b;}});
+  if(billedMonth>0&&bestPrev>0&&billedMonth>bestPrev)badges.push('🏆 החודש הטוב ביותר אי פעם!');
+  var streak=0,curV=billedMonth;
+  var dS=new Date();dS.setDate(1);
+  for(var si=0;si<12;si++){
+    dS.setMonth(dS.getMonth()-1);
+    var pk=dS.getFullYear()+'-'+S2(dS.getMonth()+1);
+    var pv=byM[pk]?(byM[pk].paid+byM[pk].due):0;
+    if(pv>0&&curV>pv){streak++;curV=pv;}else break;
+  }
+  if(streak>=2)badges.push('📈 '+(streak+1)+' חודשים של צמיחה רצופה');
+  var totalP=(window.pts||[]).length;
+  var mil=Math.floor(totalP/50)*50;
+  if(mil>=50&&(totalP-(newByM[nowMk]||0))<mil)badges.push('🎉 חצית את מטופל מספר '+mil+'!');
+
   var projEl=document.getElementById('proj-body');
   if(projEl){
-    var goal=parseInt((window.appCfg||{}).monthlyGoal)||0;
-    var ph='<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'+
+    var goal=parseInt(cfgP.monthlyGoal)||0;
+    var ph='';
+    if(badges.length){
+      ph+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">'+badges.map(function(b){
+        return '<span style="background:linear-gradient(135deg,#fdf3d8,#fbe7b0);border:1px solid #e6c96a;color:#7a5a10;border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:700;">'+b+'</span>';
+      }).join('')+'</div>';
+    }
+    ph+='<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'+
       '<div style="font-size:27px;font-weight:800;color:#1e7a4a;">₪'+proj.toLocaleString()+'</div>'+
       '<div style="font-size:11px;color:var(--tm);line-height:1.5;">שולם ₪'+cur.paid.toLocaleString()+' · ממתין לתשלום ₪'+cur.due.toLocaleString()+'<br>+ '+futureCount+' תורים קרובים החודש (₪'+futureExp.toLocaleString()+' צפוי)</div></div>';
     if(goal>0){
@@ -3086,9 +3154,31 @@ function renderDebts(){
           '<span>בוצע '+pct+'%'+(pctProj>pct?' · צפי '+pctProj+'%':'')+'</span><span>יעד: ₪'+goal.toLocaleString()+'</span></div>'+
         (proj>=goal?'<div style="font-size:12px;color:#1e7a4a;font-weight:700;margin-top:5px;">🎉 הצפי עובר את היעד החודשי — כל הכבוד!</div>':'')+
         '</div>';
+      // First time the ACTUAL billed income passes the goal this month → confetti
+      if(billedMonth>=goal){
+        var celKey='goalCel-'+nowMk;
+        var celDone=false;try{celDone=localStorage.getItem(celKey)==='1';}catch(e){}
+        if(!celDone){try{localStorage.setItem(celKey,'1');}catch(e){}launchConfetti();}
+      }
     } else {
-      ph+='<div style="font-size:11px;color:var(--tm);margin-top:8px;">💡 הגדירי יעד הכנסה חודשי בהגדרות ⚙️ — ויופיע כאן מד התקדמות.</div>';
+      // Suggest a goal based on last month (+10%, rounded to ₪100)
+      var pmD=new Date();pmD.setDate(1);pmD.setMonth(pmD.getMonth()-1);
+      var pmk=pmD.getFullYear()+'-'+S2(pmD.getMonth()+1);
+      var prevBilled=byM[pmk]?(byM[pmk].paid+byM[pmk].due):0;
+      if(prevBilled>0){
+        var sugg=Math.round(prevBilled*1.1/100)*100;
+        ph+='<div style="font-size:11.5px;color:var(--ts);margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">💡 יעד מוצע לחודש (חודש קודם +10%): <b>₪'+sugg.toLocaleString()+'</b>'+
+          '<button type="button" onclick="_setGoalQuick('+sugg+')" style="background:var(--ac);color:#fff;border:none;border-radius:14px;padding:4px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:Heebo,sans-serif;">הגדר כיעד</button></div>';
+      } else {
+        ph+='<div style="font-size:11px;color:var(--tm);margin-top:8px;">💡 הגדירי יעד הכנסה חודשי בהגדרות ⚙️ — ויופיע כאן מד התקדמות.</div>';
+      }
     }
+    // Money on the table + series pipeline
+    ph+='<div style="margin-top:10px;border-top:1px solid var(--bdl);padding-top:9px;display:flex;flex-direction:column;gap:5px;">'+
+      (freeSlots>0?'<div style="font-size:12px;color:var(--ts);">🪙 נותרו <b>'+freeSlots+'</b> שעות פנויות החודש — פוטנציאל של עוד <b style="color:#1e7a4a;">₪'+potential.toLocaleString()+'</b></div>':
+        '<div style="font-size:12px;color:#1e7a4a;font-weight:600;">🔥 היומן מלא עד סוף החודש!</div>')+
+      (serLeft>0?'<div style="font-size:12px;color:var(--ts);">🔁 צבר סדרות פעילות: <b>'+serLeft+'</b> טיפולים שטרם נוצלו ← <b style="color:#1e7a4a;">₪'+serVal.toLocaleString()+'</b> בהמשך הדרך</div>':'')+
+      '</div>';
     projEl.innerHTML=ph;
   }
 
@@ -3119,13 +3209,6 @@ function renderDebts(){
     chartEl.innerHTML='<div style="display:flex;align-items:flex-end;gap:4px;">'+bars+'</div>'+
       '<div style="font-size:10px;color:var(--tm);margin-top:7px;">🟩 ירוק כהה = הכנסה בפועל · ירוק בהיר = צפי מהתורים הקרובים</div>';
   }
-
-  // New patients per month (by date of their first treatment)
-  var newByM={};
-  (window.pts||[]).forEach(function(p){
-    var fdates=(p.treatments||[]).map(function(t){return t.date;}).filter(Boolean).sort();
-    if(fdates.length){var fk=fdates[0].slice(0,7);newByM[fk]=(newByM[fk]||0)+1;}
-  });
 
   // Last 6 months, newest first
   var revEl=document.getElementById('rev-months');
@@ -3158,14 +3241,53 @@ function renderDebts(){
   list.innerHTML='';
   drs.forEach(function(p){
     var u=p.treatments.filter(function(t){return !t.paid;}),a=u.reduce(function(s,t){return s+(t.amount||0);},0);
+    // Debt age: how long the OLDEST unpaid treatment has been open
+    var oldest=u.map(function(t){return t.date;}).filter(Boolean).sort()[0];
+    var days=oldest?Math.max(0,Math.floor((ltoday()-sToD(oldest))/86400000)):0;
+    var ageCol=days>60?'var(--r500)':(days>30?'var(--a700)':'var(--tm)');
+    var ageTxt=days>0?(days>60?'⚠ ':'')+'חוב בן '+days+' ימים':'';
     var div=document.createElement('div');div.className='pi';
     div.innerHTML='<div class="pav '+avCls(p)+'" style="'+avSz(40)+'">'+p.name.charAt(0)+'</div>'+
-      '<div class="pb"><div class="pn">'+p.name+'</div><div class="ps">'+u.length+' טיפולים לא שולמו</div></div>'+
-      '<div style="font-size:14px;font-weight:700;color:var(--r500);">₪'+a.toLocaleString()+'</div>';
+      '<div class="pb"><div class="pn">'+p.name+'</div><div class="ps">'+u.length+' טיפולים לא שולמו'+(ageTxt?' · <span style="color:'+ageCol+';font-weight:600;">'+ageTxt+'</span>':'')+'</div></div>'+
+      '<div style="font-size:14px;font-weight:700;color:var(--r500);">₪'+a.toLocaleString()+'</div>'+
+      (p.phone?'<button class="debt-wa" title="שליחת תזכורת תשלום בוואטסאפ" style="background:#25D366;color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer;margin-right:6px;flex-shrink:0;">💬</button>':'');
     div.addEventListener('click',function(){openPatient(p.id);});
+    var waB=div.querySelector('.debt-wa');
+    if(waB)waB.addEventListener('click',function(e){
+      e.stopPropagation();
+      var msgs=Object.assign({},defCfg().messages,(window.appCfg||{}).messages||{});
+      openWa(p.phone,waFillTpl(msgs.payment,p,{amount:a}));
+    });
     list.appendChild(div);
   });
 }
+
+// Celebration when the monthly goal is actually reached (fires once per month)
+function launchConfetti(){
+  var old=document.querySelector('.conf-wrap');if(old)old.remove();
+  var w=document.createElement('div');w.className='conf-wrap';
+  var colors=['#1e7a4a','#e6a020','#6b5a3e','#7fbf8c','#d2c49e','#e53e3e'];
+  for(var i=0;i<60;i++){
+    var pc=document.createElement('div');pc.className='conf-piece';
+    pc.style.left=(Math.random()*100)+'%';
+    pc.style.background=colors[i%colors.length];
+    pc.style.animationDuration=(2+Math.random()*1.8)+'s';
+    pc.style.animationDelay=(Math.random()*0.6)+'s';
+    w.appendChild(pc);
+  }
+  document.body.appendChild(w);
+  setTimeout(function(){w.remove();},4500);
+}
+
+// One-tap goal setting from the suggested-goal chip on the finances screen
+window._setGoalQuick=async function(v){
+  var c=window.appCfg||defCfg();
+  c.monthlyGoal=parseInt(v)||0;
+  window.appCfg=c;
+  try{await window.fbSaveCfg(c);}catch(e){}
+  var smg=document.getElementById('set-monthly-goal');if(smg)smg.value=c.monthlyGoal||'';
+  renderDebts();
+};
 
 // ---- BUSINESS STATS (finances screen) ----
 var statsPeriod=3; // months back: 1 / 3 / 6 / 12
@@ -3266,7 +3388,53 @@ function renderStats(){
           '<div style="width:24px;font-size:11px;color:var(--tm);text-align:left;">'+c+'</div></div>';
       }).join('')+'</div>';
   }
+
+  // Revenue split for the period: series-marked treatments → series; else by patient type
+  var split={'מבוגרים':0,'תינוקות':0,'סדרות':0};
+  var splitColors={'מבוגרים':'var(--g400)','תינוקות':'#c99ab0','סדרות':'#7fa8bf'};
+  var splitTotal=0;
+  (window.pts||[]).forEach(function(p){(p.treatments||[]).forEach(function(t){
+    if(!t.date||t.date<start||t.date>end)return;
+    var amt=t.amount||0;splitTotal+=amt;
+    if(t.series)split['סדרות']+=amt;
+    else if(p.patType==='baby')split['תינוקות']+=amt;
+    else split['מבוגרים']+=amt;
+  });});
+  if(splitTotal>0){
+    html+='<div style="margin-top:13px;"><div style="font-size:11px;font-weight:700;color:var(--tm);margin-bottom:6px;">🧩 ממה מורכבת ההכנסה</div>'+
+      Object.keys(split).map(function(k){
+        var v=split[k];if(!v)return '';
+        var pc=Math.round(v/splitTotal*100);
+        return '<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">'+
+          '<div style="width:52px;font-size:11px;color:var(--ts);">'+k+'</div>'+
+          '<div style="flex:1;height:12px;background:var(--sf2);border-radius:6px;overflow:hidden;"><div style="height:100%;width:'+pc+'%;background:'+splitColors[k]+';border-radius:6px;"></div></div>'+
+          '<div style="width:88px;font-size:11px;color:var(--tm);text-align:left;">₪'+v.toLocaleString()+' ('+pc+'%)</div></div>';
+      }).join('')+
+      '<div style="font-size:9.5px;color:var(--tm);margin-top:3px;">* טיפולי סדרה נספרים בנפרד מטיפולים שנרשמו לפני עדכון זה</div></div>';
+  }
+
+  // Top patients — lifetime value (all time)
+  var tops=(window.pts||[]).map(function(p){
+    var tot=(p.treatments||[]).reduce(function(s,t){return s+(t.amount||0);},0);
+    return {p:p,tot:tot,n:(p.treatments||[]).length};
+  }).filter(function(x){return x.tot>0;}).sort(function(a,b){return b.tot-a.tot;}).slice(0,5);
+  if(tops.length){
+    var medals=['🥇','🥈','🥉','','' ];
+    html+='<div style="margin-top:13px;"><div style="font-size:11px;font-weight:700;color:var(--tm);margin-bottom:6px;">👑 מטופלים מובילים (מכל הזמנים)</div>'+
+      tops.map(function(x,i){
+        return '<div class="top-pat" data-pid="'+x.p.id+'" style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdl);cursor:pointer;">'+
+          '<div style="width:20px;text-align:center;font-size:13px;">'+(medals[i]||(i+1))+'</div>'+
+          '<div class="pav '+avCls(x.p)+'" style="'+avSz(30)+'">'+x.p.name.charAt(0)+'</div>'+
+          '<div style="flex:1;font-size:12.5px;font-weight:600;">'+x.p.name+'</div>'+
+          '<div style="font-size:11px;color:var(--tm);">'+x.n+' טיפולים</div>'+
+          '<div style="font-size:13px;font-weight:700;color:#1e7a4a;min-width:60px;text-align:left;">₪'+x.tot.toLocaleString()+'</div></div>';
+      }).join('')+'</div>';
+  }
+
   bEl.innerHTML=html;
+  bEl.querySelectorAll('.top-pat').forEach(function(el){
+    el.addEventListener('click',function(){openPatient(this.dataset.pid);});
+  });
 }
 
 // Monthly summary CSV for the accountant — covers the selected stats period.
