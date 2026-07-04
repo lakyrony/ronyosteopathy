@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.21</title>
+<title>קליניקה v6.22</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -619,7 +619,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.21</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.22</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -638,7 +638,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.21</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.22</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -718,6 +718,14 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
         <div class="sbox"><div class="slbl">מטופלים חייבים</div><div class="sval" id="stat-n">0</div></div>
       </div>
       <div class="card" style="padding:13px;">
+        <div class="ct">🎯 צפי הכנסה החודש</div>
+        <div id="proj-body"></div>
+      </div>
+      <div class="card" style="padding:13px;">
+        <div class="ct">📈 מגמת הכנסות — חצי שנה אחרונה</div>
+        <div id="rev-chart"></div>
+      </div>
+      <div class="card" style="padding:13px;">
         <div class="ct">📊 הכנסות לפי חודש</div>
         <div id="rev-months"></div>
       </div>
@@ -749,6 +757,12 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
           </div>
           <div class="set-item"><div class="set-item-lbl">הפסקה בין טיפולים</div>
             <select class="set-sel" id="set-break"><option value="0">ללא</option><option value="5">5 דק׳</option><option value="10">10 דק׳</option><option value="15" selected>15 דק׳</option><option value="20">20 דק׳</option><option value="30">30 דק׳</option></select>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">🎯 יעד הכנסה חודשי (₪)</div>
+            <input type="number" inputmode="numeric" id="set-monthly-goal" min="0" max="999999" placeholder="0 = כבוי" style="width:100px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item" style="font-size:11px;color:var(--tm);padding:6px 13px 9px;line-height:1.4;">
+            היעד מוצג במסך הכספים עם מד התקדמות. השאירו 0 כדי לכבות.
           </div>
         </div>
         <div class="set-group">
@@ -1272,6 +1286,8 @@ function defCfg(){
     duration:60,
     // Break between treatments (mins) — applied after each treatment block
     breakMins:15,
+    // Monthly revenue goal (₪) shown on the finances screen; 0 = off
+    monthlyGoal:0,
     // Legacy fields kept for backward compat
     price:350,
     schedule:{
@@ -1305,6 +1321,7 @@ function migrateCfg(c){
   if(c.duration===undefined)c.duration=c.durationFollowup||60;
   if(c.durationFirst===undefined)c.durationFirst=Math.max(parseInt(c.duration)||60,75);
   if(c.breakMins===undefined)c.breakMins=0;
+  if(c.monthlyGoal===undefined)c.monthlyGoal=0;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
   // Booking-approved WhatsApp template (newer) — add the default when missing so
   // configs saved before this feature keep all their existing messages untouched
@@ -3029,6 +3046,80 @@ function renderDebts(){
   var cur=byM[nowMk]||{paid:0,due:0,count:0,methods:{}};
   var sr=document.getElementById('stat-rev');if(sr)sr.textContent='₪'+cur.paid.toLocaleString();
   var stc=document.getElementById('stat-tc');if(stc)stc.textContent=cur.count;
+
+  // ---- Projection: billed so far this month + expected income from remaining appointments ----
+  var ts2=todayStr();
+  var futureExp=0,futureCount=0;
+  (window.apts||[]).forEach(function(a){
+    if(!a.date||String(a.date).slice(0,7)!==nowMk)return;
+    if(a.date<ts2)return;
+    var p=findP(a.patientId);if(!p)return;
+    // Skip appointments already billed as a treatment (avoid double count)
+    if((p.treatments||[]).some(function(t){return t.date===a.date;}))return;
+    futureExp+=getTreatmentPrice(p,((p.treatments||[]).length+1));
+    futureCount++;
+  });
+  var billedMonth=cur.paid+cur.due;
+  var proj=billedMonth+futureExp;
+  var projEl=document.getElementById('proj-body');
+  if(projEl){
+    var goal=parseInt((window.appCfg||{}).monthlyGoal)||0;
+    var ph='<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'+
+      '<div style="font-size:27px;font-weight:800;color:#1e7a4a;">₪'+proj.toLocaleString()+'</div>'+
+      '<div style="font-size:11px;color:var(--tm);line-height:1.5;">שולם ₪'+cur.paid.toLocaleString()+' · ממתין לתשלום ₪'+cur.due.toLocaleString()+'<br>+ '+futureCount+' תורים קרובים החודש (₪'+futureExp.toLocaleString()+' צפוי)</div></div>';
+    if(goal>0){
+      var pct=Math.min(100,Math.round(billedMonth/goal*100));
+      var pctProj=Math.min(100,Math.round(proj/goal*100));
+      ph+='<div style="margin-top:10px;">'+
+        '<div style="position:relative;height:14px;background:var(--sf2);border:1px solid var(--bdl);border-radius:8px;overflow:hidden;">'+
+          '<div style="position:absolute;top:0;right:0;height:100%;width:'+pctProj+'%;background:#bfe3cb;"></div>'+
+          '<div style="position:absolute;top:0;right:0;height:100%;width:'+pct+'%;background:#1e7a4a;"></div>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tm);margin-top:4px;">'+
+          '<span>בוצע '+pct+'%'+(pctProj>pct?' · צפי '+pctProj+'%':'')+'</span><span>יעד: ₪'+goal.toLocaleString()+'</span></div>'+
+        (proj>=goal?'<div style="font-size:12px;color:#1e7a4a;font-weight:700;margin-top:5px;">🎉 הצפי עובר את היעד החודשי — כל הכבוד!</div>':'')+
+        '</div>';
+    } else {
+      ph+='<div style="font-size:11px;color:var(--tm);margin-top:8px;">💡 הגדירי יעד הכנסה חודשי בהגדרות ⚙️ — ויופיע כאן מד התקדמות.</div>';
+    }
+    projEl.innerHTML=ph;
+  }
+
+  // ---- 6-month bar chart (billed revenue; current month includes projected remainder) ----
+  var chartEl=document.getElementById('rev-chart');
+  if(chartEl){
+    var HMS=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+    var seq=[];var dC=new Date();dC.setDate(1);
+    for(var ci=0;ci<6;ci++){
+      var mkC=dC.getFullYear()+'-'+S2(dC.getMonth()+1);
+      var mC=byM[mkC]||{paid:0,due:0};
+      seq.unshift({lbl:HMS[dC.getMonth()],billed:mC.paid+mC.due,cur:ci===0,proj:ci===0?proj:0});
+      dC.setMonth(dC.getMonth()-1);
+    }
+    var maxV=1;seq.forEach(function(s){maxV=Math.max(maxV,s.cur?s.proj:s.billed);});
+    var bars=seq.map(function(s){
+      var hB=Math.round(s.billed/maxV*78);
+      var hP=s.cur?Math.max(0,Math.round(s.proj/maxV*78)-hB):0;
+      var vLbl=s.billed?('₪'+(s.billed>=1000?(Math.round(s.billed/100)/10)+'K':s.billed)):'';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">'+
+        '<div style="font-size:10px;font-weight:600;color:'+(s.cur?'#1e7a4a':'var(--tm)')+';min-height:13px;">'+vLbl+'</div>'+
+        '<div style="width:70%;max-width:36px;display:flex;flex-direction:column;justify-content:flex-end;height:78px;">'+
+          (hP>0?'<div style="height:'+hP+'px;background:#bfe3cb;border-radius:5px 5px 0 0;"></div>':'')+
+          '<div style="height:'+Math.max(2,hB)+'px;background:'+(s.cur?'#1e7a4a':'var(--g200)')+';border-radius:'+(hP>0?'0':'5px 5px 0 0')+';"></div>'+
+        '</div>'+
+        '<div style="font-size:10px;color:'+(s.cur?'#1e7a4a':'var(--tm)')+';font-weight:'+(s.cur?'700':'400')+';">'+s.lbl+'</div></div>';
+    }).join('');
+    chartEl.innerHTML='<div style="display:flex;align-items:flex-end;gap:4px;">'+bars+'</div>'+
+      '<div style="font-size:10px;color:var(--tm);margin-top:7px;">🟩 ירוק כהה = הכנסה בפועל · ירוק בהיר = צפי מהתורים הקרובים</div>';
+  }
+
+  // New patients per month (by date of their first treatment)
+  var newByM={};
+  (window.pts||[]).forEach(function(p){
+    var fdates=(p.treatments||[]).map(function(t){return t.date;}).filter(Boolean).sort();
+    if(fdates.length){var fk=fdates[0].slice(0,7);newByM[fk]=(newByM[fk]||0)+1;}
+  });
+
   // Last 6 months, newest first
   var revEl=document.getElementById('rev-months');
   if(revEl){
@@ -3043,7 +3134,7 @@ function renderDebts(){
         rows+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdl);'+last+'">'+
           '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+lbl+'</div>'+
           (methods?'<div style="font-size:10.5px;color:var(--tm);margin-top:1px;">'+methods+'</div>':'')+'</div>'+
-          '<div style="font-size:11px;color:var(--tm);">'+m.count+' טיפולים</div>'+
+          '<div style="font-size:11px;color:var(--tm);">'+m.count+' טיפולים'+(newByM[mk]?' · '+newByM[mk]+' חדשים':'')+'</div>'+
           (m.due>0?'<div style="font-size:12px;color:var(--r500);font-weight:600;">₪'+m.due.toLocaleString()+' פתוח</div>':'')+
           '<div style="font-size:14px;font-weight:700;color:#1e7a4a;min-width:60px;text-align:left;">₪'+m.paid.toLocaleString()+'</div></div>';
       } else {
@@ -3327,6 +3418,7 @@ function applySettings(){
   var sdf=document.getElementById('set-dur-first');if(sdf)sdf.value=c.durationFirst||75;
   var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
   var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||15;
+  var smg=document.getElementById('set-monthly-goal');if(smg)smg.value=c.monthlyGoal||'';
   var bot=c.bot||{},msg=c.messages||{};
   var dm=defCfg().messages;
   var be=document.getElementById('set-bot-enabled');if(be)be.className='day-tog '+(bot.enabled?'on':'off');
@@ -3404,6 +3496,7 @@ async function saveSettings(){
   var sdf=document.getElementById('set-dur-first');if(sdf)c.durationFirst=parseInt(sdf.value)||75;
   var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
   var sbr=document.getElementById('set-break');if(sbr)c.breakMins=parseInt(sbr.value)||0;
+  var smg=document.getElementById('set-monthly-goal');if(smg)c.monthlyGoal=Math.max(0,parseInt(smg.value)||0);
   // Maintain legacy price for backward compat (public booking page used to read cfg.price)
   c.price=c.priceSingle;
   if(!c.bot)c.bot={};if(!c.messages)c.messages={};
