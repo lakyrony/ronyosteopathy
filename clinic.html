@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.22</title>
+<title>קליניקה v6.23</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -619,7 +619,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.22</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.23</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -638,7 +638,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.22</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.23</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -724,6 +724,12 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
       <div class="card" style="padding:13px;">
         <div class="ct">📈 מגמת הכנסות — חצי שנה אחרונה</div>
         <div id="rev-chart"></div>
+      </div>
+      <div class="card" style="padding:13px;">
+        <div class="ct">🔎 סטטיסטיקות עסקיות</div>
+        <div id="stats-period" style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;"></div>
+        <div id="stats-body"></div>
+        <button class="btn bs" id="btn-acc-report" style="margin-top:12px;">📄 הורדת דוח לרואה חשבון (CSV)</button>
       </div>
       <div class="card" style="padding:13px;">
         <div class="ct">📊 הכנסות לפי חודש</div>
@@ -3043,6 +3049,7 @@ function renderDebts(){
     else m.due+=amt;
   });});
   var nowMk=todayStr().slice(0,7);
+  window._byM=byM; // reused by the business-stats section + accountant CSV report
   var cur=byM[nowMk]||{paid:0,due:0,count:0,methods:{}};
   var sr=document.getElementById('stat-rev');if(sr)sr.textContent='₪'+cur.paid.toLocaleString();
   var stc=document.getElementById('stat-tc');if(stc)stc.textContent=cur.count;
@@ -3145,6 +3152,7 @@ function renderDebts(){
     }
     revEl.innerHTML=rows;
   }
+  renderStats();
   var list=document.getElementById('dlist');
   if(!drs.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--tm);font-size:13px;">✓ אין חובות</div>';return;}
   list.innerHTML='';
@@ -3157,6 +3165,133 @@ function renderDebts(){
     div.addEventListener('click',function(){openPatient(p.id);});
     list.appendChild(div);
   });
+}
+
+// ---- BUSINESS STATS (finances screen) ----
+var statsPeriod=3; // months back: 1 / 3 / 6 / 12
+function renderStats(){
+  var pEl=document.getElementById('stats-period');
+  var bEl=document.getElementById('stats-body');
+  if(!pEl||!bEl)return;
+  // Period filter chips
+  var opts=[[1,'החודש'],[3,'3 חודשים'],[6,'חצי שנה'],[12,'שנה']];
+  pEl.innerHTML=opts.map(function(o){
+    return '<button type="button" class="chip'+(statsPeriod===o[0]?' active':'')+'" data-sp="'+o[0]+'" style="padding:5px 13px;font-size:12px;">'+o[1]+'</button>';
+  }).join('');
+  pEl.querySelectorAll('[data-sp]').forEach(function(b){
+    b.onclick=function(){statsPeriod=parseInt(this.dataset.sp);renderStats();};
+  });
+
+  // Period = first day of (current month - N-1) through today
+  var sd=new Date();sd.setDate(1);sd.setMonth(sd.getMonth()-(statsPeriod-1));
+  var start=dstr(sd),end=todayStr();
+  var cfg=window.appCfg||defCfg();
+
+  // Billing stats from treatments in the period
+  var tCount=0,tBilled=0,treated=0,returning=0;
+  (window.pts||[]).forEach(function(p){
+    var inP=(p.treatments||[]).filter(function(t){return t.date&&t.date>=start&&t.date<=end;});
+    if(!inP.length)return;
+    treated++;
+    if((p.treatments||[]).length>=2)returning++;
+    inP.forEach(function(t){tCount++;tBilled+=(t.amount||0);});
+  });
+  var avg=tCount?Math.round(tBilled/tCount):0;
+  var retPct=treated?Math.round(returning/treated*100):0;
+
+  // Occupancy: booked minutes vs available working minutes (period start → today)
+  var availMin=0;
+  var d=sToD(start);var today=ltoday();var safety=0;
+  while(d<=today&&safety++<400){
+    var day=scheduleForDate(dstr(d));
+    if(day&&day.active)(day.ranges||[]).forEach(function(r){availMin+=Math.max(0,hmToMin(r.e)-hmToMin(r.s));});
+    d.setDate(d.getDate()+1);
+  }
+  var bookedMin=0,byHour={},byDow=[0,0,0,0,0,0,0];
+  (window.apts||[]).forEach(function(a){
+    if(!a.date||a.date<start||a.date>end)return;
+    bookedMin+=parseInt(a.duration)||parseInt(cfg.duration)||60;
+    var h=parseInt(String(a.time||'').split(':')[0]);
+    if(!isNaN(h))byHour[h]=(byHour[h]||0)+1;
+    byDow[sToD(a.date).getDay()]++;
+  });
+  var occ=availMin?Math.min(100,Math.round(bookedMin/availMin*100)):0;
+
+  // Month-over-month + year-over-year comparisons (billed = paid + open)
+  var byM=window._byM||{};
+  function mkOf(dd){return dd.getFullYear()+'-'+S2(dd.getMonth()+1);}
+  function billedOf(mk){var m=byM[mk];return m?(m.paid+m.due):0;}
+  var nw=new Date();
+  var curB=billedOf(mkOf(nw));
+  var prevB=billedOf(mkOf(new Date(nw.getFullYear(),nw.getMonth()-1,1)));
+  var lyB=billedOf(mkOf(new Date(nw.getFullYear()-1,nw.getMonth(),1)));
+  var cmpPrev=prevB>0?Math.round((curB-prevB)/prevB*100):null;
+  var cmpLy=lyB>0?Math.round((curB-lyB)/lyB*100):null;
+
+  function tile(lbl,val,sub,color,full){
+    return '<div style="background:var(--sf2);border:1px solid var(--bdl);border-radius:10px;padding:10px 11px;'+(full?'grid-column:1/-1;':'')+'">'+
+      '<div style="font-size:10.5px;color:var(--tm);">'+lbl+'</div>'+
+      '<div style="font-size:18px;font-weight:800;color:'+(color||'var(--tp)')+';margin-top:2px;">'+val+'</div>'+
+      (sub?'<div style="font-size:10px;color:var(--tm);margin-top:1px;">'+sub+'</div>':'')+'</div>';
+  }
+  var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+    tile('אחוז תפוסה',occ+'%',Math.round(bookedMin/60)+' מתוך '+Math.round(availMin/60)+' שעות עבודה',occ>=70?'#1e7a4a':(occ>=40?'var(--a700)':'var(--r500)'))+
+    tile('ממוצע לטיפול','₪'+avg.toLocaleString(),tCount+' טיפולים בתקופה')+
+    tile('מטופלים חוזרים',retPct+'%',returning+' מתוך '+treated+' שטופלו בתקופה')+
+    tile('לעומת חודש קודם',cmpPrev===null?'—':((cmpPrev>=0?'+':'')+cmpPrev+'%'),cmpPrev===null?'אין נתונים מהחודש הקודם':'₪'+curB.toLocaleString()+' מול ₪'+prevB.toLocaleString(),cmpPrev===null?'var(--tm)':(cmpPrev>=0?'#1e7a4a':'var(--r500)'))+
+    tile('לעומת אותו חודש אשתקד',cmpLy===null?'—':((cmpLy>=0?'+':'')+cmpLy+'%'),cmpLy===null?'אין נתונים מהשנה שעברה':'₪'+curB.toLocaleString()+' מול ₪'+lyB.toLocaleString(),cmpLy===null?'var(--tm)':(cmpLy>=0?'#1e7a4a':'var(--r500)'),true)+
+    '</div>';
+
+  // Busiest weekdays
+  var maxD=1;byDow.forEach(function(c){maxD=Math.max(maxD,c);});
+  html+='<div style="margin-top:13px;"><div style="font-size:11px;font-weight:700;color:var(--tm);margin-bottom:6px;">📅 באילו ימים יש הכי הרבה תורים</div>'+
+    DFL.map(function(nm,i){
+      var c=byDow[i];var w=Math.round(c/maxD*100);
+      return '<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">'+
+        '<div style="width:46px;font-size:11px;color:var(--ts);">'+nm+'</div>'+
+        '<div style="flex:1;height:12px;background:var(--sf2);border-radius:6px;overflow:hidden;"><div style="height:100%;width:'+w+'%;background:'+(c?'var(--g400)':'transparent')+';border-radius:6px;"></div></div>'+
+        '<div style="width:24px;font-size:11px;color:var(--tm);text-align:left;">'+(c||'')+'</div></div>';
+    }).join('')+'</div>';
+
+  // Busiest hours
+  var hourKeys=Object.keys(byHour).map(Number).sort(function(a,b){return a-b;});
+  if(hourKeys.length){
+    var maxH=1;hourKeys.forEach(function(h){maxH=Math.max(maxH,byHour[h]);});
+    html+='<div style="margin-top:13px;"><div style="font-size:11px;font-weight:700;color:var(--tm);margin-bottom:6px;">⏰ באילו שעות יש הכי הרבה תורים</div>'+
+      hourKeys.map(function(h){
+        var c=byHour[h];var w=Math.round(c/maxH*100);
+        return '<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">'+
+          '<div style="width:46px;font-size:11px;color:var(--ts);">'+S2(h)+':00</div>'+
+          '<div style="flex:1;height:12px;background:var(--sf2);border-radius:6px;overflow:hidden;"><div style="height:100%;width:'+w+'%;background:var(--g400);border-radius:6px;"></div></div>'+
+          '<div style="width:24px;font-size:11px;color:var(--tm);text-align:left;">'+c+'</div></div>';
+      }).join('')+'</div>';
+  }
+  bEl.innerHTML=html;
+}
+
+// Monthly summary CSV for the accountant — covers the selected stats period.
+// Excel-friendly: UTF-8 BOM so Hebrew opens correctly.
+function exportAccountantReport(){
+  try{
+    var byM=window._byM||{};
+    var lines=['﻿חודש,טיפולים,הכנסה כוללת,שולם,פתוח,מזומן,ביט,העברה,פייבוקס,אחר'];
+    var d=new Date();d.setDate(1);d.setMonth(d.getMonth()-(statsPeriod-1));
+    var now=new Date();var safety=0;
+    while(d<=now&&safety++<14){
+      var mk=d.getFullYear()+'-'+S2(d.getMonth()+1);
+      var m=byM[mk]||{paid:0,due:0,count:0,methods:{}};
+      var me=m.methods||{};
+      lines.push([HM[d.getMonth()]+' '+d.getFullYear(),m.count,(m.paid+m.due),m.paid,m.due,
+        me['מזומן']||0,me['ביט']||0,me['העברה']||0,me['פייבוקס']||0,me['אחר']||0].join(','));
+      d.setMonth(d.getMonth()+1);
+    }
+    var blob=new Blob([lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='clinic-report-'+todayStr()+'.csv';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},3000);
+  }catch(e){alert('שגיאה בהפקת הדוח: '+e.message);}
 }
 
 function askPayMethod(){
@@ -4232,6 +4367,7 @@ function showScreen(name,skipHistory){
     renderCal();
   }
   if(name==='patients')renderPatients();
+  if(name==='debts')renderDebts(); // fresh stats + goal bar (config may have changed in settings)
   if(name==='settings'){renderSerTypes();applySettings();}
   // (was: populating series-type dropdown for new patient; new-patient form no longer has series)
 }
@@ -4372,6 +4508,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-dedupe-pts').onclick=function(){dedupePatients();};
   document.getElementById('btn-mark-all-paid').onclick=function(){markAllPaid();};
   document.getElementById('btn-export-data').onclick=function(){exportAllData();};
+  var accBtn=document.getElementById('btn-acc-report');if(accBtn)accBtn.onclick=function(){exportAccountantReport();};
   document.getElementById('set-bot-enabled').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.enabled=!c.bot.enabled;this.className='day-tog '+(c.bot.enabled?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('set-bot-autosend').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.autoSend=!c.bot.autoSend;this.className='day-tog '+(c.bot.autoSend?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('pwa-install-btn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;this.style.display='none';}};
