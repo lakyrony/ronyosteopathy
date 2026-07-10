@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.24</title>
+<title>קליניקה v6.25</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -623,7 +623,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.24</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.25</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -642,7 +642,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.24</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.25</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -768,6 +768,15 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
           <div class="set-item"><div class="set-item-lbl">הפסקה בין טיפולים</div>
             <select class="set-sel" id="set-break"><option value="0">ללא</option><option value="5">5 דק׳</option><option value="10">10 דק׳</option><option value="15" selected>15 דק׳</option><option value="20">20 דק׳</option><option value="30">30 דק׳</option></select>
           </div>
+          <div class="set-item"><div class="set-item-lbl">הגבלת תורים ביום (טופס הזמנות)</div>
+            <button class="day-tog off" id="set-cap-enabled" type="button"></button>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">מקסימום תורים ביום</div>
+            <input type="number" inputmode="numeric" id="set-cap-num" min="1" max="20" value="4" style="width:70px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item" style="font-size:11px;color:var(--tm);padding:6px 13px 9px;line-height:1.4;">
+            כשיום מגיע למקסימום — טופס ההזמנות הציבורי נסגר לאותו יום. ביטול תור פותח אותו מחדש אוטומטית. לא מגביל קביעת תורים מתוך הקליניקה.
+          </div>
           <div class="set-item"><div class="set-item-lbl">🎯 יעד הכנסה חודשי (₪)</div>
             <input type="number" inputmode="numeric" id="set-monthly-goal" min="0" max="999999" placeholder="0 = כבוי" style="width:100px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
           </div>
@@ -823,6 +832,18 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
           </div>
           <div class="set-item"><div class="set-item-lbl">שליחת תזכורת לפני (שעות)</div>
             <input type="number" inputmode="numeric" id="set-reminder-hours" min="1" max="168" value="24" style="width:70px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:13px;text-align:center;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item"><div class="set-item-lbl">כתובת הקליניקה</div>
+            <input type="text" id="set-clinic-addr" placeholder="רחוב ומספר, עיר" style="width:170px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:var(--rsm);font-family:'Heebo',sans-serif;font-size:12px;outline:none;" onchange="autoSave()"/>
+          </div>
+          <div class="set-item" style="font-size:11px;color:var(--tm);padding:6px 13px 9px;line-height:1.4;">
+            הכתובת + קישור ניווט מצורפים אוטומטית להודעת אישור התור — רק למטופל חדש (שטרם היה בקליניקה).
+          </div>
+          <div class="set-item"><div class="set-item-lbl">🔔 התראה במכשיר על בקשת תור</div>
+            <button class="day-tog off" id="set-notif-enabled" type="button"></button>
+          </div>
+          <div class="set-item" style="font-size:11px;color:var(--tm);padding:6px 13px 9px;line-height:1.4;">
+            התראת מערכת קופצת כשמגיעה בקשת תור חדשה — כל עוד האפליקציה פתוחה (גם ברקע). ההגדרה נשמרת למכשיר זה בלבד.
           </div>
           <div style="padding:12px 13px;display:flex;flex-direction:column;gap:12px;">
             <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--rmd);padding:9px 11px;font-size:11px;color:var(--g700);line-height:1.6;">
@@ -1160,6 +1181,8 @@ function syncPublicAvailability(){
         durationFirst:cfg.durationFirst||75,
         breakMins:cfg.breakMins||0,
         taken:taken,
+        dailyCapEnabled:!!cfg.dailyCapEnabled,
+        dailyCap:parseInt(cfg.dailyCap)||0,
         publicDaysAhead:14,
         updatedAt:Date.now()
       });
@@ -1170,8 +1193,10 @@ function syncPublicAvailability(){
 // Listen for public booking requests
 var unsubBookings=null;
 window.pendingBookings=[];
+var _seenBookingIds=null; // null until the first snapshot — no notifications for the initial load
 function startBookingsListener(){
   if(unsubBookings)unsubBookings();
+  _seenBookingIds=null;
   try{
     unsubBookings=onSnapshot(collection(db,'publicBookings'),function(snap){
       window.pendingBookings=snap.docs.map(function(d){
@@ -1181,6 +1206,27 @@ function startBookingsListener(){
         var bd=(b.createdAt&&b.createdAt.seconds)||0;
         return bd-ad;
       });
+      // Device notification for NEW requests (not the initial snapshot) — works while
+      // the app is open, incl. background tab. Opt-in via the settings toggle.
+      try{
+        var pend=window.pendingBookings.filter(function(b){return b.status==='pending';});
+        var ids=pend.map(function(b){return b._id;});
+        if(_seenBookingIds!==null){
+          var fresh=pend.filter(function(b){return _seenBookingIds.indexOf(b._id)<0;});
+          var enabled=false;try{enabled=localStorage.getItem('clinic_notif')==='1';}catch(e){}
+          if(fresh.length&&enabled&&('Notification' in window)&&Notification.permission==='granted'){
+            fresh.forEach(function(b){
+              try{
+                var n=new Notification('🔔 בקשת תור חדשה',{
+                  body:(b.name||'מטופל')+' — '+((b.date||'').split('-').reverse().join('/'))+' בשעה '+(b.time||''),
+                  icon:'icon-192.png',tag:'bk-'+b._id});
+                n.onclick=function(){try{window.focus();if(typeof showBookingsList==='function')showBookingsList();}catch(e){}this.close();};
+              }catch(e){}
+            });
+          }
+        }
+        _seenBookingIds=ids;
+      }catch(e){}
       if(typeof renderAlerts==='function')renderAlerts();
     },function(e){console.warn('Bookings listener error:',e);});
   }catch(e){console.warn('Bookings listener setup failed:',e);}
@@ -1298,6 +1344,11 @@ function defCfg(){
     breakMins:15,
     // Monthly revenue goal (₪) shown on the finances screen; 0 = off
     monthlyGoal:0,
+    // Clinic address — appended to the booked-confirmation WhatsApp for NEW patients
+    clinicAddress:'חיים לבב 21, נהריה',
+    // Public-booking daily cap: when a day reaches N appointments, booking.html closes it
+    dailyCapEnabled:false,
+    dailyCap:4,
     // Legacy fields kept for backward compat
     price:350,
     schedule:{
@@ -1332,6 +1383,9 @@ function migrateCfg(c){
   if(c.durationFirst===undefined)c.durationFirst=Math.max(parseInt(c.duration)||60,75);
   if(c.breakMins===undefined)c.breakMins=0;
   if(c.monthlyGoal===undefined)c.monthlyGoal=0;
+  if(c.clinicAddress===undefined)c.clinicAddress='חיים לבב 21, נהריה';
+  if(c.dailyCapEnabled===undefined)c.dailyCapEnabled=false;
+  if(c.dailyCap===undefined)c.dailyCap=4;
   if(!c.scheduleOverrides)c.scheduleOverrides={};
   // Booking-approved WhatsApp template (newer) — add the default when missing so
   // configs saved before this feature keep all their existing messages untouched
@@ -1725,14 +1779,47 @@ async function approveBooking(id){
   }catch(e){console.error(e);alert('שגיאה: '+e.message);}
 }
 
+// Google-Calendar "add to calendar" template link for an appointment
+function gcalLinkFor(dateStr,time,durMin){
+  var cfg=window.appCfg||defCfg();
+  var d=sToD(dateStr);
+  var h=parseInt(time.split(':')[0]),m=parseInt(time.split(':')[1]||0);
+  var dur=parseInt(durMin)||parseInt(cfg.durationFirst)||60;
+  var pad=function(n){return String(n).padStart(2,'0');};
+  var fmt=function(hh,mm){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(hh)+pad(mm)+'00';};
+  var em=h*60+m+dur;
+  var addr=(cfg.clinicAddress||'').trim();
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'+
+    '&text='+encodeURIComponent('טיפול אוסטאופתיה — רוני פפוביאן')+
+    '&dates='+fmt(h,m)+'/'+fmt(Math.floor(em/60),em%60)+
+    '&details='+encodeURIComponent('קליניקת רוני פפוביאן'+(addr?' — '+addr:''))+
+    (addr?'&location='+encodeURIComponent(addr):'');
+}
+
+// Full booked-confirmation message: template + (address & navigation for NEW patients)
+// + add-to-calendar link
+function buildBookedMsg(p,dateStr,time,durMin){
+  var cfg=window.appCfg||defCfg();
+  var msgs=Object.assign({},defCfg().messages,cfg.messages||{});
+  var nd=(dateStr||'').split('-').reverse().join('/');
+  var txt=waFillTpl(msgs.booked,p,{date:nd,time:time||''});
+  var isNew=!(p&&p.treatments&&p.treatments.length);
+  var addr=(cfg.clinicAddress||'').trim();
+  if(isNew&&addr){
+    txt+='\n\n📍 כתובת הקליניקה: '+addr+'\nניווט: https://waze.com/ul?q='+encodeURIComponent(addr);
+  }
+  if(dateStr&&time){
+    txt+='\n\n📅 להוספת התור ליומן:\n'+gcalLinkFor(dateStr,time,durMin);
+  }
+  return txt;
+}
+
 // After approving a booking: success popup that offers to open WhatsApp with a
 // ready-made "your appointment is confirmed" message (from the msg-booked template)
 function showBookedWaPopup(pid,b){
   var p=findP(pid);
-  var cfg=window.appCfg||defCfg();
-  var msgs=Object.assign({},defCfg().messages,cfg.messages||{});
   var nd=(b.date||'').split('-').reverse().join('/');
-  var txt=waFillTpl(msgs.booked,p,{date:nd,time:b.time||''});
+  var txt=buildBookedMsg(p,b.date,b.time);
   var hasPhone=!!(p&&p.phone);
   var old=document.getElementById('bkw-ov');if(old)old.remove();
   var ov=document.createElement('div');ov.id='bkw-ov';
@@ -3722,6 +3809,15 @@ function applySettings(){
   var sd=document.getElementById('set-dur');if(sd)sd.value=c.duration||60;
   var sbr=document.getElementById('set-break');if(sbr)sbr.value=c.breakMins||15;
   var smg=document.getElementById('set-monthly-goal');if(smg)smg.value=c.monthlyGoal||'';
+  var ce=document.getElementById('set-cap-enabled');if(ce)ce.className='day-tog '+(c.dailyCapEnabled?'on':'off');
+  var cn=document.getElementById('set-cap-num');if(cn)cn.value=c.dailyCap||4;
+  var ca=document.getElementById('set-clinic-addr');if(ca)ca.value=c.clinicAddress!==undefined?c.clinicAddress:'';
+  var nt=document.getElementById('set-notif-enabled');
+  if(nt){
+    var notifOn=false;
+    try{notifOn=('Notification' in window)&&Notification.permission==='granted'&&localStorage.getItem('clinic_notif')==='1';}catch(e){}
+    nt.className='day-tog '+(notifOn?'on':'off');
+  }
   var bot=c.bot||{},msg=c.messages||{};
   var dm=defCfg().messages;
   var be=document.getElementById('set-bot-enabled');if(be)be.className='day-tog '+(bot.enabled?'on':'off');
@@ -3800,6 +3896,8 @@ async function saveSettings(){
   var sd=document.getElementById('set-dur');if(sd)c.duration=parseInt(sd.value)||60;
   var sbr=document.getElementById('set-break');if(sbr)c.breakMins=parseInt(sbr.value)||0;
   var smg=document.getElementById('set-monthly-goal');if(smg)c.monthlyGoal=Math.max(0,parseInt(smg.value)||0);
+  var cn2=document.getElementById('set-cap-num');if(cn2)c.dailyCap=Math.min(20,Math.max(1,parseInt(cn2.value)||4));
+  var ca2=document.getElementById('set-clinic-addr');if(ca2)c.clinicAddress=ca2.value.trim();
   // Maintain legacy price for backward compat (public booking page used to read cfg.price)
   c.price=c.priceSingle;
   if(!c.bot)c.bot={};if(!c.messages)c.messages={};
@@ -4481,7 +4579,7 @@ function openWaMenu(pid){
       '<div style="font-size:11px;color:var(--tm);margin-top:2px;">'+sub+'</div></button>';
   }
   rows+=row('💬 צ׳אט ריק','פתיחת וואטסאפ ללא טקסט','',false);
-  rows+=row('✅ אישור קביעת תור', next?('לתור ב-'+nd+' '+nt):'אין תור עתידי — לא ניתן', msgs.booked, !next);
+  rows+=row('✅ אישור קביעת תור', next?('לתור ב-'+nd+' '+nt+' (כולל קישור ליומן)'):'אין תור עתידי — לא ניתן', next?buildBookedMsg(p,next.date,next.time,next.duration):'', !next);
   rows+=row('⏰ תזכורת לתור', next?('לתור ב-'+nd+' '+nt):'אין תור עתידי — לא ניתן', msgs.reminder, !next);
   rows+=row('💰 בקשת תשלום', debt>0?('חוב פתוח: ₪'+debt.toLocaleString()):'אין חוב פתוח', msgs.payment, debt<=0);
   rows+=row('🌿 תודה אחרי טיפול','הודעת תודה לאחר הביקור', msgs.followup,false);
@@ -4679,6 +4777,24 @@ document.addEventListener('DOMContentLoaded',function(){
   var accBtn=document.getElementById('btn-acc-report');if(accBtn)accBtn.onclick=function(){exportAccountantReport();};
   document.getElementById('set-bot-enabled').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.enabled=!c.bot.enabled;this.className='day-tog '+(c.bot.enabled?'on':'off');window.appCfg=c;autoSave();};
   document.getElementById('set-bot-autosend').onclick=function(){var c=window.appCfg||defCfg();if(!c.bot)c.bot={};c.bot.autoSend=!c.bot.autoSend;this.className='day-tog '+(c.bot.autoSend?'on':'off');window.appCfg=c;autoSave();};
+  var capTog=document.getElementById('set-cap-enabled');
+  if(capTog)capTog.onclick=function(){var c=window.appCfg||defCfg();c.dailyCapEnabled=!c.dailyCapEnabled;this.className='day-tog '+(c.dailyCapEnabled?'on':'off');window.appCfg=c;autoSave();};
+  var ntTog=document.getElementById('set-notif-enabled');
+  if(ntTog)ntTog.onclick=function(){
+    var self=this;
+    var on=false;try{on=localStorage.getItem('clinic_notif')==='1';}catch(e){}
+    if(on){try{localStorage.setItem('clinic_notif','0');}catch(e){}self.className='day-tog off';return;}
+    if(!('Notification' in window)){alert('הדפדפן במכשיר זה לא תומך בהתראות מערכת.');return;}
+    Notification.requestPermission().then(function(perm){
+      if(perm==='granted'){
+        try{localStorage.setItem('clinic_notif','1');}catch(e){}
+        self.className='day-tog on';
+        try{new Notification('🔔 ההתראות פועלות',{body:'תקבלי כאן התראה על כל בקשת תור חדשה (כשהאפליקציה פתוחה)',icon:'icon-192.png'});}catch(e){}
+      } else {
+        alert('ההרשאה נדחתה. יש לאפשר התראות לאתר דרך הגדרות הדפדפן ולנסות שוב.');
+      }
+    });
+  };
   document.getElementById('pwa-install-btn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;this.style.display='none';}};
 
   // Form editor buttons in settings

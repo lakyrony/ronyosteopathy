@@ -1,4 +1,4 @@
-const CACHE='clinic-v4.9';
+const CACHE='clinic-v4.10';
 const FILES=['/clinic.html'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FILES);}));

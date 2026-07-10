@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>קביעת תור — קליניקת רוני פפוביאן | v6.19</title>
+<title>קביעת תור — קליניקת רוני פפוביאן | v6.25</title>
 <meta name="description" content="קביעת תור אונליין לקליניקת אוסטאופתיה של רוני פפוביאן בנהריה">
 <!-- WhatsApp / social preview -->
 <meta property="og:type" content="website">
@@ -524,6 +524,12 @@ function availableSlots(ds){
   // Public window: book at most 7 days ahead (one week from today)
   var maxAhead=new Date();maxAhead.setDate(maxAhead.getDate()+7);
   if(ds>dstr(maxAhead))return[];
+  // Daily cap (therapist setting): once a day holds N appointments, it closes for
+  // public booking. Cancelling an appointment reopens it automatically (live sync).
+  if(availability&&availability.dailyCapEnabled){
+    var cap=parseInt(availability.dailyCap)||0;
+    if(cap>0&&(availability.taken||[]).filter(function(t){return t.date===ds;}).length>=cap)return[];
+  }
   // getSlots already excludes taken+buffer; only filter today's past hours
   var all=getSlots(ds);
   var now=new Date();
