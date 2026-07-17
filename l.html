@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>רגע, מעבירים אותך…</title>
+<!--
+  Short-link redirector for WhatsApp messages (keeps the texts clean & short):
+    l.html?nav                    → Waze navigation to the clinic
+    l.html?d=YYYYMMDDHHMM&m=MIN   → Google Calendar "add event" for the appointment
+  NOTE: the clinic address is hardcoded below — update ADDR if the clinic moves.
+-->
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  var ADDR='חיים לבב 21, נהריה';
+  if(q.has('nav')){
+    location.replace('https://waze.com/ul?q='+encodeURIComponent(ADDR)+'&navigate=yes');
+    return;
+  }
+  var d=q.get('d');
+  if(d&&/^\d{12}$/.test(d)){
+    var m=Math.min(240,Math.max(10,parseInt(q.get('m'))||60));
+    var y=d.slice(0,4),mo=d.slice(4,6),da=d.slice(6,8),h=+d.slice(8,10),mi=+d.slice(10,12);
+    var pad=function(n){return String(n).padStart(2,'0');};
+    var em=Math.min(23*60+59,h*60+mi+m);
+    var st=y+mo+da+'T'+pad(h)+pad(mi)+'00';
+    var en=y+mo+da+'T'+pad(Math.floor(em/60))+pad(em%60)+'00';
+    location.replace('https://calendar.google.com/calendar/render?action=TEMPLATE'+
+      '&text='+encodeURIComponent('טיפול אוסטאופתיה — רוני פפוביאן')+
+      '&dates='+st+'/'+en+
+      '&details='+encodeURIComponent('קליניקת רוני פפוביאן — '+ADDR)+
+      '&location='+encodeURIComponent(ADDR));
+    return;
+  }
+  location.replace('https://ronyosteopathy.com/');
+})();
+</script>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding:48px;color:#5a4e42;background:#f0ebe2;">
+רגע, מעבירים אותך…
+</body>
+</html>
