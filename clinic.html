@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>קליניקה v6.26</title>
+<title>קליניקה v6.27</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -623,7 +623,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
 <!-- Login -->
 <div id="lview" class="login-sc">
   <img src="logo_long.png" alt="Rony Osteopath D.O" style="max-width:270px;width:82%;height:auto;mix-blend-mode:multiply;margin-bottom:16px"/>
-  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.26</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--g700);margin-bottom:4px">קליניקה <span style="font-size:11px;font-weight:400;color:var(--tm)">v6.27</span></div>
   <div style="font-size:13px;color:var(--tm);margin-bottom:30px;line-height:1.6">ניהול מטופלים ותורים</div>
   <!-- Google Identity Services button (primary) — returns the ID token to this page directly,
        so it works on iPhone Safari without the cross-domain firebaseapp.com hop. -->
@@ -642,7 +642,7 @@ body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl
   <div class="hdr">
     <div class="hlogo">
       <div class="hicon"><img src="icon-192.png" alt="לוגו הקליניקה"/></div>
-      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.26</span></div><div class="hsub" id="uname">...</div></div>
+      <div><div class="htitle">קליניקה <span style="font-size:10px;opacity:0.7;font-weight:400;">v6.27</span></div><div class="hsub" id="uname">...</div></div>
     </div>
     <div class="hacts">
       <button class="hb" id="hb-newpt"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>מטופל</button>
@@ -1183,6 +1183,8 @@ function syncPublicAvailability(){
         taken:taken,
         dailyCapEnabled:!!cfg.dailyCapEnabled,
         dailyCap:parseInt(cfg.dailyCap)||0,
+        // Lets stats.html locate the clinic data tree (uid alone grants no access — rules gate reads)
+        ownerUid:uid,
         publicDaysAhead:14,
         updatedAt:Date.now()
       });

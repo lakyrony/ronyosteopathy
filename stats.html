@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>דשבורד ניהולי — קליניקה</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0ebe2;--sf:#fff;--sf2:#f7f2eb;--bd:#ddd5c5;--bdl:#e8e2d8;
+  --tp:#1c1510;--ts:#5a4e42;--tm:#9a8878;--ac:#6b5a3e;
+  --gr:#0F6E56;--gr2:#1D9E75;--gr3:#7FC9A4;--gr4:#BFE3CB;--gr5:#E8F3EC;
+  --r:#e53e3e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',sans-serif;color:var(--tp);font-size:15px;direction:rtl;min-height:100vh;
+  background:
+    radial-gradient(900px 480px at 90% -10%,rgba(210,196,158,.30),transparent 60%),
+    radial-gradient(700px 420px at 5% 5%,rgba(203,222,211,.25),transparent 60%),
+    var(--bg);
+  padding:20px 14px 60px}
+.wrap{max-width:1000px;margin:0 auto}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.hd img{height:52px;mix-blend-mode:multiply}
+.hd h1{font-size:20px;font-weight:800;color:var(--ac)}
+.hd .sub{font-size:12px;color:var(--tm)}
+.card{background:var(--sf);border:1px solid var(--bdl);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(60,40,20,.08)}
+.ct{font-size:12px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.6px;margin-bottom:11px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--sf);border:1px solid var(--bdl);border-radius:12px;padding:12px 14px}
+.kpi .l{font-size:11px;color:var(--tm)}
+.kpi .v{font-size:24px;font-weight:800;margin-top:2px}
+.kpi .s{font-size:10.5px;color:var(--tm);margin-top:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.chip{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--bd);
+  cursor:pointer;background:var(--sf);color:var(--tp);font-family:'Heebo',sans-serif}
+.chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.frow{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.frow .fl{width:58px;color:var(--ts)}
+.frow .fb{flex:1;height:17px;background:var(--sf2);border-radius:4px;overflow:hidden}
+.frow .ff{height:100%;border-radius:4px 0 0 4px}
+.frow .fv{width:88px;color:var(--tm);font-size:11.5px}
+.hm{display:grid;gap:3px;font-size:10.5px;color:var(--tm)}
+.hm .cell{height:17px;border-radius:3px}
+.dorm{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdl);font-size:13px}
+.dorm:last-child{border-bottom:none}
+.wa{background:#25D366;color:#fff;border:none;border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer;text-decoration:none}
+.login{max-width:380px;margin:60px auto;text-align:center}
+.login img{max-width:250px;width:80%;mix-blend-mode:multiply;margin-bottom:14px}
+.err{color:var(--r);font-size:13px;margin-top:12px;display:none}
+.note{background:#fff8e6;border:1px solid #f0d678;color:#7a5a14;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6}
+.hbar{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:11.5px}
+.hbar .hl{width:44px;color:var(--ts)}
+.hbar .hb{flex:1;height:13px;background:var(--sf2);border-radius:4px;overflow:hidden}
+.hbar .hf{height:100%;background:var(--gr2);border-radius:4px 0 0 4px}
+.hbar .hv{width:30px;color:var(--tm);text-align:left}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login" class="login">
+  <img src="logo_long.png" alt="Rony Osteopath D.O"/>
+  <div style="font-size:18px;font-weight:800;color:var(--ac);margin-bottom:4px">דשבורד ניהולי</div>
+  <div style="font-size:13px;color:var(--tm);margin-bottom:26px">גישה למורשים בלבד</div>
+  <div id="gis-btn" style="display:flex;justify-content:center;min-height:44px"></div>
+  <button id="btn-signin" style="display:none;margin-top:10px;padding:10px 24px;border-radius:24px;border:1px solid var(--bd);background:#fff;font-family:'Heebo',sans-serif;font-size:14px;cursor:pointer">כניסה עם חשבון גוגל</button>
+  <div class="err" id="lerr"></div>
+</div>
+
+<!-- Dashboard -->
+<div id="dash" class="wrap hidden">
+  <div class="hd">
+    <img src="logo_long.png" alt=""/>
+    <div style="flex:1">
+      <h1>דשבורד ניהולי</h1>
+      <div class="sub" id="who"></div>
+    </div>
+    <button id="btn-out" style="padding:7px 16px;border-radius:20px;border:1px solid var(--bd);background:#fff;font-family:'Heebo',sans-serif;font-size:12px;cursor:pointer;color:var(--ts)">יציאה</button>
+  </div>
+
+  <div id="loading" style="text-align:center;padding:50px;color:var(--tm)">טוען נתונים…</div>
+  <div id="nodata" class="note hidden">עדיין אין חיבור לנתונים — רוני צריכה לפתוח את האפליקציה פעם אחת (עם הגרסה החדשה) כדי להשלים את החיבור, ואז לרענן כאן.</div>
+
+  <div id="content" class="hidden">
+    <div class="chips" id="period-chips"></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid">
+      <div class="card">
+        <div class="ct">🔽 משפך התמדה — כמה ממשיכים לטיפול הבא</div>
+        <div id="funnel"></div>
+        <div style="font-size:10.5px;color:var(--tm);margin-top:8px">האחוז מחושב מתוך כלל המטופלים שהגיעו לטיפול ראשון בתקופה.</div>
+      </div>
+      <div class="card">
+        <div class="ct">🗓 מפת עומס — יום × שעה</div>
+        <div id="heatmap"></div>
+        <div style="font-size:10.5px;color:var(--tm);margin-top:8px">בהיר = מעט תורים · כהה = עומס. לפי כל התורים בתקופה.</div>
+      </div>
+      <div class="card">
+        <div class="ct">😴 מטופלים רדומים — לא ביקרו 3+ חודשים</div>
+        <div id="dormant"></div>
+      </div>
+      <div class="card">
+        <div class="ct">📊 התפלגות גילאים</div>
+        <div id="ages"></div>
+        <div class="ct" style="margin-top:16px">🧩 הרכב המטופלים</div>
+        <div id="mix"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,signInWithPopup,GoogleAuthProvider,signInWithCredential,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,initializeFirestore,collection,getDocs,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+var FC={apiKey:"AIzaSyBCWOW0Swl9pS3cUES7t6-j7cE7Y8cg5Vs",authDomain:"clinic-rony.firebaseapp.com",projectId:"clinic-rony",storageBucket:"clinic-rony.firebasestorage.app",messagingSenderId:"650293359009",appId:"1:650293359009:web:ddf33e09010cae57ff9be0"};
+var GIS_CLIENT_ID='650293359009-9l6qg3aqjok2g2of4dmg652tl1f0bcai.apps.googleusercontent.com';
+var ALLOWED=['laky.rony@gmail.com','zloy02@gmail.com'];
+var OWNER='laky.rony@gmail.com';
+
+var fb=initializeApp(FC);var auth=getAuth(fb);var prov=new GoogleAuthProvider();
+var db;try{db=initializeFirestore(fb,{experimentalForceLongPolling:true});}catch(e){db=getFirestore(fb);}
+prov.setCustomParameters({prompt:'select_account'});
+setPersistence(auth,browserLocalPersistence).catch(function(){});
+
+function lerr(t){var e=document.getElementById('lerr');e.textContent=t;e.style.display='block';}
+
+// Google Identity Services button (same client as clinic.html) + popup fallback
+var _gisTries=0;
+function initGIS(){
+  if(!(window.google&&google.accounts&&google.accounts.id)){
+    if(++_gisTries>30){document.getElementById('btn-signin').style.display='inline-block';return;}
+    return setTimeout(initGIS,200);
+  }
+  try{
+    google.accounts.id.initialize({client_id:GIS_CLIENT_ID,ux_mode:'popup',callback:function(resp){
+      var cred=GoogleAuthProvider.credential(resp.credential);
+      signInWithCredential(auth,cred).catch(function(e){lerr('שגיאה: '+(e&&e.message||e));});
+    }});
+    var c=document.getElementById('gis-btn');
+    if(c){c.innerHTML='';google.accounts.id.renderButton(c,{theme:'filled_blue',size:'large',shape:'pill',locale:'he',width:280});}
+  }catch(e){document.getElementById('btn-signin').style.display='inline-block';}
+}
+initGIS();
+document.getElementById('btn-signin').onclick=function(){signInWithPopup(auth,prov).catch(function(e){lerr('שגיאה: '+e.message);});};
+document.getElementById('btn-out').onclick=function(){signOut(auth);};
+
+// ---------- helpers ----------
+function S2(n){return String(n).padStart(2,'0');}
+function dstr(d){return d.getFullYear()+'-'+S2(d.getMonth()+1)+'-'+S2(d.getDate());}
+function sToD(s){var p=String(s).split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+function waPhone(raw){var d=String(raw||'').replace(/\D/g,'');if(!d)return'';if(d.indexOf('00972')===0)d=d.slice(2);if(d.indexOf('972')===0)return d;if(d.charAt(0)==='0')return'972'+d.slice(1);return'972'+d;}
+var DFL=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+var RAMP=['var(--gr5)','var(--gr4)','var(--gr3)','var(--gr2)','var(--gr)'];
+
+var PTS=[],APTS=[];
+var period=0; // months back; 0 = all time
+
+onAuthStateChanged(auth,async function(user){
+  if(!user){document.getElementById('login').classList.remove('hidden');document.getElementById('dash').classList.add('hidden');return;}
+  if(ALLOWED.indexOf(user.email)<0){
+    await signOut(auth);
+    lerr('חשבון זה אינו מורשה לצפות בדשבורד.');
+    return;
+  }
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('dash').classList.remove('hidden');
+  document.getElementById('who').textContent='מחובר: '+(user.displayName||user.email);
+  try{
+    // Locate the clinic data tree: the owner uses her own uid; a viewer reads the
+    // ownerUid that clinic.html publishes into publicData/main
+    var ownerUid=null;
+    if(user.email===OWNER)ownerUid=user.uid;
+    else{
+      var pd=await getDoc(doc(db,'publicData','main'));
+      if(pd.exists()&&pd.data().ownerUid)ownerUid=pd.data().ownerUid;
+    }
+    if(!ownerUid){
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('nodata').classList.remove('hidden');
+      return;
+    }
+    var ps=await getDocs(collection(db,'users',ownerUid,'patients'));
+    PTS=ps.docs.map(function(d){return d.data();});
+    var as=await getDocs(collection(db,'users',ownerUid,'appointments'));
+    APTS=as.docs.map(function(d){return d.data();});
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('content').classList.remove('hidden');
+    render();
+  }catch(e){
+    document.getElementById('loading').textContent='שגיאה בטעינת נתונים: '+e.message+' — ודאו שחוקי ההרשאות עודכנו במסוף Firebase.';
+  }
+});
+
+// ---------- computation + render ----------
+function periodStart(){
+  if(!period)return null;
+  var d=new Date();d.setDate(1);d.setMonth(d.getMonth()-(period-1));
+  return dstr(d);
+}
+function render(){
+  var start=periodStart();
+  // chips
+  var opts=[[0,'מכל הזמנים'],[12,'שנה'],[6,'חצי שנה']];
+  var pc=document.getElementById('period-chips');
+  pc.innerHTML=opts.map(function(o){return '<button class="chip'+(period===o[0]?' active':'')+'" data-p="'+o[0]+'">'+o[1]+'</button>';}).join('');
+  pc.querySelectorAll('[data-p]').forEach(function(b){b.onclick=function(){period=parseInt(this.dataset.p);render();};});
+
+  // Scope: patients whose FIRST treatment is in the period (or all)
+  var scoped=[];
+  PTS.forEach(function(p){
+    var ds=(p.treatments||[]).map(function(t){return t.date;}).filter(Boolean).sort();
+    if(!ds.length)return;
+    if(start&&ds[0]<start)return;
+    scoped.push({p:p,dates:ds,n:ds.length});
+  });
+
+  // KPIs
+  var totalAll=PTS.length;
+  var base=scoped.length;
+  var to2=scoped.filter(function(x){return x.n>=2;}).length;
+  var avgT=base?(scoped.reduce(function(s,x){return s+x.n;},0)/base):0;
+  var gaps=[];
+  scoped.forEach(function(x){
+    if(x.n>=2){
+      var g=Math.round((sToD(x.dates[1])-sToD(x.dates[0]))/86400000);
+      if(g>=0&&g<365)gaps.push(g);
+    }
+  });
+  var avgGap=gaps.length?Math.round(gaps.reduce(function(a,b){return a+b;},0)/gaps.length):null;
+  function kpi(l,v,s,c){return '<div class="kpi"><div class="l">'+l+'</div><div class="v"'+(c?' style="color:'+c+'"':'')+'>'+v+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';}
+  document.getElementById('kpis').innerHTML=
+    kpi('סה"כ מטופלים',totalAll,start?(base+' התחילו בתקופה'):'')+
+    kpi('ממוצע טיפולים למטופל',base?avgT.toFixed(1):'—','בקרב מי שהתחילו בתקופה')+
+    kpi('חוזרים לטיפול שני',base?Math.round(to2/base*100)+'%':'—',to2+' מתוך '+base,'var(--gr)')+
+    kpi('ימים בין טיפול 1 ל-2',avgGap===null?'—':avgGap,'ממוצע');
+
+  // Funnel: 1 / 2 / 3 / 4 / 5+
+  var levels=[['טיפול 1',1],['טיפול 2',2],['טיפול 3',3],['טיפול 4',4],['5 ומעלה',5]];
+  var f='';
+  levels.forEach(function(lv,i){
+    var c=scoped.filter(function(x){return x.n>=lv[1];}).length;
+    var pct=base?Math.round(c/base*100):0;
+    f+='<div class="frow"><span class="fl">'+lv[0]+'</span><div class="fb"><div class="ff" style="width:'+pct+'%;background:'+RAMP[Math.min(4,i+0)]+'"></div></div><span class="fv">'+c+' · '+pct+'%</span></div>';
+  });
+  document.getElementById('funnel').innerHTML=base?f:'<div style="font-size:12px;color:var(--tm)">אין נתונים בתקופה</div>';
+
+  // Heatmap: weekday (0-6) × hour (8-20) from appointments in period
+  var end=dstr(new Date());
+  var apts=APTS.filter(function(a){
+    if(!a.date||!a.time)return false;
+    if(a.date>end)return true; // include future booked appointments too
+    if(start&&a.date<start)return false;
+    return true;
+  });
+  var H0=8,H1=20;
+  var cell={};var maxC=0;
+  apts.forEach(function(a){
+    var dow=sToD(a.date).getDay();
+    var h=parseInt(a.time.split(':')[0]);
+    if(h<H0||h>H1)return;
+    var k=dow+'_'+h;cell[k]=(cell[k]||0)+1;if(cell[k]>maxC)maxC=cell[k];
+  });
+  var hours=[];for(var h=H0;h<=H1;h+=2)hours.push(h);
+  var hm='<div class="hm" style="grid-template-columns:40px repeat('+hours.length+',1fr)">';
+  hm+='<span></span>'+hours.map(function(h){return '<span style="text-align:center">'+S2(h)+':00</span>';}).join('');
+  for(var dw=0;dw<=6;dw++){
+    var rowSum=0;for(var hh=H0;hh<=H1;hh++)rowSum+=(cell[dw+'_'+hh]||0);
+    if((dw===5||dw===6)&&rowSum===0)continue;
+    hm+='<span style="align-self:center">'+DFL[dw]+'</span>';
+    hours.forEach(function(h2){
+      var c=(cell[dw+'_'+h2]||0)+(cell[dw+'_'+(h2+1)]||0);
+      var lvl=maxC?Math.min(4,Math.ceil(c/Math.max(1,maxC)*4)):0;
+      hm+='<div class="cell" style="background:'+(c?RAMP[lvl]:'var(--sf2)')+'" title="'+DFL[dw]+' '+S2(h2)+':00 — '+c+' תורים"></div>';
+    });
+  }
+  hm+='</div>';
+  document.getElementById('heatmap').innerHTML=apts.length?hm:'<div style="font-size:12px;color:var(--tm)">אין תורים בתקופה</div>';
+
+  // Dormant patients (all-time): last treatment > 90 days ago
+  var cutoff=new Date();cutoff.setDate(cutoff.getDate()-90);var cutStr=dstr(cutoff);
+  var futureByPid={};
+  APTS.forEach(function(a){if(a.date&&a.date>=end)futureByPid[String(a.patientId)]=true;});
+  var dorm=[];
+  PTS.forEach(function(p){
+    var ds=(p.treatments||[]).map(function(t){return t.date;}).filter(Boolean).sort();
+    if(!ds.length)return;
+    var last=ds[ds.length-1];
+    if(last<cutStr&&!futureByPid[String(p.id)])dorm.push({p:p,last:last,n:ds.length});
+  });
+  dorm.sort(function(a,b){return b.last.localeCompare(a.last);});
+  var dEl=document.getElementById('dormant');
+  if(!dorm.length)dEl.innerHTML='<div style="font-size:12px;color:var(--tm)">אין מטופלים רדומים 🎉</div>';
+  else{
+    dEl.innerHTML='<div style="font-size:11px;color:var(--tm);margin-bottom:6px">'+dorm.length+' מטופלים · ממוינים מהעדכני לוותיק</div>'+
+      dorm.slice(0,15).map(function(x){
+        var months=Math.floor((new Date()-sToD(x.last))/(86400000*30));
+        return '<div class="dorm"><div style="flex:1"><b>'+x.p.name+'</b> · '+x.n+' טיפולים</div>'+
+          '<span style="color:var(--tm);font-size:11.5px">לפני '+months+' חודשים</span>'+
+          (x.p.phone?'<a class="wa" target="_blank" href="https://wa.me/'+waPhone(x.p.phone)+'">💬</a>':'')+'</div>';
+      }).join('')+
+      (dorm.length>15?'<div style="font-size:11px;color:var(--tm);margin-top:6px">+ עוד '+(dorm.length-15)+'…</div>':'');
+  }
+
+  // Ages histogram + patient mix (scoped patients; falls back to all when no period)
+  var pool=scoped.length?scoped.map(function(x){return x.p;}):[];
+  if(!start)pool=PTS;
+  var buckets={'0-2':0,'3-17':0,'18-35':0,'36-55':0,'56+':0};
+  var males=0,females=0,babies=0,adults=0;
+  pool.forEach(function(p){
+    if(p.patType==='baby'){buckets['0-2']++;babies++;}
+    else{
+      adults++;
+      var m=String(p.age||'').match(/\d+/);
+      if(m){var a=parseInt(m[0]);
+        if(a<=2)buckets['0-2']++;else if(a<=17)buckets['3-17']++;else if(a<=35)buckets['18-35']++;else if(a<=55)buckets['36-55']++;else buckets['56+']++;}
+    }
+    if(p.gender==='m')males++;else if(p.gender==='f')females++;
+  });
+  var maxB=1;Object.keys(buckets).forEach(function(k){maxB=Math.max(maxB,buckets[k]);});
+  document.getElementById('ages').innerHTML=Object.keys(buckets).map(function(k){
+    return '<div class="hbar"><span class="hl">'+k+'</span><div class="hb"><div class="hf" style="width:'+Math.round(buckets[k]/maxB*100)+'%"></div></div><span class="hv">'+(buckets[k]||'')+'</span></div>';
+  }).join('');
+  var unknownG=pool.length-males-females;
+  document.getElementById('mix').innerHTML=
+    '<div style="font-size:12.5px;color:var(--ts);line-height:1.9">'+
+    '👤 מבוגרים: <b>'+adults+'</b> · 👶 תינוקות: <b>'+babies+'</b><br>'+
+    '🚹 זכר: <b>'+males+'</b> · 🚺 נקבה: <b>'+females+'</b>'+(unknownG?' · לא הוגדר: <b>'+unknownG+'</b>':'')+'</div>';
+}
+</script>
+</body>
+</html>

@@ -23,6 +23,13 @@ service cloud.firestore {
         && request.auth.token.email_verified == true;
     }
 
+    // Read-only viewers — allowed into the private stats dashboard (stats.html)
+    function isViewer() {
+      return request.auth != null
+        && request.auth.token.email in ['laky.rony@gmail.com', 'zloy02@gmail.com']
+        && request.auth.token.email_verified == true;
+    }
+
     // Public availability (schedule + taken slots) — booking.html reads this
     match /publicData/{doc} {
       allow read: if true;
@@ -59,9 +66,11 @@ service cloud.firestore {
       }
     }
 
-    // Clinic data — patients, appointments, config. Owner only, and only her own tree.
+    // Clinic data — patients, appointments, config.
+    // Writing: only Rony, only her own tree. Reading: Rony + the stats-dashboard viewer.
     match /users/{uid}/{document=**} {
-      allow read, write: if isOwner() && request.auth.uid == uid;
+      allow write: if isOwner() && request.auth.uid == uid;
+      allow read: if isViewer();
     }
   }
 }
